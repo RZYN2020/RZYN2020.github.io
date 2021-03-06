@@ -27,7 +27,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="HelloWorld">
 <meta property="og:url" content="https://rzyn2020.github.io/2021/03/06/HelloWorld/index.html">
-<meta property="og:site_name" content="Fate&#x2F;Icstorm">
+<meta property="og:site_name" content="Icstorm">
 <meta property="og:description" content="凡事都有原因。我写博客也自然是由原因的。事物的下一刻只由上一刻决定。下一刻是果，上一刻是因。虽然我不能以我大脑神经元的活动为因得出我此时要写博客的果，但是一些宏观的涌现的原因还是能写出来的。 古时纸贵而易损，文字难存，不是名作就难以流传。想隋炀帝开科取士一千多年，也有秀才如云，每一位都是当时英杰，但有文字流传身后者却也是占了少数。反观今天任何人都能借博客留传文字，可真是幸运之极。能把自己的一些文章">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-06T06:57:17.000Z">
@@ -49,7 +49,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>HelloWorld | Fate/Icstorm</title>
+<title>HelloWorld | Icstorm</title>
   
 
 
@@ -110,7 +110,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Fate/Icstorm</h1>
+      <h1 class="site-title">Icstorm</h1>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">I am the bone of my sword.</p>
@@ -268,7 +268,7 @@
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Fate/Icstorm">
+      <meta itemprop="name" content="Icstorm">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -320,10 +320,15 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%9D%82%E6%84%9F/" rel="tag"># 杂感</a>
+              <a href="/tags/%E6%9D%82%E6%84%9F/" rel="tag"><i class="fa fa-tag"></i> 杂感</a>
           </div>
 
         
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
 
     </footer>
   </article>
@@ -375,6 +380,9 @@
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 -->
+  <div class="addthis_inline_share_toolbox">
+    <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-60439195a2a6b8c0" async="async"></script>
+  </div>
 
     </div>
   </footer>
@@ -384,6 +392,26 @@
 <script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
   
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : 29617,
+      el    : 'wpac-rating',
+      color : '#fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
 <script src="/js/local-search.js"></script>
 
 
