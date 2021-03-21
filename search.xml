@@ -16,4 +16,188 @@
         <tag>杂感</tag>
       </tags>
   </entry>
+  <entry>
+    <title>SICP-2.2笔记（除图形化语言）</title>
+    <url>/2021/03/21/SICP-2-2%E7%AC%94%E8%AE%B0%EF%BC%88%E9%99%A4%E5%9B%BE%E5%BD%A2%E5%8C%96%E8%AF%AD%E8%A8%80%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>早就听说SICP是本奇书，也无数次下定决心学习。可是，也许由于是个人能力所限，学习之路总是充满了坎坷。</p>
+<p>大一上时在图书馆借了中文版。当时初读之欣喜若狂，觉其中精妙之处甚多。此书关于迭代与递归的分析绝妙，其中所讲的高阶函数，lambda演算也让只知道一点点c语言的我大开眼界。但也许因为急功近利，读之过快，前文尚未消化，眼就瞟下下文。加之当时视野较窄，不会查找资源，没有同学与伴，所以我居然连一个scheme解释器都找不到，只能在纸面上编程，因而对于语言的理解就更差了。所以一节一节下来，我未消化的知识越来越多，不懂的就越来越多，最终第一章尚未读完，我就已支撑不下去，遂作罢。</p>
+<p>大一上的失败给我两个教训：</p>
+<ol>
+<li>“独学而无友，则孤陋而寡闻。”在学习时的环境与交流也时必须的。</li>
+<li>资源查找是一项很重要的能力。</li>
+</ol>
+<p>寒假之时，我痛定思痛，心有不甘。想到UCB的python版SICP现在已成系统，网上教学资源丰富，加之南大计科也引入了这门课，所以我能轻松找到这门课的大量资源，于是便听UCB的网课，看网上的课本，做UCB的homework和lab。UCB课本学习曲线较原版SICP舒缓得多，于是我进度很快，学完了过程抽象与数据抽象两章。但是我一高兴，就急功近利，想马上学完。于是我不做作业也不看视频，就猛看课本，结果和大一上一样，越看越看不懂，所以也是半途而废。另外，在学习UCB SICP得过程中，因课本中文翻译奇差，我不得不硬着头皮去看英文版。刚开始艰难，后来却越来越上头，觉得英文版比中文版清楚太多。</p>
+<p>寒假的失败也给了一点点收获：</p>
+<ol>
+<li>在学习网课时，我大量在网上查找资源，结果兴趣又被很多乱七八糟的小东西吸引。我假期尝试买了服务器，搭了梯子，建了Blog，还学了许多小工具。这些虽然看起来用处不大，却提升了我查找资源的能力，开阔了我的视野。</li>
+<li>从此我认识到了英文的重要性。并下决心，以后凡是资料有英文原版因当优先看原版。</li>
+</ol>
+<p>经过两次的失败，SICP已经几乎成为我的梦魇。但我还是下决心去克服它。我这次直接读MIT SICP英文原版。可能因为之前积攒的功力，我的进展也十分顺利。对比之后感到MIT版比UCB版高妙很多，也难许多。</p>
+<p>可是随着章节推进，我在2.2节又陷入了困境。2.2节抽象程度极高，一个函数定义接着一个函数定义。刚才的新定义马上就被当作下一次抽象的材料。以我的记忆力和急性子，读了根本记不住，又何谈理解？于是我决定开始做一点笔记，把关键的代码保存下来，以供查阅使用。</p>
+<p>估计在2.2节之后，我每一节都会做一点笔记。</p>
+<h3 id="Hierarchical-Data-and-the-Closure-Property"><a href="#Hierarchical-Data-and-the-Closure-Property" class="headerlink" title="Hierarchical Data and the Closure Property"></a>Hierarchical Data and the Closure Property</h3><ul>
+<li><p><code>(cons a b)</code> 提供最简单的glue组合数据</p>
+</li>
+<li><p><code>cons</code>具有closure property，这意味着用<code>cons</code>组合起来的数据本身也可作为被组合的对象。</p>
+<h4 id="Representing-Sequences"><a href="#Representing-Sequences" class="headerlink" title="Representing Sequences"></a>Representing Sequences</h4></li>
+<li><p>用pair表示sequence:</p>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">cons</span></span> <span class="number">1</span></span><br><span class="line">      (<span class="name"><span class="builtin-name">cons</span></span> <span class="number">2</span></span><br><span class="line">            (<span class="name"><span class="builtin-name">cons</span></span> <span class="number">3</span></span><br><span class="line">                  (<span class="name"><span class="builtin-name">cons</span></span> <span class="number">4</span> nil))))</span><br></pre></td></tr></table></figure></li>
+<li><p>list operations</p>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name"><span class="builtin-name">list-ref</span></span> items n)</span><br><span class="line">  (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">=</span></span> n <span class="number">0</span>)</span><br><span class="line">      (<span class="name"><span class="builtin-name">car</span></span> items)</span><br><span class="line">      (<span class="name"><span class="builtin-name">list-ref</span></span> (<span class="name"><span class="builtin-name">cdr</span></span> items) </span><br><span class="line">                (<span class="name"><span class="builtin-name">-</span></span> n <span class="number">1</span>))))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name"><span class="builtin-name">length</span></span> items)</span><br><span class="line">  (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">null?</span></span> items)</span><br><span class="line">      <span class="number">0</span></span><br><span class="line">      (<span class="name"><span class="builtin-name">+</span></span> <span class="number">1</span> (<span class="name"><span class="builtin-name">length</span></span> (<span class="name"><span class="builtin-name">cdr</span></span> items)))))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name"><span class="builtin-name">length</span></span> items)</span><br><span class="line">  (<span class="name"><span class="builtin-name">define</span></span> (<span class="name">length-iter</span> a count)</span><br><span class="line">    (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">null?</span></span> a)</span><br><span class="line">        count</span><br><span class="line">        (<span class="name">length-iter</span> (<span class="name"><span class="builtin-name">cdr</span></span> a) </span><br><span class="line">                     (<span class="name"><span class="builtin-name">+</span></span> <span class="number">1</span> count))))</span><br><span class="line">  (<span class="name">length-iter</span> items <span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name"><span class="builtin-name">append</span></span> list1 list2)</span><br><span class="line">  (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">null?</span></span> list1)</span><br><span class="line">      list2</span><br><span class="line">      (<span class="name"><span class="builtin-name">cons</span></span> (<span class="name"><span class="builtin-name">car</span></span> list1) </span><br><span class="line">            (<span class="name"><span class="builtin-name">append</span></span> (<span class="name"><span class="builtin-name">cdr</span></span> list1) </span><br><span class="line">                    list2))))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mapping over lists</li>
+</ul>
+<figure class="highlight scheme"><table><tr><td class="code"><pre><span class="line">(<span class="name"><span class="builtin-name">define</span></span> (<span class="name"><span class="builtin-name">map</span></span> proc items)</span><br><span class="line">  (<span class="name"><span class="builtin-name">if</span></span> (<span class="name"><span class="builtin-name">null?</span></span> items)</span><br><span class="line">      nil</span><br><span class="line">      (<span class="name"><span class="builtin-name">cons</span></span> (<span class="name">proc</span> (<span class="name"><span class="builtin-name">car</span></span> items))</span><br><span class="line">            (<span class="name"><span class="builtin-name">map</span></span> proc (<span class="name"><span class="builtin-name">cdr</span></span> items)))))</span><br></pre></td></tr></table></figure>
+
+<h4 id="Hierarchical-Structures"><a href="#Hierarchical-Structures" class="headerlink" title="Hierarchical Structures"></a>Hierarchical Structures</h4><ul>
+<li>~~~scheme<br>(define (count-leaves x)<br>  (cond ((null? x) 0)<pre><code>    ((not (pair? x)) 1)
+    (else (+ (count-leaves (car x))
+             (count-leaves (cdr x))))))
+</code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+ mapping over trees</span><br><span class="line"></span><br><span class="line">~~~scheme</span><br><span class="line">(define (scale-tree tree factor)</span><br><span class="line">  (cond ((null? tree) nil)</span><br><span class="line">        ((not (pair? tree)) </span><br><span class="line">         (* tree factor))</span><br><span class="line">        (else</span><br><span class="line">         (cons (scale-tree (car tree) </span><br><span class="line">                           factor)</span><br><span class="line">               (scale-tree (cdr tree) </span><br><span class="line">                           factor)))))</span><br><span class="line"></span><br><span class="line">(define (scale-tree tree factor)</span><br><span class="line">  (map (lambda (sub-tree)</span><br><span class="line">         (if (pair? sub-tree)</span><br><span class="line">             (scale-tree sub-tree factor)</span><br><span class="line">             (* sub-tree factor)))</span><br><span class="line">       tree))</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Sequences-as-Conventional-Interfaces"><a href="#Sequences-as-Conventional-Interfaces" class="headerlink" title="Sequences as Conventional Interfaces"></a>Sequences as Conventional Interfaces</h4></li>
+<li><p>the use of <em>conventional interfaces</em>.</p>
+</li>
+<li><p>我们能从程序中抽象出一些普遍模式（利用高阶过程），而这种抽象依赖于我们我们如何组织数据结构。</p>
+</li>
+<li><p>一个例子：</p>
+</li>
+<li><p>A signal-processing engineer would find it natural to conceptualize these processes in terms of signals flowing through a cascade of stages, each of which implements part of the program plan。</p>
+</li>
+<li><p>~~~scheme<br>(define (sum-odd-squares tree)<br>  (cond ((null? tree) 0)</p>
+<pre><code>    ((not (pair? tree))
+     (if (odd? tree) (square tree) 0))
+    (else (+ (sum-odd-squares 
+              (car tree))
+             (sum-odd-squares 
+              (cdr tree))))))
+</code></pre>
+<p>(define (even-fibs n)<br>  (define (next k)</p>
+<pre><code>(if (&gt; k n)
+    nil
+    (let ((f (fib k)))
+      (if (even? f)
+          (cons f (next (+ k 1)))
+          (next (+ k 1))))))
+</code></pre>
+<p>  (next 0))               </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+ </span><br><span class="line"></span><br><span class="line">The first program</span><br><span class="line"></span><br><span class="line">- enumerates the leaves of a tree;</span><br><span class="line">- filters them, selecting the odd ones;</span><br><span class="line">- squares each of the selected ones; and</span><br><span class="line">- accumulates the results using &#96;+&#96;, starting with 0.</span><br><span class="line"></span><br><span class="line">The second program</span><br><span class="line"></span><br><span class="line">- enumerates the integers from 0 to n;</span><br><span class="line">- computes the Fibonacci number for each integer;</span><br><span class="line">- filters them, selecting the even ones; and</span><br><span class="line">- accumulates the results using &#96;cons&#96;, starting with the empty list.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+ Sequence operations</span><br><span class="line"></span><br><span class="line">+ The key to organizing programs so as to more clearly reflect the signal-flow structure is to concentrate on the “signals” that flow from one stage in the process to the next. If we represent these signals as lists, then we can use list operations to implement the processing at each of the stages.</span><br><span class="line"></span><br><span class="line">+ ~~~scheme</span><br><span class="line">  (define (filter predicate sequence)</span><br><span class="line">    (cond ((null? sequence) nil)</span><br><span class="line">          ((predicate (car sequence))</span><br><span class="line">           (cons (car sequence)</span><br><span class="line">                 (filter predicate </span><br><span class="line">                         (cdr sequence))))</span><br><span class="line">          (else  (filter predicate </span><br><span class="line">                         (cdr sequence)))))</span><br><span class="line">  </span><br><span class="line">  (define (accumulate op initial sequence)</span><br><span class="line">    (if (null? sequence)</span><br><span class="line">        initial</span><br><span class="line">        (op (car sequence)</span><br><span class="line">            (accumulate op </span><br><span class="line">                        initial </span><br><span class="line">                        (cdr sequence)))))</span><br><span class="line">  </span><br><span class="line">  (define (enumerate-interval low high)</span><br><span class="line">    (if (&gt; low high)</span><br><span class="line">        nil</span><br><span class="line">        (cons low </span><br><span class="line">              (enumerate-interval </span><br><span class="line">               (+ low 1) </span><br><span class="line">               high))))</span><br><span class="line">  </span><br><span class="line">  (define (enumerate-tree tree)</span><br><span class="line">    (cond ((null? tree) nil)</span><br><span class="line">          ((not (pair? tree)) (list tree))</span><br><span class="line">          (else (append </span><br><span class="line">                 (enumerate-tree (car tree))</span><br><span class="line">                 (enumerate-tree (cdr tree))))))</span><br><span class="line">  </span><br><span class="line">  (define (sum-odd-squares tree)</span><br><span class="line">    (accumulate </span><br><span class="line">     +</span><br><span class="line">     0</span><br><span class="line">     (map square</span><br><span class="line">          (filter odd?</span><br><span class="line">                  (enumerate-tree tree)))))</span><br><span class="line">  </span><br><span class="line">  (define (even-fibs n)</span><br><span class="line">    (accumulate </span><br><span class="line">     cons</span><br><span class="line">     nil</span><br><span class="line">     (filter even?</span><br><span class="line">             (map fib</span><br><span class="line">                  (enumerate-interval 0 n)))))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Nested mapping</p>
+</li>
+<li><p>Given a positive integer nn, find all ordered pairs of distinct positive integers i and j, where 1≤j&lt;i≤n1≤j&lt;i≤n, such that i+j is prime.</p>
+</li>
+<li><p>~~~scheme<br>(accumulate<br> append<br> nil<br> (map (lambda (i)</p>
+<pre><code>    (map (lambda (j) 
+           (list i j))
+         (enumerate-interval 1 (- i 1))))
+  (enumerate-interval 1 n)))
+</code></pre>
+<p>(define (flatmap proc seq)<br>  (accumulate append nil (map proc seq)))</p>
+<p>(define (prime-sum? pair)<br>  (prime? (+ (car pair) (cadr pair))))</p>
+<p>(define (make-pair-sum pair)<br>  (list (car pair) </p>
+<pre><code>    (cadr pair) 
+    (+ (car pair) (cadr pair))))
+</code></pre>
+<p>(define (make-pair-sum pair)<br>  (list (car pair) </p>
+<pre><code>    (cadr pair) 
+    (+ (car pair) (cadr pair))))
+</code></pre>
+<p>(define (prime-sum-pairs n)<br>  (map make-pair-sum</p>
+<pre><code>   (filter 
+    prime-sum?
+    (flatmap
+     (lambda (i)
+       (map (lambda (j) 
+              (list i j))
+            (enumerate-interval 
+             1 
+             (- i 1))))
+     (enumerate-interval 1 n)))))
+</code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">+ Exercise 2.41: Write a procedure to find all ordered triples of distinct positive integers ii, jj, and kk less than or equal to a given integer n that sum to a given integer s.</span><br><span class="line"></span><br><span class="line">+ ~~~scheme</span><br><span class="line">  (define (tri n)</span><br><span class="line">    (flatmap</span><br><span class="line">     (lambda (i)</span><br><span class="line">       (flatmap</span><br><span class="line">        (lambda (j)</span><br><span class="line">          (map</span><br><span class="line">           (lambda (k)</span><br><span class="line">             (list i j k))</span><br><span class="line">           (enumerate-interval 1 n)))</span><br><span class="line">          (enumerate-interval 1 n)))</span><br><span class="line">        (enumerate-interval 1 n)))</span><br></pre></td></tr></table></figure></li>
+<li><p>Exercise 2.42:eight-queens puzzle</p>
+</li>
+<li><p>~~~scheme<br>(define (queens board-size)<br>  (define (queen-cols k)</p>
+<pre><code>(if (= k 0)
+    (list empty-board)
+    (filter
+     (lambda (positions) 
+       (safe? k positions))
+     (flatmap
+      (lambda (rest-of-queens)
+        (map (lambda (new-row)
+               (adjoin-position 
+                new-row 
+                k 
+                rest-of-queens))
+             (enumerate-interval 
+              1 
+              board-size)))
+      (queen-cols (- k 1))))))
+</code></pre>
+<p>  (queen-cols board-size))</p>
+<p>(define empty-board ‘())</p>
+<p>(define (adjoin-position new-row k rest-of-queens)</p>
+<pre><code>(cons new-row rest-of-queens))
+</code></pre>
+<p>(define (safe? k position)</p>
+<pre><code>(iter-check (car position) 
+            (cdr position)
+             1))
+</code></pre>
+<p>(define (iter-check row-of-new-queen rest-of-queens i)</p>
+<pre><code>(if (null? rest-of-queens)  ; 下方所有皇后检查完毕，新皇后安全
+    #t
+    (let ((row-of-current-queen (car rest-of-queens)))
+        (if (or (= row-of-new-queen row-of-current-queen)           ; 行碰撞
+                (= row-of-new-queen (+ i row-of-current-queen))     ; 右下方碰撞
+                (= row-of-new-queen (- row-of-current-queen i)))    ; 左下方碰撞
+            #f
+            (iter-check row-of-new-queen 
+                        (cdr rest-of-queens)    ; 继续检查剩余的皇后
+                        (+ i 1))))))            ; 更新步进值
+</code></pre>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    #### Example: A Picture Language</span><br><span class="line"></span><br><span class="line">+ ~~~scheme</span><br><span class="line">  (define (flipped-pairs painter)</span><br><span class="line">    (let ((painter2 </span><br><span class="line">           (beside painter </span><br><span class="line">                   (flip-vert painter))))</span><br><span class="line">      (below painter2 painter2)))</span><br><span class="line">  </span><br><span class="line">  (define (right-split painter n)</span><br><span class="line">    (if (&#x3D; n 0)</span><br><span class="line">        painter</span><br><span class="line">        (let ((smaller (right-split painter </span><br><span class="line">                                    (- n 1))))</span><br><span class="line">          (beside painter </span><br><span class="line">                  (below smaller smaller)))))</span><br><span class="line">  </span><br><span class="line">  (define (corner-split painter n)</span><br><span class="line">    (if (&#x3D; n 0)</span><br><span class="line">        painter</span><br><span class="line">        (let ((up (up-split painter (- n 1)))</span><br><span class="line">              (right (right-split painter </span><br><span class="line">                                  (- n 1))))</span><br><span class="line">          (let ((top-left (beside up up))</span><br><span class="line">                (bottom-right (below right </span><br><span class="line">                                     right))</span><br><span class="line">                (corner (corner-split painter </span><br><span class="line">                                      (- n 1))))</span><br><span class="line">            (beside (below painter top-left)</span><br><span class="line">                    (below bottom-right </span><br><span class="line">                           corner))))))</span><br><span class="line">  </span><br><span class="line">  (define (square-limit painter n)</span><br><span class="line">    (let ((quarter (corner-split painter n)))</span><br><span class="line">      (let ((half (beside (flip-horiz quarter) </span><br><span class="line">                          quarter)))</span><br><span class="line">        (below (flip-vert half) half))))</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>Higher-order operations</p>
+</li>
+<li><pre><code class="scheme">(define (square-of-four tl tr bl br)
+  (lambda (painter)
+    (let ((top (beside (tl painter) 
+                       (tr painter)))
+          (bottom (beside (bl painter) 
+                          (br painter))))
+      (below bottom top))))
+
+(define (flipped-pairs painter)
+  (let ((combine4 
+         (square-of-four identity 
+                         flip-vert
+                         identity 
+                         flip-vert)))
+    (combine4 painter)))
+
+(define (square-limit painter n)
+  (let ((combine4 
+         (square-of-four flip-horiz 
+                         identity
+                         rotate180 
+                         flip-vert)))
+    (combine4 (corner-split painter n))))
+</code></pre>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>SICP 经典阅读-cs</tag>
+      </tags>
+  </entry>
 </search>
