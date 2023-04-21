@@ -21,7 +21,7 @@ tabWidth = 4
 subtitle = "Ekstasis's blog."
 enableGitalk = true
 enableGiscus = false
-favicon = "images/yinyang.webp"
+favicon = "https://cdn.staticaly.com/gh/RZYN2020/images@main/Blog/icons8-阴阳-64.7jhr0awa6es0.webp"
 
 [params.gitalk]
 owner = "RZYN2020"
