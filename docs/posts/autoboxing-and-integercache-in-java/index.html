@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html><head>
+<title>Autoboxing and IntegerCache in Java</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N1BLV69HCP"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-N1BLV69HCP', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://icstorm.top/images/yinyang.webp">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+<link rel="stylesheet" href="/scss/journal.min.7c01e9f6fb2f6083d79d2f3a32ec6b7901e262e94a52a64a542aef98bc5bda64.css" integrity="sha256-fAHp9vsvYIPXnS86MuxreQHiYulKUqZKVCrvmLxb2mQ=" media="screen">
+
+
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '7db87688e21dd942b46e',
+  clientSecret: '1c06e545236c14d66c66e8d03fba5bfc29e9ea85',
+  repo: 'RZYN2020.github.io',
+  owner: 'RZYN2020',
+  admin: ['RZYN2020'],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    Archive
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    Categories
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    Tags
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="https://icstorm.top/Algorithm/">
+                    Algo
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about">
+                    About
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS Feed
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#reference-type-%e5%92%8c-primitive-type" class="nav-reference-type-和-primitive-type">
+									Reference Type 和 Primitive Type
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#generic" class="nav-generic">
+									Generic
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#autoboxing--and-integer-cache" class="nav-autoboxing--and-integer-cache">
+									Autoboxing and Integer Cache
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://icstorm.top/">
+            Icstorm
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://icstorm.top/">
+        <div class="single-column-header-title">Icstorm</div>
+        
+        <div class="single-column-header-subtitle">Ekstasis&#39;s blog.</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Autoboxing and IntegerCache in Java
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2023-03-07 14:49
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/pl/compiler">PL/Compiler</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/%E9%9D%A2%E8%AF%95">面试</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <blockquote>
+<p>When you are on the dancefloor, there is nothing to do but dance.</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<p>有一道经典的Java面试题：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#e06c75">Integer</span> <span style="color:#e06c75">i</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">100</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">Integer</span> <span style="color:#e06c75">j</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">100</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">System</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">out</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">print</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">i</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">j</span><span style="color:#56b6c2">);</span> <span style="color:#7f848e">// true or false?
+</span></span></span></code></pre></div><p>由于之前没有准备直接上阵，在碰到这道题时一时不解。但显然这是考察autoboxing(自动装箱)机制，而一般整数转化为Integer对象时肯定是new一个新对象，按理说结果应该为false，但是考虑到在具体实现中可能为了效率考虑会预先缓存一部分整数对象，于是便猜测答案为true。下来网上一查，答案果然为true，但解释却是如下：</p>
+<p><img src="img/image-20230307151202637.png" alt=""></p>
+<p>这就有点奇怪了——我总觉得缓存多少是具体的编译器或者JVM抑或是相关类库实现的问题，而不该定义在语言规范中，而如果是和具体实现相关的，那么言之凿凿256个数字需要缓存就有点奇怪了。上网查查资料之后，发现256这个数字果然还是Integer类的默认实现中决定的。下面我就综合查找的资料，介绍一下这道题背后可能涉及的知识。</p>
+<h2 id="reference-type-和-primitive-type">Reference Type 和 Primitive Type</h2>
+<p>首先Java类型系统以及JVM中，任何 Value(值) 要么是 reference type(引用类型)，要么是 primitive type(基本类型)。所谓reference type就是指向一个对象的值，总是一条new指令的返回值，往往是自身具有一定状态，并可以改变的(mutable)，在JVM实现中为一个指向具体对象的指针；而 primitive type的值 则只能通过字面量或是预先定义的在primitive type上的操作获得，而操作并不改变值本身，只是产生了一个新的值，即是不可变的(immutable)的，在JVM实现中也对应实现语言的primitive type(可以理解为c++中的Int)。</p>
+<p>但是在许多其他面向对象语言中(如Python)，一切皆是对象，一切值皆是引用。这样做比Java好理解许多，具体实现上也易于实现了。但是却带来了效率的低下，这主要有两点原因：</p>
+<ul>
+<li>对于整数这样的在编程中最基本且常用的值，如果每次两数相加都返回一个新对象，则是对资源的极大浪费。
+<ul>
+<li>你可能会想：为什么不把整数对象做成单例的？也就是一个只有一个1对象，也只有一个2对象，每次 1 + 1 总能得到同一个2 —— 但注意reference type的特征就是mutable，如果这样就做不到mutable了，和用primitive type表示整数也就没有区别了。</li>
+</ul>
+</li>
+<li>在JVM执行时，遇到引用需要先解引用才能获取整数值，然后再相加，之后封装成整数对象并返回引用，与直接将整数表示为实现语言的primitive type相比效率天差地别。</li>
+</ul>
+<p>因此，为了效率考虑，则需要把整数，浮点数等归入primitive type。这样做就又产生了一个问题：在JVM中，一个值即可能是用实现语言的primitive type表示，也可能用指针表示，我们如何对二者进行区分呢？幸好Java是静态类型语言，在编译之后每条指令所操作的值的类型也是确定的。比如当执行iadd指令时栈上存的值就一定为两个整数。但在动态语言中就不一定了，我们必须要先检查类型是否匹配，然后进行操作。此时为了标明一个值究竟是primitive type还是reference type，我们必须把值的高位留出来作为类型tag以示区分。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e">// 动态语言虚拟机中的一个值往往是这个样子的
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#c678dd">struct</span> <span style="color:#e06c75">Value_t</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">Type</span> <span style="color:#e06c75">type</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#c678dd">union</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">double</span> <span style="color:#e06c75">number</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">bool</span> <span style="color:#e06c75">boolean</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">HeapObject</span><span style="color:#56b6c2">*</span> <span style="color:#e06c75">object</span>;
+</span></span><span style="display:flex;"><span>  } <span style="color:#e06c75">data</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><h2 id="generic">Generic</h2>
+<p>既然有了primitive type的整数，似乎再也不需要作为对象的整数了？看起来似乎是这样，但是Java却依然提供了Integer类表示作为对象的整数——这主要还是因为为了支持泛型的存在。</p>
+<p>Java的泛型是通过<a href="https://docs.oracle.com/javase/tutorial/java/generics/erasure.html">类型擦除</a>实现的，也就是泛型信息只在编译期可见，而在运行期(也就是JVM)不可见。无论你是写成<code>List&lt;String&gt;</code> 还是 <code>List&lt;A&gt;</code> ，它们在编译后都会变成同一个List，而这个List存储的是Object对象。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#7f848e">// 泛型类：
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#c678dd">public</span> <span style="color:#c678dd">class</span> <span style="color:#e5c07b">Box</span><span style="color:#56b6c2">&lt;</span><span style="color:#e06c75">T</span><span style="color:#56b6c2">&gt;</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">private</span> <span style="color:#e06c75">T</span> <span style="color:#e06c75">t</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">public</span> <span style="color:#e5c07b">void</span> <span style="color:#61afef;font-weight:bold">set</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">T</span> <span style="color:#e06c75">t</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span> <span style="color:#c678dd">this</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">t</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">t</span><span style="color:#56b6c2">;</span> <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">public</span> <span style="color:#e06c75">T</span> <span style="color:#61afef;font-weight:bold">get</span><span style="color:#56b6c2">()</span> <span style="color:#56b6c2">{</span> <span style="color:#c678dd">return</span> <span style="color:#e06c75">t</span><span style="color:#56b6c2">;</span> <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e">// 上面的泛型类在编译成字节码后
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">public</span> <span style="color:#c678dd">class</span> <span style="color:#e5c07b">org</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">example</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">Box</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>  <span style="color:#c678dd">private</span> <span style="color:#e06c75">Ljava</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">lang</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">Object</span><span style="color:#56b6c2">;</span> <span style="color:#e06c75">t</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#c678dd">public</span> <span style="color:#56b6c2">&lt;</span><span style="color:#e06c75">init</span><span style="color:#56b6c2">&gt;()</span><span style="color:#e06c75">V</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#c678dd">public</span> <span style="color:#61afef;font-weight:bold">set</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">Ljava</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">lang</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">Object</span><span style="color:#56b6c2">;)</span><span style="color:#e06c75">V</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#c678dd">public</span> <span style="color:#61afef;font-weight:bold">get</span><span style="color:#56b6c2">()</span><span style="color:#e06c75">Ljava</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">lang</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">Object</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">...</span>
+</span></span><span style="display:flex;"><span><span style="color:#56b6c2">}</span>
+</span></span></code></pre></div><p>因为实际上用Object存储，所以每次get都是做了一次强制类型转换，Java编译器会生成CHECKCAST指令来保证类型转换时的正确性。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#7f848e">// java代码
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#e06c75">System</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">out</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">println</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">stringBox</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">get</span><span style="color:#56b6c2">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e">// 编译后的字节码
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#e06c75">INVOKEVIRTUAL</span> <span style="color:#e06c75">org</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">example</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">Box</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">get</span> <span style="color:#56b6c2">()</span><span style="color:#e06c75">Ljava</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">lang</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">Object</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">CHECKCAST</span> <span style="color:#e06c75">java</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">lang</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">INVOKEVIRTUAL</span> <span style="color:#e06c75">java</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">io</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">PrintStream</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">println</span> <span style="color:#56b6c2">(</span><span style="color:#e06c75">Ljava</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">lang</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">String</span><span style="color:#56b6c2">;)</span><span style="color:#e06c75">V</span>
+</span></span></code></pre></div><p>但是如果泛型已经由编译器保证没有类型错误，为什么又要加CHECKCAST指令来运行时再次检查呢？考虑如下泛型程序，在可以通过编译，但在运行时CHECKCAST会报错：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#c678dd">public</span> <span style="color:#c678dd">class</span> <span style="color:#e5c07b">Main</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">public</span> <span style="color:#c678dd">static</span> <span style="color:#e5c07b">void</span> <span style="color:#61afef;font-weight:bold">main</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">String</span><span style="color:#56b6c2">[]</span> <span style="color:#e06c75">args</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">Box</span> <span style="color:#e06c75">stringBox</span> <span style="color:#56b6c2">=</span> <span style="color:#c678dd">new</span> <span style="color:#e06c75">Box</span><span style="color:#56b6c2">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">stringBox</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">set</span><span style="color:#56b6c2">(</span><span style="color:#d19a66">5</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">foo</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">stringBox</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">public</span> <span style="color:#c678dd">static</span> <span style="color:#e5c07b">void</span> <span style="color:#61afef;font-weight:bold">foo</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">Box</span><span style="color:#56b6c2">&lt;</span><span style="color:#e06c75">String</span><span style="color:#56b6c2">&gt;</span> <span style="color:#e06c75">box</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">System</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">out</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">println</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">box</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">get</span><span style="color:#56b6c2">()</span> <span style="color:#56b6c2">+</span> <span style="color:#98c379">&#34;123&#34;</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e">//Exception in thread &#34;main&#34; java.lang.ClassCastException: class java.lang.Integer cannot be cast to class //java.lang.String (java.lang.Integer and java.lang.String are in module java.base of loader &#39;bootstrap&#39;)
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">//	at org.example.Main.foo(Main.java:14)
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">//	at org.example.Main.main(Main.java:10)
+</span></span></span></code></pre></div><p>这是因为Java为了让新代码和没有泛型之前(Java8)的代码兼容，而引入了<a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-4.8">Raw Type</a>，也就是没有泛型参数的泛型——对这种类型的检查会适当放松——代价就是动态检查的开销。</p>
+<p>当然泛型不仅仅可以通过类型擦除实现，像C++的模板就是走向了另外一个极端——为每个类型都生成相应的类——这样的缺点自然是代码膨胀，好处却是可以动态获取类型信息(C++是否支持反射暂且不论，但如果Java采取和C++一样泛型机制就一定会支持这样的反射的)，不需要动态类型检查，也不需要像Java一样的Integer类。</p>
+<p>好，话题又回到Java的Integer类，正是应为Java的泛型是通过类型擦除实现，所以所有的泛型在背后都有一套统一的表示——也就是Object。但是primitive type却在Java OO继承链之外，也就无法使用泛型了——所有就引入了将primitive type封装成wrapper type的机制。将int封装为Integer即是一个例子。</p>
+<h2 id="autoboxing--and-integer-cache">Autoboxing  and Integer Cache</h2>
+<p>虽然已经有了wrapper type，但每次手动封装也是非常麻烦的。所以编译就加入了自动检测类型，在合适的时候将primitive type转化为相应的wrapper type，将wrapper type转化为相应的primitive type的机制，也就是“Autoboxing”与“Unboxing”</p>
+<p>所以说，面试题中<code>Integer i = 100;</code>等即采用了Autoboxing 机制，上面的代码在编译处理过之后就等价为下面的代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#e06c75">Integer</span> <span style="color:#e06c75">i</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">Integer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">valueOf</span><span style="color:#56b6c2">(</span><span style="color:#d19a66">100</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">Integer</span> <span style="color:#e06c75">j</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">Integer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">valueOf</span><span style="color:#56b6c2">(</span><span style="color:#d19a66">100</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">System</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">out</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">print</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">i</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">j</span><span style="color:#56b6c2">);</span> <span style="color:#7f848e">// true or false?
+</span></span></span></code></pre></div><p>已知引用比较在java中是直接比较地址，那么我们只需要知道<code>Integer.valueOf</code>做了什么就知道面试题的答案了。</p>
+<p>查阅 <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html#valueOf-int-">java doc</a>，发现:</p>
+<blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#c678dd">public</span> <span style="color:#c678dd">static</span> <span style="color:#e06c75">Integer</span> <span style="color:#61afef;font-weight:bold">valueOf</span><span style="color:#56b6c2">(</span><span style="color:#e5c07b">int</span> <span style="color:#e06c75">i</span><span style="color:#56b6c2">)</span>
+</span></span></code></pre></div><p>Returns an <code>Integer</code> instance representing the specified <code>int</code> value. If a new <code>Integer</code> instance is not required, this method should generally be used in preference to the constructor <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html#Integer-int-"><code>Integer(int)</code></a>, as this method is likely to yield significantly better space and time performance by caching frequently requested values. This method will always cache values in the range -128 to 127, inclusive, and <strong>may cache other values outside of this range</strong>.</p>
+<ul>
+<li>
+<p><strong>Parameters:</strong></p>
+<p><code>i</code> - an <code>int</code> value.</p>
+</li>
+<li>
+<p><strong>Returns:</strong></p>
+<p>an <code>Integer</code> instance representing <code>i</code>.</p>
+</li>
+<li>
+<p><strong>Since:</strong></p>
+<p>1.5</p>
+</li>
+</ul>
+</blockquote>
+<p>所以说，除开根据Integer类的实现不同会有不同表现，如果只看标准类库的话那么面试题还没问题的，缓存值的Integer Cache大小总是大于256。但注意到 java doc 中说“may cache other values outside of this range”，这也许就说明还有调节的空间？果然，经查阅，<code>-XX:AutoBoxCacheMax</code> 选项就可以调节Integer Cache的大小。</p>
+<p>在我本机的Open jdk19中，<code>Integer.valueOf</code>实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>	<span style="color:#61afef">@IntrinsicCandidate</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">public</span> <span style="color:#c678dd">static</span> <span style="color:#e06c75">Integer</span> <span style="color:#61afef;font-weight:bold">valueOf</span><span style="color:#56b6c2">(</span><span style="color:#e5c07b">int</span> <span style="color:#e06c75">i</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">if</span> <span style="color:#56b6c2">(</span><span style="color:#e06c75">i</span> <span style="color:#56b6c2">&gt;=</span> <span style="color:#e06c75">IntegerCache</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">low</span> <span style="color:#56b6c2">&amp;&amp;</span> <span style="color:#e06c75">i</span> <span style="color:#56b6c2">&lt;=</span> <span style="color:#e06c75">IntegerCache</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">high</span><span style="color:#56b6c2">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#c678dd">return</span> <span style="color:#e06c75">IntegerCache</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cache</span><span style="color:#56b6c2">[</span><span style="color:#e06c75">i</span> <span style="color:#56b6c2">+</span> <span style="color:#56b6c2">(-</span><span style="color:#e06c75">IntegerCache</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">low</span><span style="color:#56b6c2">)];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#c678dd">new</span> <span style="color:#e06c75">Integer</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">i</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">}</span>
+</span></span></code></pre></div><p>而用到的<code>IntegerCache</code>类实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">private</span> <span style="color:#c678dd">static</span> <span style="color:#c678dd">class</span> <span style="color:#e5c07b">IntegerCache</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">static</span> <span style="color:#c678dd">final</span> <span style="color:#e5c07b">int</span> <span style="color:#e06c75">low</span> <span style="color:#56b6c2">=</span> <span style="color:#56b6c2">-</span><span style="color:#d19a66">128</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">static</span> <span style="color:#c678dd">final</span> <span style="color:#e5c07b">int</span> <span style="color:#e06c75">high</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">static</span> <span style="color:#c678dd">final</span> <span style="color:#e06c75">Integer</span><span style="color:#56b6c2">[]</span> <span style="color:#e06c75">cache</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">static</span> <span style="color:#e06c75">Integer</span><span style="color:#56b6c2">[]</span> <span style="color:#e06c75">archivedCache</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">static</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e">// high value may be configured by property
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>            <span style="color:#e5c07b">int</span> <span style="color:#e06c75">h</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">127</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">String</span> <span style="color:#e06c75">integerCacheHighPropValue</span> <span style="color:#56b6c2">=</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">VM</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">getSavedProperty</span><span style="color:#56b6c2">(</span><span style="color:#98c379">&#34;java.lang.Integer.IntegerCache.high&#34;</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#c678dd">if</span> <span style="color:#56b6c2">(</span><span style="color:#e06c75">integerCacheHighPropValue</span> <span style="color:#56b6c2">!=</span> <span style="color:#e5c07b">null</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#c678dd">try</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#e06c75">h</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">Math</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">parseInt</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">integerCacheHighPropValue</span><span style="color:#56b6c2">),</span> <span style="color:#d19a66">127</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#7f848e">// Maximum array size is Integer.MAX_VALUE
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>                    <span style="color:#e06c75">h</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">Math</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">min</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">h</span><span style="color:#56b6c2">,</span> <span style="color:#e06c75">Integer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">MAX_VALUE</span> <span style="color:#56b6c2">-</span> <span style="color:#56b6c2">(-</span><span style="color:#e06c75">low</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">-</span><span style="color:#d19a66">1</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#56b6c2">}</span> <span style="color:#c678dd">catch</span><span style="color:#56b6c2">(</span> <span style="color:#e06c75">NumberFormatException</span> <span style="color:#e06c75">nfe</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#7f848e">// If the property cannot be parsed into an int, ignore it.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>                <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">high</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">h</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e">// Load IntegerCache.archivedCache from archive, if possible
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>            <span style="color:#56b6c2">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e">// Use the archived cache if it exists and is large enough
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>             <span style="color:#56b6c2">...</span>
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e">// range [-128, 127] must be interned (JLS7 5.1.7)
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>            <span style="color:#c678dd">assert</span> <span style="color:#e06c75">IntegerCache</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">high</span> <span style="color:#56b6c2">&gt;=</span> <span style="color:#d19a66">127</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#56b6c2">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">}</span>
+</span></span></code></pre></div><p>再追踪调用链可以发现VM类表示VM的各种选项，均有System类中的方法设置，但System类中方法又由谁调用，并从哪里知道参数呢？再追踪就会发现，果然这些命令行参数的解析和传入都是通过native method来实现的。</p>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2023-03-07</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/posts/scheme%E6%8B%BE%E9%81%97/">
+			Next<br>Scheme 拾遗：S-Expression，Continuation 以及 Macro
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/">
+			Previous<br>编译器的结构与任务
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://icstorm.top/">
+    
+        <div class="nav-title">
+            Icstorm
+        </div>
+        
+        <div class="nav-subtitle">
+            Ekstasis&#39;s blog.
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                Archive
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                Categories
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                Tags
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="https://icstorm.top/Algorithm/">
+                Algo
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about">
+                About
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS Feed
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#reference-type-%e5%92%8c-primitive-type" class="nav-reference-type-和-primitive-type">
+									Reference Type 和 Primitive Type
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#generic" class="nav-generic">
+									Generic
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#autoboxing--and-integer-cache" class="nav-autoboxing--and-integer-cache">
+									Autoboxing and Integer Cache
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

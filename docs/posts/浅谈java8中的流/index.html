@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html><head>
+<title>浅谈java8中的流</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N1BLV69HCP"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-N1BLV69HCP', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://icstorm.top/images/yinyang.webp">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+<link rel="stylesheet" href="/scss/journal.min.7c01e9f6fb2f6083d79d2f3a32ec6b7901e262e94a52a64a542aef98bc5bda64.css" integrity="sha256-fAHp9vsvYIPXnS86MuxreQHiYulKUqZKVCrvmLxb2mQ=" media="screen">
+
+
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '7db87688e21dd942b46e',
+  clientSecret: '1c06e545236c14d66c66e8d03fba5bfc29e9ea85',
+  repo: 'RZYN2020.github.io',
+  owner: 'RZYN2020',
+  admin: ['RZYN2020'],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    Archive
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    Categories
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    Tags
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="https://icstorm.top/Algorithm/">
+                    Algo
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about">
+                    About
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS Feed
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java8%e4%b8%ad%e7%9a%84%e6%b5%81" class="nav-java8中的流">
+									java8中的流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%af%bc%e5%bc%95" class="nav-导引">
+									导引
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%bf%87%e7%a8%8b%e7%9a%84%e6%8a%bd%e8%b1%a1" class="nav-过程的抽象">
+									过程的抽象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bb%8elist%e5%88%b0stream" class="nav-从list到stream">
+									从List到Stream
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#stream-api" class="nav-stream-api">
+									stream API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9e%84%e9%80%a0" class="nav-构造">
+									构造
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%94%b1collection%e6%88%96array%e8%bd%ac%e5%8c%96" class="nav-由collection或array转化">
+									由collection或Array转化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%b1stream%e7%9b%b4%e6%8e%a5%e5%88%9b%e5%bb%ba" class="nav-由stream直接创建">
+									由Stream直接创建
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%84%e7%90%86" class="nav-处理">
+									处理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%ba%a6%e7%ae%80" class="nav-约简">
+									约简
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://icstorm.top/">
+            Icstorm
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://icstorm.top/">
+        <div class="single-column-header-title">Icstorm</div>
+        
+        <div class="single-column-header-subtitle">Ekstasis&#39;s blog.</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    浅谈java8中的流
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-18 20:31
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/pl/compiler">PL/Compiler</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">java</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <blockquote>
+<p>万物皆流，无物常驻</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<h1 id="java8中的流">java8中的流</h1>
+<h2 id="导引">导引</h2>
+<h3 id="过程的抽象">过程的抽象</h3>
+<p>流(stream)是在java8中出现的一种新的数据抽象，它对数据的处理有着较大的简化作用。</p>
+<p>流的概念可能最早来自于列表(List)，列表可以理解为按顺序排列的一组对象(数组和链表都是其具体实现)。</p>
+<p>大多数程序的最外在特征是给定一个输入后，按照某种规则得出相应的输出。编写由输入到输出的规则就是programmer所做的事情了。许多程序的规则都可以被抽象为三部分:</p>
+<ul>
+<li>根据输入产生一组数据</li>
+<li>对第一步产生的数据组进行处理</li>
+<li>对处理过后的数据约简而得到最终的输出</li>
+</ul>
+<p>当然，最后约简的操作也可以算作数据处理的一部分。但由于它是最后一步操作，所以往往将它独立出来。</p>
+<p>这种抽象可以类比为国家选拔人才的机制。</p>
+<ul>
+<li>随着形式的变化，国家向大学提出了向H部门输送X专业的高级人才的要求。(这相当于用户输入)</li>
+<li>大学招收了一群X专业的本科新生。(产生了一组数据)</li>
+<li>大学对这些新生进行专业教育，淘汰掉挂科的学生。(处理数据)</li>
+<li>毕业之时，将成绩优异的学生推荐给H部门。(约简得到输出)</li>
+</ul>
+<p>也许正因为这种对过程的抽象方式天然地存在于人的大脑结构之中(是某种先验的思维模式)，我们才会很自然地将无论是社会还是计算机中的许多过程都按照这种方式进行抽象。</p>
+<h3 id="从list到stream">从List到Stream</h3>
+<p>程序的三部分抽象中有两个关键部分:一是如何表示数据，二是如何处理数据。</p>
+<p>对于数据的表示，我们很自然地会想到使用List这样的计算机能支持的最简单数据集合来表示。</p>
+<p>对于数据的处理方式，我们抽象出了许多种类，比如说:</p>
+<blockquote>
+<p>map: 对于List中的每一项数据都进行某种操作</p>
+<p>filter: 删除List中某些不需要的元素</p>
+<p>count: 得到List中总的元素数目</p>
+</blockquote>
+<p>有些处理方式(比如说count)，对List操作之后得到的并不是List，不再能连续地进行下一步操作，所以只能作为最后一步约简地处理方式。</p>
+<p>然而用一般计算机语言中的List表示数据组，却有以下两种缺点:</p>
+<ul>
+<li>一，不能表示无限数据组</li>
+<li>二，每次处理都必须对每个元素都进行处理，造成了资源的浪费。(但实际上我们的程序可能只需要处理前几个数据就可以得出结果了)</li>
+</ul>
+<p>因此，出现了一种新的数据抽象，流(stream)。流的主要特征即是惰性求值。而惰性求值很好地避免了以上两个问题。所谓惰性求值，即需要的时候再进行求值。</p>
+<p>比方说我们的数据组是一串5个白色乒乓球。要对这些乒乓球进行如下处理，首先是染蓝色颜料，其次染黄色颜料，最后我们要拿到第二个染色后的乒乓球。按照List的处理逻辑，我们要先把所有的球染成蓝色，然后将所有的球染成黄色，最后再取出第二个球。但是按照stream的处理逻辑，我们首先知道了要把球
+染成蓝色，但我们先记住这个命令，却不实际操作。然后记住要染黄色的命令，也不实际操作。在最后一步，我们要拿出第二个染色后的球。这时候我们再依次对这些球进行处理。先处理完第一个球，然后处理第二个球，这时直接拿出第二个球即可，
+而不需要对剩余球进行染色。</p>
+<p>此处笔者自感表达不清，关于stream的解释详见<a href="https://sarabander.github.io/sicp/html/3_002e5.xhtml#g_t3_002e5">SICP3.5</a>。</p>
+<h3 id="stream-api">stream API</h3>
+<p>由于stream的强大抽象能力，java8中新引入了stream API。java8中的stream即是上述概念模型的一种实现，并无特殊性。其主要操作自然也是分为stream的构造，处理以及约简三部分。下面三部分将分别记录常用的API。</p>
+<h2 id="构造">构造</h2>
+<h3 id="由collection或array转化">由collection或Array转化</h3>
+<blockquote>
+<p>Collection:</p>
+<p><code>default Stream&lt;E&gt; stream()</code></p>
+</blockquote>
+<blockquote>
+<p>Array:</p>
+<p><code>public static &lt;T&gt; Stream&lt;T&gt; stream(T[] array)</code></p>
+<p><code>public static &lt;T&gt; Stream&lt;T&gt; stream(T[] array, int startInclusive, int endExclusive)</code></p>
+<p><code>public static IntStream stream(int[] array)</code></p>
+<p><code>public static IntStream stream(int[] array, int startInclusive, int endExclusive)</code></p>
+<p>以及类似的DoubleStream和LongStream方法</p>
+</blockquote>
+<h3 id="由stream直接创建">由Stream直接创建</h3>
+<blockquote>
+<p>Stream:</p>
+<p><code>static &lt;T&gt; Stream&lt;T&gt; empty()</code></p>
+<p>Returns an empty sequential Stream.</p>
+<p><code>static &lt;T&gt; Stream&lt;T&gt; of(T t)</code></p>
+<p>Returns a sequential Stream containing a single element.</p>
+<p><code>static &lt;T&gt; Stream&lt;T&gt; ofNullable(T t)</code></p>
+<p>Returns a sequential Stream containing a single element, if non-null, otherwise returns an empty Stream.</p>
+<p><code>@SafeVarargs static &lt;T&gt; Stream&lt;T&gt; of(T... values)</code></p>
+<p>Returns a sequential ordered stream whose elements are the specified values.</p>
+<p><code>static &lt;T&gt; Stream&lt;T&gt; iterate(T seed, UnaryOperator&lt;T&gt; f)</code></p>
+<p>Returns an infinite sequential ordered Stream produced by iterative application of a function f to an initial element seed, producing a Stream consisting of seed, f(seed), f(f(seed)), etc.</p>
+<p><code>static &lt;T&gt; Stream&lt;T&gt; generate(Supplier&lt;? extends T&gt; s)</code></p>
+<p>Returns an infinite sequential unordered stream where each element is generated by the provided Supplier. This is suitable for generating constant streams, streams of random elements, etc.</p>
+<p><code>static &lt;T&gt; Stream&lt;T&gt; concat(Stream&lt;? extends T&gt; a, Stream&lt;? extends T&gt; b)</code></p>
+<p>Creates a lazily concatenated stream whose elements are all the elements of the first stream followed by all the elements of the second stream.</p>
+<p>另外也可以通过streamBuilder类创建stream</p>
+</blockquote>
+<h2 id="处理">处理</h2>
+<blockquote>
+<p>Stream:</p>
+<p><code>Stream&lt;T&gt; filter(Predicate&lt;? super T&gt; predicate)</code></p>
+<p>Returns a stream consisting of the elements of this stream that match the given predicate.
+This is an intermediate operation.</p>
+<p><code>&lt;R&gt; Stream&lt;R&gt; map(Function&lt;? super T,​? extends R&gt; mapper)</code></p>
+<p>Returns a stream consisting of the results of applying the given function to the elements of this stream.
+This is an intermediate operation.</p>
+<p><code>Stream&lt;T&gt; limit(long maxSize)</code></p>
+<p>Returns a stream consisting of the elements of this stream, truncated to be no longer than maxSize in length.
+This is a short-circuiting stateful intermediate operation.</p>
+<p><code>Stream&lt;T&gt; skip(long n)</code></p>
+<p>Returns a stream consisting of the remaining elements of this stream after discarding the first n elements of the stream. If this stream contains fewer than n elements then an empty stream will be returned.
+This is a stateful intermediate operation.</p>
+<p><code>Stream&lt;T&gt; sorted()</code></p>
+<p>Returns a stream consisting of the elements of this stream, sorted according to natural order. If the elements of this stream are not Comparable, a java.lang.ClassCastException may be thrown when the terminal operation is executed.
+For ordered streams, the sort is stable. For unordered streams, no stability guarantees are made.</p>
+<p>This is a stateful intermediate operation.</p>
+<p><code>Stream&lt;T&gt; sorted(Comparator&lt;? super T&gt; comparator)</code>
+Returns a stream consisting of the elements of this stream, sorted according to the provided Comparator.
+For ordered streams, the sort is stable. For unordered streams, no stability guarantees are made.</p>
+<p>This is a stateful intermediate operation.</p>
+</blockquote>
+<h2 id="约简">约简</h2>
+<blockquote>
+<p>Stream:</p>
+<p><code>void forEach(Consumer&lt;? super T&gt; action)</code></p>
+<p>Performs an action for each element of this stream.
+This is a terminal operation.</p>
+<p><code>Optional&lt;T&gt; findFirst()</code></p>
+<p>Returns an Optional describing the first element of this stream, or an empty Optional if the stream is empty. If the stream has no encounter order, then any element may be returned.
+This is a short-circuiting terminal operation.</p>
+<p><code>Optional&lt;T&gt; max(Comparator&lt;? super T&gt; comparator)</code></p>
+<p>Returns the maximum element of this stream according to the provided Comparator. This is a special case of a reduction.
+This is a terminal operation.</p>
+<p><code>Optional&lt;T&gt; min(Comparator&lt;? super T&gt; comparator)</code></p>
+<p>Returns the minimum element of this stream according to the provided Comparator. This is a special case of a reduction.
+This is a terminal operation.</p>
+<p><code>T reduce(T identity, BinaryOperator&lt;T&gt; accumulator)</code></p>
+<p>Performs a reduction on the elements of this stream, using the provided identity value and an associative accumulation function, and returns the reduced value. This is equivalent to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#e06c75">T</span> <span style="color:#e06c75">result</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">identity</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">for</span> <span style="color:#56b6c2">(</span><span style="color:#e06c75">T</span> <span style="color:#e06c75">element</span> <span style="color:#56b6c2">:</span> <span style="color:#c678dd">this</span> <span style="color:#e06c75">stream</span><span style="color:#56b6c2">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e06c75">result</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">accumulator</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">apply</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">result</span><span style="color:#56b6c2">,</span> <span style="color:#e06c75">element</span><span style="color:#56b6c2">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">return</span> <span style="color:#e06c75">result</span><span style="color:#56b6c2">;</span>
+</span></span></code></pre></div><p>but is not constrained to execute sequentially.
+The identity value must be an identity for the accumulator function. This means that for all t, <code>accumulator.apply(identity, t)</code> is equal to t. The accumulator function must be an associative function.</p>
+<p>This is a terminal operation.</p>
+<p><code>Optional&lt;T&gt; reduce(BinaryOperator&lt;T&gt; accumulator)</code></p>
+<p>Performs a reduction on the elements of this stream, using an associative accumulation function, and returns an Optional describing the reduced value, if any. This is equivalent to:</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span> <span style="color:#e5c07b">boolean</span> <span style="color:#e06c75">foundAny</span> <span style="color:#56b6c2">=</span> <span style="color:#e5c07b">false</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#e06c75">T</span> <span style="color:#e06c75">result</span> <span style="color:#56b6c2">=</span> <span style="color:#e5c07b">null</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#c678dd">for</span> <span style="color:#56b6c2">(</span><span style="color:#e06c75">T</span> <span style="color:#e06c75">element</span> <span style="color:#56b6c2">:</span> <span style="color:#c678dd">this</span> <span style="color:#e06c75">stream</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#c678dd">if</span> <span style="color:#56b6c2">(!</span><span style="color:#e06c75">foundAny</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">{</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#e06c75">foundAny</span> <span style="color:#56b6c2">=</span> <span style="color:#e5c07b">true</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#e06c75">result</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">element</span><span style="color:#56b6c2">;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#c678dd">else</span>
+</span></span><span style="display:flex;"><span>             <span style="color:#e06c75">result</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">accumulator</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">apply</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">result</span><span style="color:#56b6c2">,</span> <span style="color:#e06c75">element</span><span style="color:#56b6c2">);</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#56b6c2">}</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#c678dd">return</span> <span style="color:#e06c75">foundAny</span> <span style="color:#56b6c2">?</span> <span style="color:#e06c75">Optional</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">of</span><span style="color:#56b6c2">(</span><span style="color:#e06c75">result</span><span style="color:#56b6c2">)</span> <span style="color:#56b6c2">:</span> <span style="color:#e06c75">Optional</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">empty</span><span style="color:#56b6c2">();</span>
+</span></span></code></pre></div><p>but is not constrained to execute sequentially.
+The <code>accumulator</code> function must be an associative function.This is a terminal operation.</p>
+</blockquote>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2021-08-18</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/">
+			Next<br>树的非递归遍历—用栈模拟递归
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/about/">
+			Previous<br>About
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://icstorm.top/">
+    
+        <div class="nav-title">
+            Icstorm
+        </div>
+        
+        <div class="nav-subtitle">
+            Ekstasis&#39;s blog.
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                Archive
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                Categories
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                Tags
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="https://icstorm.top/Algorithm/">
+                Algo
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about">
+                About
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS Feed
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#java8%e4%b8%ad%e7%9a%84%e6%b5%81" class="nav-java8中的流">
+									java8中的流
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%af%bc%e5%bc%95" class="nav-导引">
+									导引
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%bf%87%e7%a8%8b%e7%9a%84%e6%8a%bd%e8%b1%a1" class="nav-过程的抽象">
+									过程的抽象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bb%8elist%e5%88%b0stream" class="nav-从list到stream">
+									从List到Stream
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#stream-api" class="nav-stream-api">
+									stream API
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9e%84%e9%80%a0" class="nav-构造">
+									构造
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%94%b1collection%e6%88%96array%e8%bd%ac%e5%8c%96" class="nav-由collection或array转化">
+									由collection或Array转化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%b1stream%e7%9b%b4%e6%8e%a5%e5%88%9b%e5%bb%ba" class="nav-由stream直接创建">
+									由Stream直接创建
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%a4%84%e7%90%86" class="nav-处理">
+									处理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%ba%a6%e7%ae%80" class="nav-约简">
+									约简
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

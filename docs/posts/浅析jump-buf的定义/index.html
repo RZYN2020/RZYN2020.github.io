@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html><head>
+<title>浅析jmp_buf的定义</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N1BLV69HCP"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-N1BLV69HCP', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://icstorm.top/images/yinyang.webp">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+<link rel="stylesheet" href="/scss/journal.min.7c01e9f6fb2f6083d79d2f3a32ec6b7901e262e94a52a64a542aef98bc5bda64.css" integrity="sha256-fAHp9vsvYIPXnS86MuxreQHiYulKUqZKVCrvmLxb2mQ=" media="screen">
+
+
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '7db87688e21dd942b46e',
+  clientSecret: '1c06e545236c14d66c66e8d03fba5bfc29e9ea85',
+  repo: 'RZYN2020.github.io',
+  owner: 'RZYN2020',
+  admin: ['RZYN2020'],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    Archive
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    Categories
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    Tags
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="https://icstorm.top/Algorithm/">
+                    Algo
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about">
+                    About
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS Feed
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://icstorm.top/">
+            Icstorm
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://icstorm.top/">
+        <div class="single-column-header-title">Icstorm</div>
+        
+        <div class="single-column-header-subtitle">Ekstasis&#39;s blog.</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    浅析jmp_buf的定义
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-11-14 09:23
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/pl/compiler">PL/Compiler</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/ics-c">ICS C</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p><code>int setjmp(jmp_buf env)</code>
+<code>void longjmp(jmp_buf env, int val)</code></p>
+<p>setjmp 和 longjmp 是<code>setjmp.h</code>定义的相互协作的一组跳转函数。 调用 setjmp 时可以将当前的环境保存在一个<code>jmp_buf</code>类型的变量中，之后调用 longjmp 后会跳转到 setjmp 执行后的下一条语句执行，就好像刚刚从 setjmp返回一样。</p>
+<blockquote>
+<p>函数行为描述见man，源码见<a href="https://www.gnu.org/software/libc/">glibc</a>。</p>
+</blockquote>
+<p>其中,<code>jmp_buf</code>的定义如下:</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#c678dd">typedef</span> <span style="color:#e5c07b">long</span> <span style="color:#e5c07b">int</span> <span style="color:#e06c75">__jmp_buf</span>[<span style="color:#d19a66">8</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e">/* Calling environment, plus possibly a saved signal mask.  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">struct</span> <span style="color:#e06c75">__jmp_buf_tag</span>
+</span></span><span style="display:flex;"><span>  {
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e">/* NOTE: The machine-dependent definitions of `__sigsetjmp&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">       assume that a `jmp_buf&#39; begins with a `__jmp_buf&#39; and that
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">       `__mask_was_saved&#39; follows it.  Do not move these members
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">       or add others before it.  */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">__jmp_buf</span> <span style="color:#e06c75">__jmpbuf</span>;		<span style="color:#7f848e">/* Calling environment.  */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">int</span> <span style="color:#e06c75">__mask_was_saved</span>;	<span style="color:#7f848e">/* Saved the signal mask?  */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">__sigset_t</span> <span style="color:#e06c75">__saved_mask</span>;	<span style="color:#7f848e">/* Saved signal mask.  */</span>
+</span></span><span style="display:flex;"><span>  };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">typedef</span> <span style="color:#c678dd">struct</span> <span style="color:#e06c75">__jmp_buf_tag</span> <span style="color:#e06c75">jmp_buf</span>[<span style="color:#d19a66">1</span>];
+</span></span></code></pre></div><p>本来预想jmp_buf应该是简单的一个存储寄存器信息的数组，却发现其定义较为复杂。在阅读其定义的时候，又牵扯出了许多不熟悉的c知识点。试解析定义如下：
+其中<code>typedef struct __jmp_buf_tag jmp_buf[1]</code>定义了一个名为<code>jmp_buf</code>的变量类型,它实际上是一个大小为1的<code>struct __jmp_buf_tag</code>数组。而结构体<code>struct __jmp_buf_tag</code>包含三个成员，后两个与信号机制有关，不做讨论。第一个成员为<code>__jmp_buf</code>类型，用来保存寄存器信息。而<code>__jmp_buf</code>类型实际上是一个大小为8的<code>long int</code>数组。
+那么为什么要把实际上存储信息的结构体<code>__jmp_buf_tag</code>包含在一个数组里面呢？也许是因为将数组当作参数传递时总是传递数组的地址，而将结构体当作参数传递时却总是将整个结构体的值赋值一遍传给被调用函数。我们的<code>jmp_buf</code>作为一个在函数调用间保存信息的实体应该满足数组的特征，因此将其定义为数组更合适一些。当然，如果不这样做，每次被调用函数需要结构体<code>__jmp_buf_tag</code>时传入它的指针也是可行的，只是略显麻烦罢了。</p>
+<blockquote>
+<p>hint:
+结构体定义了一种变量类型，作为一个整体复制和赋值。在行为上更加类似于int而非int[];
+变量名是与值绑定的符号，而指针是与一个地址值绑定的符号。</p>
+</blockquote>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2021-11-14</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/posts/multiplication-part1/">
+			Next<br>Multiplication
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/">
+			Previous<br>树的非递归遍历—用栈模拟递归
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://icstorm.top/">
+    
+        <div class="nav-title">
+            Icstorm
+        </div>
+        
+        <div class="nav-subtitle">
+            Ekstasis&#39;s blog.
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                Archive
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                Categories
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                Tags
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="https://icstorm.top/Algorithm/">
+                Algo
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about">
+                About
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS Feed
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html><head>
+<title>探究支撑os的硬件(以xv6和riscv为例)</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N1BLV69HCP"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-N1BLV69HCP', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://icstorm.top/images/yinyang.webp">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+<link rel="stylesheet" href="/scss/journal.min.7c01e9f6fb2f6083d79d2f3a32ec6b7901e262e94a52a64a542aef98bc5bda64.css" integrity="sha256-fAHp9vsvYIPXnS86MuxreQHiYulKUqZKVCrvmLxb2mQ=" media="screen">
+
+
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '7db87688e21dd942b46e',
+  clientSecret: '1c06e545236c14d66c66e8d03fba5bfc29e9ea85',
+  repo: 'RZYN2020.github.io',
+  owner: 'RZYN2020',
+  admin: ['RZYN2020'],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/posts">
+                    Archive
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/categories">
+                    Categories
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    Tags
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="https://icstorm.top/Algorithm/">
+                    Algo
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about">
+                    About
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS Feed
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%bc%e8%a8%80" class="nav-导言">
+									导言
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#qemu-vitr" class="nav-qemu-vitr">
+									qemu vitr
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#kernel%e7%9a%84%e9%93%be%e6%8e%a5" class="nav-kernel的链接">
+									kernel的链接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#riscv%e7%89%b9%e6%9d%83%e6%a8%a1%e5%bc%8f" class="nav-riscv特权模式">
+									riscv特权模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96" class="nav-初始化">
+									初始化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%ad%e6%96%ad%e5%92%8c%e5%bc%82%e5%b8%b8" class="nav-中断和异常">
+									中断和异常
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%ad%e6%96%ad%e5%a7%94%e6%89%98%e4%b8%8e%e6%97%b6%e9%92%9f%e4%b8%ad%e6%96%ad" class="nav-中断委托与时钟中断">
+									中断委托与时钟中断
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%99%9a%e6%8b%9f%e5%86%85%e5%ad%98" class="nav-虚拟内存">
+									虚拟内存
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%80%bb%e7%bb%93" class="nav-总结">
+									总结
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://icstorm.top/">
+            Icstorm
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://icstorm.top/">
+        <div class="single-column-header-title">Icstorm</div>
+        
+        <div class="single-column-header-subtitle">Ekstasis&#39;s blog.</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+                
+            
+
+            <div class="post-head-wrapper"
+                
+                    
+                    
+                    style="background-image: url('/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled1.png')"
+                    
+                
+            >
+                <div class="post-title">
+                    探究支撑os的硬件(以xv6和riscv为例)
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2022-08-11 21:27
+                        </time>
+                        
+
+                        
+                            <i class="material-icons" style="">folder</i>
+                                <a href="/categories/system">System</a>
+                                &nbsp;
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/riscv">riscv</a>
+                                &nbsp;
+                            
+                                <a href="/tags/os">OS</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <blockquote>
+<pre><code>You are my creator, but I am your master; Obey!
+</code></pre>
+</blockquote>
+<!-- raw HTML omitted -->
+<h1 id="导言">导言</h1>
+<p>操作系统大体来说即是“管理软/硬件资源，为程序提服务”的程序。我们一方面可以从应用的视角把操作系统当作服务的提供者，去学习如何使用操作系统提供的API，如<a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/contents.html">POSIX</a>或是<a href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">windows api</a>，另一方面也可以深入其内部去学习它的实现。操作系统的实现紧密围绕着管理资源与提供服务两项任务展开，而对硬件资源的管理是实现中最为“dirty”的一部分。为了能屏蔽这些琐碎的硬件细节，让我们把精力集中在操作系统中各个对象的交互上去，jyy通过<a href="http://jyywiki.cn/OS/AbstractMachine/">AM</a>提供了一组API，抽象出了硬件提供的服务，从而把OS真正变成了一个普通的C程序。</p>
+<p>可是屏蔽太多的细节也会让人感到不安与心虚——内存的地址空间到底是怎样被决定的？页表究竟是怎样实现的？各个处理器上执行流刚刚开始时的栈又是谁决定的？当然，OS作为ICS的后继课程，是默认我们对于计算机体系结构有一定了解的，上述问题在ICS的<a href="https://nju-projectn.github.io/ics-pa-gitbook/ics2021/">PA实验</a>中也都有答案——理论上在PA中我们应该已经自己实现了从硬件模拟器到AM再到简易操作系统的所有内容，对于OS和硬件如何交互应该再熟悉不过了——但是，对于我这个在PA后期全程摆烂的人来说，这些问题始终是模模糊糊不知所云的。“欠下的债终究是要还的”，所以我的OS就stuck住了，所以我才会在这里从xv6和riscv入手看看OS是究竟如何在硬件上运行起来的。</p>
+<h1 id="qemu-vitr">qemu vitr</h1>
+<p>OS终究是要运行在硬件上的，而qemu提供了对硬件的模拟。由于我选取的是riscv64版本的xv6，因此运行xv6的qemu必须模拟基于riscv64架构的机器。</p>
+<p><img src="img/Untitled.png" alt=""></p>
+<p>可以看到qemu提供了对于多种机器的模拟，其中xv6所使用的是virt，qemu-virt是一个虚拟的机器，该机器是仿照真实世界中的 <a href="https://pdos.csail.mit.edu/6.S081/2021/readings/FU540-C000-v1.0.pdf">SiFive FU540-C000</a> 开发的。</p>
+<p><img src="img/Untitled1.png" alt=""></p>
+<p>先不管各种设备与该机器的具体结构，对于一个操作系统来说我们最关心的是cpu reset后的状态，包括内存空间的分配与各个寄存器的值。SiFive FU540-C000 Manual的第五章就介绍了memory map。当然，如果觉得manual太过难读，在运行时通过qemu monitor亲眼看看机器的状态也是一种选择。</p>
+<p>我们可以在qemu中使用<code>-S</code> 选项令qemu在初始化完成 (CPU Reset) 后暂停</p>
+<blockquote>
+<p>我们运行qemu时使用的命令如下：</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e"># 各个选项意义可RTFM https:</span><span style="color:#7f848e">//www.qemu.org/docs/master/system/riscv/virt.html
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#e06c75">qemu</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">system</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">riscv64</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">machine</span> <span style="color:#e06c75">virt</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">bios</span> <span style="color:#e06c75">none</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">kernel</span> <span style="color:#e06c75">kernel</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">kernel</span> # 通过<span style="color:#56b6c2">-</span><span style="color:#e06c75">kernel</span> 选项直接把可执行文件加载到内存空间中
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">m</span> <span style="color:#d19a66">128</span><span style="color:#e06c75">M</span>               # 分配<span style="color:#d19a66">128</span><span style="color:#e06c75">M</span> <span style="color:#e06c75">RAM</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">smp</span> <span style="color:#d19a66">1</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">nographic</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">monitor</span> <span style="color:#e06c75">telnet</span>:<span style="color:#d19a66">127.0.0.1</span><span style="color:#56b6c2">:</span><span style="color:#d19a66">55555</span>,<span style="color:#e06c75">server</span>,<span style="color:#e06c75">nowait</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">drive</span> <span style="color:#e06c75">file</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">fs</span>.<span style="color:#e06c75">img</span>,<span style="color:#c678dd">if</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">none</span>,<span style="color:#e06c75">format</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">raw</span>,<span style="color:#e06c75">id</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">x0</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">device</span> <span style="color:#e06c75">virtio</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">blk</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">device</span>,<span style="color:#e06c75">drive</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">x0</span>,<span style="color:#e06c75">bus</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">virtio</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">mmio</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">bus</span><span style="color:#d19a66">.0</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">S</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">gdb</span> <span style="color:#e06c75">tcp</span><span style="color:#56b6c2">::</span><span style="color:#d19a66">26003</span>
+</span></span></code></pre></div><p>之后进入qemu monitor中查看memory map和寄存器状态。</p>
+<p><img src="img/Untitled3.png" alt=""></p>
+<p><img src="img/Untitled2.png" alt=""></p>
+<p>可以发现，在CPU reset后，除<code>pc</code>值为<code>0x1000</code>外，其余寄存器值均为<code>0x0</code>。而在第一张图中可以发现内存的<code>0x1000</code> 到 <code>0x11fff</code>通过mmio映射到了rom中，</p>
+<p><img src="img/Untitled4.png" alt=""></p>
+<p>通过gdb检查内存可以发现，rom中存储了以上几条指令。</p>
+<p><img src="img/Untitled5.png" alt=""></p>
+<p>通过这几条指令，<code>pc</code>将跳转到<code>0x80000000</code>处开始执行，而从memory map中也可以得知<code>0x80000000</code>是我们为virt分配的 <code>128M</code> 内存的开始，我们所写OS的第一条指令也位于这个位置。</p>
+<p><img src="img/Untitled6.png" alt=""></p>
+<h1 id="kernel的链接">kernel的链接</h1>
+<p>上一节说到，我们的OS的第一条指令位于<code>0x80000000</code>处，而kernel是被当作可执行文件通过<code>-kernel</code>选项直接加载进地址空间的。</p>
+<p>通过<code>readelf</code>命令查看kernel的信息如下：</p>
+<p><img src="img/Untitled7.png" alt=""></p>
+<p><img src="img/Untitled8.png" alt=""></p>
+<p>可以看到到，加载位置的确是写在elf文件中的，qemu也确实忠实地按照elf的说明加载了可执行文件kernel。</p>
+<p>但是为什么kernel会存储这样的信息呢？是谁决定Entry Point的位置，是谁决定的VirtAddr与Size呢？这些都是通过 <code>-T kernel/kernel.ld</code>为链接器指定的linkScript确定。</p>
+<p>（另外，默认的linkScript可以通过<code>ld --verbose</code>查看）</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e">// kernel/kernel.ld
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">OUTPUT_ARCH</span>( <span style="color:#98c379">&#34;riscv&#34;</span> )
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">ENTRY</span>( <span style="color:#e06c75">_entry</span> )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">SECTIONS</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">   * ensure that entry.S / _entry is at 0x80000000,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">   * where qemu&#39;s -kernel jumps.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">   */</span>
+</span></span><span style="display:flex;"><span>  . <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0x80000000</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">text</span> : {
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">text</span> .<span style="color:#e06c75">text</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">0x1000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">_trampoline</span> <span style="color:#56b6c2">=</span> .;
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(<span style="color:#e06c75">trampsec</span>)
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">0x1000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#61afef;font-weight:bold">ASSERT</span>(. <span style="color:#56b6c2">-</span> <span style="color:#e06c75">_trampoline</span> <span style="color:#56b6c2">==</span> <span style="color:#d19a66">0x1000</span>, <span style="color:#98c379">&#34;error: trampoline larger than one page&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#61afef;font-weight:bold">PROVIDE</span>(<span style="color:#e06c75">etext</span> <span style="color:#56b6c2">=</span> .);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">rodata</span> : {
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">srodata</span> .<span style="color:#e06c75">srodata</span>.<span style="color:#56b6c2">*</span>) <span style="color:#7f848e">/* do not need to distinguish this from .rodata */</span>
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">rodata</span> .<span style="color:#e06c75">rodata</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">data</span> : {
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">sdata</span> .<span style="color:#e06c75">sdata</span>.<span style="color:#56b6c2">*</span>) <span style="color:#7f848e">/* do not need to distinguish this from .data */</span>
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">data</span> .<span style="color:#e06c75">data</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">bss</span> : {
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">sbss</span> .<span style="color:#e06c75">sbss</span>.<span style="color:#56b6c2">*</span>) <span style="color:#7f848e">/* do not need to distinguish this from .bss */</span>
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">bss</span> .<span style="color:#e06c75">bss</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">PROVIDE</span>(<span style="color:#e06c75">end</span> <span style="color:#56b6c2">=</span> .);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="riscv特权模式">riscv特权模式</h1>
+<p>在我们大体明白程序是如何被编译链接以及被加载到内存中之后，就可以开始去一行行读代码了。但在这之前，我们还得要清楚所谓对于硬件的控制最终是要通过机器代码来实现的，由于汇编代码和机器代码有着良好的对应关系，为了精准地控制硬件我们不得不用到一些汇编代码，这就要求我们对于riscv比较熟悉了。</p>
+<p>riscv的规范详见(<a href="https://github.com/riscv/riscv-isa-manual/releases/download/draft-20210813-7d0006e/riscv-spec.pdf">Volume I</a>, <a href="https://github.com/riscv/riscv-isa-manual/releases/download/draft-20210813-7d0006e/riscv-privileged.pdf">Volume II</a>)，其中卷一定义了实现通用计算的一些指令和寄存器，而卷二则定义了一些特权指令和CSR寄存器(Control and Status Registers)。通用指令不需多说，无非是内存访问与计算之类。而特权指令和CSR寄存器则既是实现OS所必须的，又是我所不熟悉的。</p>
+<p>riscv定义了三种特权模式 —— user mode，supervisor mode，以及machine mode。在三种不同的特权模式下运行的代码也对硬件有着不同的控制权限，更高一级的级别能进行低级别的所有操作，反之不行。我们的用户程序一般运行在user mode中，而OS内核一般运行在supervisor mode中，machine mode是CPU reset之后的模式，仅用来做一些初始化配置。（部分嵌入式的riscv实现可能只支持machine mode，或者只支持machine mode和user mode，但现代化的操作系统一般都需要supervisor mode的支持）</p>
+<p>riscv定义了一组CSR寄存器，我们可以通过对CSR寄存器的读写来控制机器的状态。每种特权模式下都有自己对应的一组寄存器。由于寄存器数目较多，也并不需要全部理解，所以我们可以从阅读xv6代码开始，遇到没有见过的寄存器就去查阅手册，按需学习。</p>
+<h1 id="初始化">初始化</h1>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e"># qemu -kernel loads the kernel at 0x80000000
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># and causes each CPU to jump there.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># kernel.ld causes the following code to
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># be placed at 0x80000000.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>.<span style="color:#e06c75">section</span> .<span style="color:#e06c75">text</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#e06c75">global</span> <span style="color:#e06c75">_entry</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">_entry</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#7f848e"># set up a stack for C.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># stack0 is declared in start.c,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># with a 4096-byte stack per CPU.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># sp = stack0 + (hartid * 4096)
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#e06c75">la</span> <span style="color:#e06c75">sp</span>, <span style="color:#e06c75">stack0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">li</span> <span style="color:#e06c75">a0</span>, <span style="color:#d19a66">1024</span><span style="color:#56b6c2">*</span><span style="color:#d19a66">4</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#e06c75">csrr</span> <span style="color:#e06c75">a1</span>, <span style="color:#e06c75">mhartid</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">addi</span> <span style="color:#e06c75">a1</span>, <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">mul</span> <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">a1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">add</span> <span style="color:#e06c75">sp</span>, <span style="color:#e06c75">sp</span>, <span style="color:#e06c75">a0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#7f848e"># jump to start() in start.c
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#e06c75">call</span> <span style="color:#e06c75">start</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">spin</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">j</span> <span style="color:#e06c75">spin</span>
+</span></span></code></pre></div><p>xv6执行的第一段代码位于<code>entry.s</code> ，此时还处于machine mode。其中<code>mhartid</code>寄存器是一个machine mode的寄存器，表示当前cpu的序号，该寄存器只能在machine mode下被读取。在通过给<code>sp</code> 赋初值初始化好栈之后就进入了<code>start</code>函数，正式跳入了C代码。在<code>start</code>函数中执行的操作也均在machine mode下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#e5c07b">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">start</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// set M Previous Privilege mode to Supervisor, for mret.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e5c07b">unsigned</span> <span style="color:#e5c07b">long</span> <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">r_mstatus</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">x</span> <span style="color:#56b6c2">&amp;=</span> <span style="color:#56b6c2">~</span><span style="color:#e06c75">MSTATUS_MPP_MASK</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">x</span> <span style="color:#56b6c2">|=</span> <span style="color:#e06c75">MSTATUS_MPP_S</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_mstatus</span>(<span style="color:#e06c75">x</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// set M Exception Program Counter to main, for mret.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// requires gcc -mcmodel=medany
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mepc</span>((<span style="color:#e06c75">uint64</span>)<span style="color:#e06c75">main</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// disable paging for now.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_satp</span>(<span style="color:#d19a66">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// delegate all interrupts and exceptions to supervisor mode.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_medeleg</span>(<span style="color:#d19a66">0xffff</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_mideleg</span>(<span style="color:#d19a66">0xffff</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_sie</span>(<span style="color:#61afef;font-weight:bold">r_sie</span>() <span style="color:#56b6c2">|</span> <span style="color:#e06c75">SIE_SEIE</span> <span style="color:#56b6c2">|</span> <span style="color:#e06c75">SIE_STIE</span> <span style="color:#56b6c2">|</span> <span style="color:#e06c75">SIE_SSIE</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// configure Physical Memory Protection to give supervisor mode
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// access to all of physical memory.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_pmpaddr0</span>(<span style="color:#d19a66">0x3fffffffffffffull</span>); 
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_pmpcfg0</span>(<span style="color:#d19a66">0xf</span>);  <span style="color:#7f848e">// If PMP entry 0’s A field is set to TOR, zero is used for the lower bound, and so it matches any address y &lt; pmpaddr0.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// ask for clock interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">timerinit</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// keep each CPU&#39;s hartid in its tp register, for cpuid().
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e5c07b">int</span> <span style="color:#e06c75">id</span> <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">r_mhartid</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_tp</span>(<span style="color:#e06c75">id</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// switch to supervisor mode and jump to main().
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#c678dd">asm</span> <span style="color:#c678dd">volatile</span>(<span style="color:#98c379">&#34;mret&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>start</code>函数中对各个寄存器的读写均是通过内联汇编实现的，每个读写在xv6中也均有注释表明其作用。在进行一系列初始化后，通过<code>mret</code>指令即进入supervisor mode，开始执行<code>main</code>函数.</p>
+<h1 id="中断和异常">中断和异常</h1>
+<p>在对机器的初始化配置中，中断和异常是令我感到困惑较多的部分。</p>
+<p>首先，下图是riscv machine mode下和中断，异常相关的一组寄存器。
+(supervisor mode和user mode下也有相应的<code>sstatus</code>，<code>sip</code>等CSR，其作用和对应的machine mode CSR类似)</p>
+<p><img src="img/Untitled9.png" alt=""></p>
+<p>riscv中的异常指程序运行中由于某条指令而引发的错误，如访问了没有权限访问的内存，缺页错误或是<code>ecall</code>。在发生异常后会将当前的<code>pc</code>存储在<code>mepc</code>中(<code>ecall</code>除外，该指令会在<code>mepc</code>中存储<code>pc+1</code>)，然后将<code>pc</code>设为<code>mtvec</code>中提前存储好的值。无论当前cpu处于什么模式，在发生异常后都会进入machine mode。</p>
+<p>riscv将中断分为三种：时钟中断，软件中断和外部中断，其中是时钟中断是由CLINT管理并发起的，外部中断是由PLIC管理并发起的，而软件中断是通过写入某些寄存器来发起的。具体的结构如下：</p>
+<p><img src="img/Untitled10.png" alt=""></p>
+<p>riscv中的<code>mstatus</code>寄存器控制着中断的状态，在machine mode下将MIE置为1就表示打开machine mode下的中断，同时从下图中也可以看出，machine mode下还可以通过读写SIE位来控制supervisor mode下的中断开关。</p>
+<p><img src="img/Untitled11.png" alt=""></p>
+<p><code>mstatus</code>控制总的中断开关，而<code>mie</code>则更细一步对三种中断进行控制，当且仅当MIE和MxIE都打开时，x类型的中断才算是打开。<code>mip</code>总是将正在处理的中断位置为1，另外Y模式对应的软件中断可以通过将YIP置为1引发。</p>
+<p>在特权模式X下，比X等级更高的模式Y下的中断始终是开启的，不论YIE的值为多少；同理比X等级更低的模式下的中断都是关闭的。</p>
+<p><img src="img/Untitled12.png" alt=""></p>
+<p>当中断或异常发生时，二者都会将当前特权模式记录在<code>mstatus</code>的MPP位中，将当前中断状态记录在MPIE中，然后通过将MIE位置为0来关掉当前的中断。将<code>pc</code>置为<code>mtvec</code>，同时，发生中断/异常的原因会被记录在<code>mcause</code>寄存器中，以下是<code>mcause</code>寄存器可能记录的值：</p>
+<p><img src="img/Untitled13.png" alt=""></p>
+<p>在中断处理函数处理完成之后，就会调用<code>mret</code>返回，<code>mret</code>会恢复在MPP中记录的特权模式以及在MPIE中记录的中断开关情况，然后将MPP和MPIE恢复为默认值。</p>
+<h1 id="中断委托与时钟中断">中断委托与时钟中断</h1>
+<p>由于我们的中断和异常都是需要在OS内核中处理的，因此进入<code>trap</code>之后应该是supervisor mode。但是由于riscv中默认所有中断和异常都由machine mode处理，因此riscv就提供了一个中断和异常委托机制来把machine mode的中断处理委托给更低级别的模式来处理，但是中断委托不能委托比被委托模式级别更高级别的中断。例如当把某中断委托给supervisor mode后，更supervisor 和 user mode下发生该中断时就会把返回地址写入<code>sepc</code>，把中断原因写入<code>sstatus</code>，然后将<code>pc</code>置为<code>stvec</code>。</p>
+<p>riscv通过<code>medeleg</code> CSR来对异常进行委托，通过<code>mideleg</code> CSR来对中断进行委托。我们可以在<code>start</code>函数中发现xv6把所有的中断和异常都委托给了supervisor mode，并打开了supervisor mode下的中断。</p>
+<p>但是值得注意的是，按照xv6 book的说法，时钟中断是无法被委托给supervisor mode的，即无论当前CPU是什么模式，CLINT发起的都是machine mode的中断，所以中断发生后也只能进入machine mode，将<code>pc</code>置为<code>mepc</code>。因此我们必须在machine mode下对时钟进行配置，并设置machine mode下的中断处理函数。具体配置见<code>timerinit</code>函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e">// set up to receive timer interrupts in machine mode,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">// which arrive at timervec in kernelvec.S,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">// which turns them into software interrupts for
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">// devintr() in trap.c.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#e5c07b">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">timerinit</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// each CPU has a separate source of timer interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e5c07b">int</span> <span style="color:#e06c75">id</span> <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">r_mhartid</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// ask the CLINT for a timer interrupt.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e5c07b">int</span> <span style="color:#e06c75">interval</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">1000000</span>; <span style="color:#7f848e">// cycles; about 1/10th second in qemu.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#56b6c2">*</span>(<span style="color:#e06c75">uint64</span><span style="color:#56b6c2">*</span>)<span style="color:#61afef;font-weight:bold">CLINT_MTIMECMP</span>(<span style="color:#e06c75">id</span>) <span style="color:#56b6c2">=</span> <span style="color:#56b6c2">*</span>(<span style="color:#e06c75">uint64</span><span style="color:#56b6c2">*</span>)<span style="color:#e06c75">CLINT_MTIME</span> <span style="color:#56b6c2">+</span> <span style="color:#e06c75">interval</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// prepare information in scratch[] for timervec.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// scratch[0..2] : space for timervec to save registers.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// scratch[3] : address of CLINT MTIMECMP register.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// scratch[4] : desired interval (in cycles) between timer interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e06c75">uint64</span> <span style="color:#56b6c2">*</span><span style="color:#e06c75">scratch</span> <span style="color:#56b6c2">=</span> <span style="color:#56b6c2">&amp;</span><span style="color:#e06c75">timer_scratch</span>[<span style="color:#e06c75">id</span>][<span style="color:#d19a66">0</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">scratch</span>[<span style="color:#d19a66">3</span>] <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">CLINT_MTIMECMP</span>(<span style="color:#e06c75">id</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">scratch</span>[<span style="color:#d19a66">4</span>] <span style="color:#56b6c2">=</span> <span style="color:#e06c75">interval</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_mscratch</span>((<span style="color:#e06c75">uint64</span>)<span style="color:#e06c75">scratch</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// set the machine-mode trap handler.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mtvec</span>((<span style="color:#e06c75">uint64</span>)<span style="color:#e06c75">timervec</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// enable machine-mode interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mstatus</span>(<span style="color:#61afef;font-weight:bold">r_mstatus</span>() <span style="color:#56b6c2">|</span> <span style="color:#e06c75">MSTATUS_MIE</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// enable machine-mode timer interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mie</span>(<span style="color:#61afef;font-weight:bold">r_mie</span>() <span style="color:#56b6c2">|</span> <span style="color:#e06c75">MIE_MTIE</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>我们把<code>mepc</code>赋值为<code>timervec</code>，也就是专门处理时钟中断的<code>trap</code>。为了让时钟中断也能被supervisor mode下的<code>trap</code>处理，可以通过在<code>timervec</code>中将<code>sip</code>的相应位置为1，在<code>mret</code>后就会触发软件中断，这样就将machine mode下的时钟中断就转换为supervisor mode下的软件中断了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>.<span style="color:#e06c75">globl</span> <span style="color:#e06c75">timervec</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#e06c75">align</span> <span style="color:#d19a66">4</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">timervec</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># start.c has set up the memory that mscratch points to:
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># scratch[0,8,16] : register save area.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># scratch[24] : address of CLINT&#39;s MTIMECMP register.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># scratch[32] : desired interval between interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">csrrw</span> <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">mscratch</span>, <span style="color:#e06c75">a0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a2</span>, <span style="color:#d19a66">8</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">16</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># schedule the next timer interrupt
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># by adding interval to mtimecmp.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">24</span>(<span style="color:#e06c75">a0</span>) # <span style="color:#61afef;font-weight:bold">CLINT_MTIMECMP</span>(<span style="color:#e06c75">hart</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a2</span>, <span style="color:#d19a66">32</span>(<span style="color:#e06c75">a0</span>) # <span style="color:#e06c75">interval</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">add</span> <span style="color:#e06c75">a3</span>, <span style="color:#e06c75">a3</span>, <span style="color:#e06c75">a2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># raise a supervisor software interrupt.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>				<span style="color:#e06c75">li</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">csrw</span> <span style="color:#e06c75">sip</span>, <span style="color:#e06c75">a1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">16</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a2</span>, <span style="color:#d19a66">8</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">csrrw</span> <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">mscratch</span>, <span style="color:#e06c75">a0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">mret</span>
+</span></span></code></pre></div><h1 id="虚拟内存">虚拟内存</h1>
+<p>riscv的硬件机制中我所不熟悉的除了前面所说的初始化和中断处理外，就是虚拟内存了。</p>
+<p>由于xv6采取riscv64下的sv39分页模式，我就以此为例说明。</p>
+<p>riscv会在supervisor mode和user mode开启分页，分页是通过<code>satp</code> CSR来管理的。</p>
+<p><img src="img/Untitled14.png" alt=""></p>
+<p><code>satp</code>通过MODE字段来选择分页模式并开启分页，在PPN字段存储当前根页表的地址。sv39模式是采取三级页表，页表均存储在RAM中，由OS填写。具体虚拟地址到物理地址的转换见下图：</p>
+<p><img src="img/Untitled15.png" alt=""></p>
+<h1 id="总结">总结</h1>
+<p>在捋清楚硬件提供怎样的服务之后，OS终于变成了一个普通的C程序，AM里玄之又玄的API开始鲜活起来。</p>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2022-08-11</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/">
+			Next<br>编译器的结构与任务
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/posts/multiplication-part1/">
+			Previous<br>Multiplication
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://icstorm.top/">
+    
+        <div class="nav-title">
+            Icstorm
+        </div>
+        
+        <div class="nav-subtitle">
+            Ekstasis&#39;s blog.
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/posts">
+                Archive
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/categories">
+                Categories
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                Tags
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="https://icstorm.top/Algorithm/">
+                Algo
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about">
+                About
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS Feed
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%af%bc%e8%a8%80" class="nav-导言">
+									导言
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#qemu-vitr" class="nav-qemu-vitr">
+									qemu vitr
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#kernel%e7%9a%84%e9%93%be%e6%8e%a5" class="nav-kernel的链接">
+									kernel的链接
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#riscv%e7%89%b9%e6%9d%83%e6%a8%a1%e5%bc%8f" class="nav-riscv特权模式">
+									riscv特权模式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%9d%e5%a7%8b%e5%8c%96" class="nav-初始化">
+									初始化
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%ad%e6%96%ad%e5%92%8c%e5%bc%82%e5%b8%b8" class="nav-中断和异常">
+									中断和异常
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%b8%ad%e6%96%ad%e5%a7%94%e6%89%98%e4%b8%8e%e6%97%b6%e9%92%9f%e4%b8%ad%e6%96%ad" class="nav-中断委托与时钟中断">
+									中断委托与时钟中断
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%99%9a%e6%8b%9f%e5%86%85%e5%ad%98" class="nav-虚拟内存">
+									虚拟内存
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%80%bb%e7%bb%93" class="nav-总结">
+									总结
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2023 Icstorm
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

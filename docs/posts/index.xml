@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Icstorm</title>
+    <link>http://icstorm.top/posts/</link>
+    <description>Recent content in Posts on Icstorm</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 30 Mar 2023 20:36:48 +0000</lastBuildDate><atom:link href="http://icstorm.top/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
+      <link>http://icstorm.top/posts/scheme%E6%8B%BE%E9%81%97/</link>
+      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/scheme%E6%8B%BE%E9%81%97/</guid>
+      <description>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary
+之前在 Twitter 上听 Robert Nystrom 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。
+在大一时曾读过部分 SICP，对 Scheme 有一点点认知。但对于其很多高级特性还不是很熟悉，尤其是 continuation 和 macro。于是在动写解释器前，打算先熟悉一下 Scheme 的特性。
+S-Expression 1960年，John McCarthy 在函数式编程的开山之作 Recursive Functions of Symbolic Expressions and Their Computation by Machine 中提出了 LSIP 语言，这也是 Scheme 的前身。LISP 语言最初也是为了支持人工智能系统 Advice Taker 而创造的(可惜 Advice Taker 代表的符号主义 AI 研究方法在当前的 AI 浪潮中似乎不见了身影)，其目的在于提供一种操作 expression 的功能以使得 Advice Taker 能在其上推理。</description>
+    </item>
+    
+    <item>
+      <title>Autoboxing and IntegerCache in Java</title>
+      <link>http://icstorm.top/posts/autoboxing-and-integercache-in-java/</link>
+      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/autoboxing-and-integercache-in-java/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    
+    <item>
+      <title>编译器的结构与任务</title>
+      <link>http://icstorm.top/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
+      <pubDate>Mon, 06 Mar 2023 11:52:38 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Surely all this is not without meaning.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    
+    <item>
+      <title>探究支撑os的硬件(以xv6和riscv为例)</title>
+      <link>http://icstorm.top/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</link>
+      <pubDate>Thu, 11 Aug 2022 21:27:52 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</guid>
+      <description>&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;You are my creator, but I am your master; Obey!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    
+    <item>
+      <title>Multiplication</title>
+      <link>http://icstorm.top/posts/multiplication-part1/</link>
+      <pubDate>Sun, 20 Mar 2022 20:41:38 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/multiplication-part1/</guid>
+      <description>凡治众如治寡，分数是也；斗众如斗寡，形名是也。
+Multiplication 本篇博客内容大多都来自Jeff的算法书籍，因书籍内容充实和有趣，读之后又怕忘记，因此摘抄复述自己感觉有趣内容，并适时加以扩展。
+Intro 在算术中，乘法是最基本的运算。数学往往只关心抽象的一般的东西，它只把数字看作数字本身，只把乘法看作为一种定义在数上的满足某种特定性质的运算，但是为了让数字能真正为我们所用，我们还必须定义数字实际上的表示方法，以及在一种表示方法下对数字进行运算的方法(比如乘法)——按照这种方法，任意给定两个数，我们都能得出其运算结果(乘积)。这样一种确定性的方法就可以称作一种算法。
+通俗意义上的算法即是指一系列明晰确定的指令(步骤)的序列，它描述了一个问题的可行解决方案。注意到组成算法的是一系列明晰确定的指令，我们把这些指令叫做原子指令，所谓原子就是指这些指令是最简单的，不可再分的指令了。如果要使算法是真正可行的，我们还必须确保原子指令是可行的。如果有一个算法，描述了如何成为富翁。而这个算法的一个原子指令是“先定一个小目标，我先挣它一个亿！”，那么这个算法对于我来说是显然是不可行的了😂。
+首先，如果数的表示方法为十进制整数，而个位数相乘或者相加都为原子指令的话，竖式计算法当然就是一种最好不过的算法了。
+其次，如果把数字定位为线段的长度，原子指令定为基本的尺规作图步骤的话，一种乘法的算法就是如下这样。
+当然，我们也需要有一些评价这些算法的指标以便在解决同一问题的不同算法间取舍。最重要的指标当然是算法正确性了，另外，算法执行的快慢也是一个很重要的指标，它可以用一个算法从开始到结束所执行的原子指令条数来衡量。由于计算指令条数的精确数目较为繁琐且意义不大，时间复杂度也就随之而出了。
+在计算n位数×n位数时，在使用十进制数字表示和竖式算法时，时间复杂度为$O(n^2)$，因为第一个数的每一个数字都要和第二个数的每一个数字相乘；使用几何模型和上图所述算法时，由于只需要有限个步骤，算法时间复杂度就是$O(1)$了。
+考虑到无论我们实际日常使用还是计算机表示，使用X进制表示法都是最常见的，把个位数的×和＋都作为原子指令也是最自然的，我们的研究对象也就主要集中在这种计算模型上了。那么问题来了，计算乘法的算法多种多样，有没有一种算法能以低于$O(n^2)$的时间复杂度来计算乘法呢？
+SplitMultiply 分而治之的思想在算法上的应用往往能得很好的效果。比如说利用了分治法的Quick-Sort, Merge-Sort都能得到很好的时间复杂度。相应的，也许分治的思想也能在乘法中起到作用。
+很显然，$(10^ma + b)(10^mc + d) = 10^{2m}ac + 10^m(bc + ad) + bd$，按照这个分解，就有了如下的分治算法：
+这个算法的正确性显而易见，但是要计算这样的递归算法的时间复杂度就较为困难了。不过，其用时的递推式却很容易写出来，即$T(n)=4T(n/2)+O(n)$，而要根据这个递推式求出$T(n)$的渐进式，递归树法能给我们很多Insight。
+将全部项求和，很容易得出时间复杂度任然为$O(n^2)$。
+但是，为什么Quick-Sort, Merge-Sort都可以成功降低复杂度呢？这可以从二者用时的递推式中看出了:$T(n)=2T(n/2)+O(n)$。
+再考虑递归树中的耗时大概分为两大部分，一部分是每次递归时的耗时，一部分是所有叶节点对应的最小子情况的耗时。假设递推式为$T(n)=aT(n/b)+f(n)$，不妨设当$n$为1时到达子节点，树高为H，叶节点数为L，则有$n/b^H=1 \implies H=log_bn,L=b^H=a^{log_bn}=n^{log_ba}$,因此，叶节点对应的项的代价为为$\Theta(n^{log_ba})$,而内部节点对应的代价为$\Sigma_{j=0}^{log_bn-1}a^jf(n/b^j)$，因此，整个递归过程的用时就由这两项决定。由这两项的相对大小就可以得到整个过程的渐进复杂度。在对这两项进行分析之后，就得到了主定理，之后就可以以此为出发点分析算法的时间复杂度了。
+SplitMultiply算法符合情况一，也就是由于SplitMultiply算法的递归过程中每层节点扩展得太快，导致叶节点完全占据了主导地位，因此复杂度完全由叶节点决定；而两个分治的排序算法都符合情况二，即每层节点代价的总和差不多相同，因此最终时间复杂度为$\Theta(nlogn)$。
+FastMultiply SplitMultiply的失败之处在于每层节点扩展得太快，即$log_ba$太大，因此有没有一种适用于乘法的分治算法使得$log_ba$较小呢？事实上，Karatsuba就把a从4降到了3，从而使得乘法的时间复杂度由$n^2$降至$n^{log_23}=n^{1.58496……}$。
+Karatsuba的想法主要来源于他发现，上面的分解式中$bc+ad$是一个整体，如能一次就把这个整体算出来，就能只调用三个递归子过程。考虑到$ac+ab-(a-c)(c-d)=bc+ad$，我们只需要额外计算一个$(a-c)(c-d)$即可获得中间的$bc+ad$的值。（注意到$a \times 10^m$的复杂度实际上为$O(n)$）
+具体算法如下：
+Karatsuba在发现这个算法时还是一个23岁的学生。1950年代，苏联数学家Kolmogorov举办了一个研讨会，提出“任何n*n的乘法算法都不可能在$n^2$的时间复杂度以下”，可是在一周之后，Karatsuba就发现了这个算法。</description>
+    </item>
+    
+    <item>
+      <title>浅析jmp_buf的定义</title>
+      <link>http://icstorm.top/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</link>
+      <pubDate>Sun, 14 Nov 2021 09:23:52 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</guid>
+      <description>&lt;p&gt;&lt;code&gt;int setjmp(jmp_buf env)&lt;/code&gt;
+&lt;code&gt;void longjmp(jmp_buf env, int val)&lt;/code&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>树的非递归遍历—用栈模拟递归</title>
+      <link>http://icstorm.top/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</link>
+      <pubDate>Tue, 09 Nov 2021 18:02:23 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</guid>
+      <description>&lt;p&gt;由于树本身定义的递归性，置于树上的操作往往也是递归性的的。
+在某些语言中，递归是自然的，最基本的语言要素(比如说scheme)，然而在另外一些语言中，递归却不是最基本的要素。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>浅谈java8中的流</title>
+      <link>http://icstorm.top/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
+      
+      <guid>http://icstorm.top/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+      <description>万物皆流，无物常驻
+java8中的流 导引 过程的抽象 流(stream)是在java8中出现的一种新的数据抽象，它对数据的处理有着较大的简化作用。
+流的概念可能最早来自于列表(List)，列表可以理解为按顺序排列的一组对象(数组和链表都是其具体实现)。
+大多数程序的最外在特征是给定一个输入后，按照某种规则得出相应的输出。编写由输入到输出的规则就是programmer所做的事情了。许多程序的规则都可以被抽象为三部分:
+根据输入产生一组数据 对第一步产生的数据组进行处理 对处理过后的数据约简而得到最终的输出 当然，最后约简的操作也可以算作数据处理的一部分。但由于它是最后一步操作，所以往往将它独立出来。
+这种抽象可以类比为国家选拔人才的机制。
+随着形式的变化，国家向大学提出了向H部门输送X专业的高级人才的要求。(这相当于用户输入) 大学招收了一群X专业的本科新生。(产生了一组数据) 大学对这些新生进行专业教育，淘汰掉挂科的学生。(处理数据) 毕业之时，将成绩优异的学生推荐给H部门。(约简得到输出) 也许正因为这种对过程的抽象方式天然地存在于人的大脑结构之中(是某种先验的思维模式)，我们才会很自然地将无论是社会还是计算机中的许多过程都按照这种方式进行抽象。
+从List到Stream 程序的三部分抽象中有两个关键部分:一是如何表示数据，二是如何处理数据。
+对于数据的表示，我们很自然地会想到使用List这样的计算机能支持的最简单数据集合来表示。
+对于数据的处理方式，我们抽象出了许多种类，比如说:
+map: 对于List中的每一项数据都进行某种操作
+filter: 删除List中某些不需要的元素
+count: 得到List中总的元素数目
+有些处理方式(比如说count)，对List操作之后得到的并不是List，不再能连续地进行下一步操作，所以只能作为最后一步约简地处理方式。
+然而用一般计算机语言中的List表示数据组，却有以下两种缺点:
+一，不能表示无限数据组 二，每次处理都必须对每个元素都进行处理，造成了资源的浪费。(但实际上我们的程序可能只需要处理前几个数据就可以得出结果了) 因此，出现了一种新的数据抽象，流(stream)。流的主要特征即是惰性求值。而惰性求值很好地避免了以上两个问题。所谓惰性求值，即需要的时候再进行求值。
+比方说我们的数据组是一串5个白色乒乓球。要对这些乒乓球进行如下处理，首先是染蓝色颜料，其次染黄色颜料，最后我们要拿到第二个染色后的乒乓球。按照List的处理逻辑，我们要先把所有的球染成蓝色，然后将所有的球染成黄色，最后再取出第二个球。但是按照stream的处理逻辑，我们首先知道了要把球 染成蓝色，但我们先记住这个命令，却不实际操作。然后记住要染黄色的命令，也不实际操作。在最后一步，我们要拿出第二个染色后的球。这时候我们再依次对这些球进行处理。先处理完第一个球，然后处理第二个球，这时直接拿出第二个球即可， 而不需要对剩余球进行染色。
+此处笔者自感表达不清，关于stream的解释详见SICP3.5。
+stream API 由于stream的强大抽象能力，java8中新引入了stream API。java8中的stream即是上述概念模型的一种实现，并无特殊性。其主要操作自然也是分为stream的构造，处理以及约简三部分。下面三部分将分别记录常用的API。
+构造 由collection或Array转化 Collection:
+default Stream&amp;lt;E&amp;gt; stream()
+Array:
+public static &amp;lt;T&amp;gt; Stream&amp;lt;T&amp;gt; stream(T[] array)
+public static &amp;lt;T&amp;gt; Stream&amp;lt;T&amp;gt; stream(T[] array, int startInclusive, int endExclusive)
+public static IntStream stream(int[] array)
+public static IntStream stream(int[] array, int startInclusive, int endExclusive)</description>
+    </item>
+    
+  </channel>
+</rss>

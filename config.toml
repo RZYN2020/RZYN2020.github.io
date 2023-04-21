@@ -1,0 +1,60 @@
+baseURL = 'http://icstorm.top/'
+languageCode = 'zh-cn'
+title = 'Icstorm'
+theme = 'diary'
+publishDir = 'docs'
+googleAnalytics = "G-N1BLV69HCP"
+
+[markup]
+[markup.highlight]
+codeFences = true
+guessSyntax = true
+hl_Lines = ""
+lineNoStart = 1
+lineNos = false
+lineNumbersInTable = true
+noClasses = true
+style = "onedark"
+tabWidth = 4
+
+[params]
+subtitle = "Ekstasis's blog."
+enableGitalk = true
+enableGiscus = false
+favicon = "images/yinyang.webp"
+
+[params.gitalk]
+owner = "RZYN2020"
+repo = "RZYN2020.github.io"
+client_id = "7db87688e21dd942b46e"
+client_secret = "1c06e545236c14d66c66e8d03fba5bfc29e9ea85"
+
+[taxonomies]
+tag = "tags"
+category = "categories"
+
+
+[[menu.main]]
+url = "/categories"
+name = "Categories"
+weight = 2
+[[menu.main]]
+url = "/tags"
+name = "Tags"
+weight = 3
+[[menu.main]]
+url = "/posts"
+name = "Archive"
+weight = 1
+[[menu.main]]
+url = "https://icstorm.top/Algorithm/"
+name = "Algo"
+weight = 4
+[[menu.main]]
+url = "/about"
+name = "About"
+weight = 5
+[[menu.main]]
+url = "/index.xml"
+name = "RSS Feed"
+weight = 6
