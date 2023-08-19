@@ -12,12 +12,8 @@ hidden: true
 
 
 + Contacts
-  + [Github](https://github.com/RZYN2020) (~~有点空旷~~)
-  + [Email](mailto:zhaoyzzz@outlook.com) (欢迎来扰)
-  + [Twitter](https://twitter.com/zhao_yongzhen)   (吐槽，~~黄油日记~~)
-  + [VNDB](https://vndb.org/u227585)   (~~黄油日记~~)
-  + [MAL](https://myanimelist.net/profile/yuki960)   (追番记录)
-  + [ノート](https://note.com/ekstasis)   (到这儿练练日语)
+  + [Github](https://github.com/RZYN2020) 
+  + [Email](mailto:zhaoyzzz@outlook.com) 
 
 ---
 
