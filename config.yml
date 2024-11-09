@@ -3,7 +3,6 @@ pagination.pagerSize: "Ekstasis's blog"
 paginate: 5
 theme: [PaperMod]
 ignoreLogs: ['warning-goldmark-raw-html']
-publishDir: "docs"
 
 markup:
   highlight:
