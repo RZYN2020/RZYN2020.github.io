@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Scheme on </title>
+    <link>https://rzyn2020.github.io/tags/scheme/</link>
+    <description>Recent content in Scheme on </description>
+    <generator>Hugo -- 0.138.0</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 30 Mar 2023 20:36:48 +0000</lastBuildDate>
+    <atom:link href="https://rzyn2020.github.io/tags/scheme/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
+      <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
+      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+&lt;p&gt;之前在 Twitter 上听 &lt;a href=&#34;https://twitter.com/intent/user?screen_name=munificentbob&#34;&gt;Robert Nystrom&lt;/a&gt; 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。&lt;/p&gt;
+&lt;p&gt;在大一时曾读过部分 SICP，对 Scheme 有一点点认知。但对于其很多高级特性还不是很熟悉，尤其是 continuation 和 macro。于是在动写解释器前，打算先熟悉一下 Scheme 的特性。&lt;/p&gt;
+&lt;h1 id=&#34;s-expression&#34;&gt;S-Expression&lt;/h1&gt;
+&lt;p&gt;1960年，John McCarthy 在函数式编程的开山之作 &lt;a href=&#34;http://www-formal.stanford.edu/jmc/recursive.pdf&#34;&gt;Recursive Functions of Symbolic Expressions and Their Computation by Machine&lt;/a&gt; 中提出了 LSIP 语言，这也是 Scheme 的前身。LISP 语言最初也是为了支持人工智能系统 Advice Taker 而创造的(可惜 Advice Taker 代表的符号主义 AI 研究方法在当前的 AI 浪潮中似乎不见了身影)，其目的在于提供一种操作 expression 的功能以使得 Advice Taker 能在其上推理。&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

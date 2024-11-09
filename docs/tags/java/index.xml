@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Java on </title>
+    <link>https://rzyn2020.github.io/tags/java/</link>
+    <description>Recent content in Java on </description>
+    <generator>Hugo -- 0.138.0</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 07 Mar 2023 14:49:32 +0000</lastBuildDate>
+    <atom:link href="https://rzyn2020.github.io/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Autoboxing and IntegerCache in Java</title>
+      <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
+      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p style=&#34;text-align: right&#34;&gt;—— Umberto Eco, *The Mysterious Flame of Queen Loana*&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>树的非递归遍历—用栈模拟递归</title>
+      <link>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</link>
+      <pubDate>Tue, 09 Nov 2021 18:02:23 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</guid>
+      <description>&lt;p&gt;由于树本身定义的递归性，置于树上的操作往往也是递归性的的。
+在某些语言中，递归是自然的，最基本的语言要素(比如说scheme)，然而在另外一些语言中，递归却不是最基本的要素。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>浅谈java8中的流</title>
+      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;!-- more --&gt;
+&lt;h1 id=&#34;java8中的流&#34;&gt;java8中的流&lt;/h1&gt;
+&lt;h2 id=&#34;导引&#34;&gt;导引&lt;/h2&gt;
+&lt;h3 id=&#34;过程的抽象&#34;&gt;过程的抽象&lt;/h3&gt;
+&lt;p&gt;流(stream)是在java8中出现的一种新的数据抽象，它对数据的处理有着较大的简化作用。&lt;/p&gt;
+&lt;p&gt;流的概念可能最早来自于列表(List)，列表可以理解为按顺序排列的一组对象(数组和链表都是其具体实现)。&lt;/p&gt;
+&lt;p&gt;大多数程序的最外在特征是给定一个输入后，按照某种规则得出相应的输出。编写由输入到输出的规则就是programmer所做的事情了。许多程序的规则都可以被抽象为三部分:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;根据输入产生一组数据&lt;/li&gt;
+&lt;li&gt;对第一步产生的数据组进行处理&lt;/li&gt;
+&lt;li&gt;对处理过后的数据约简而得到最终的输出&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当然，最后约简的操作也可以算作数据处理的一部分。但由于它是最后一步操作，所以往往将它独立出来。&lt;/p&gt;
+&lt;p&gt;这种抽象可以类比为国家选拔人才的机制。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;随着形式的变化，国家向大学提出了向H部门输送X专业的高级人才的要求。(这相当于用户输入)&lt;/li&gt;
+&lt;li&gt;大学招收了一群X专业的本科新生。(产生了一组数据)&lt;/li&gt;
+&lt;li&gt;大学对这些新生进行专业教育，淘汰掉挂科的学生。(处理数据)&lt;/li&gt;
+&lt;li&gt;毕业之时，将成绩优异的学生推荐给H部门。(约简得到输出)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;也许正因为这种对过程的抽象方式天然地存在于人的大脑结构之中(是某种先验的思维模式)，我们才会很自然地将无论是社会还是计算机中的许多过程都按照这种方式进行抽象。&lt;/p&gt;
+&lt;h3 id=&#34;从list到stream&#34;&gt;从List到Stream&lt;/h3&gt;
+&lt;p&gt;程序的三部分抽象中有两个关键部分:一是如何表示数据，二是如何处理数据。&lt;/p&gt;
+&lt;p&gt;对于数据的表示，我们很自然地会想到使用List这样的计算机能支持的最简单数据集合来表示。&lt;/p&gt;
+&lt;p&gt;对于数据的处理方式，我们抽象出了许多种类，比如说:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;map: 对于List中的每一项数据都进行某种操作&lt;/p&gt;
+&lt;p&gt;filter: 删除List中某些不需要的元素&lt;/p&gt;
+&lt;p&gt;count: 得到List中总的元素数目&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;有些处理方式(比如说count)，对List操作之后得到的并不是List，不再能连续地进行下一步操作，所以只能作为最后一步约简地处理方式。&lt;/p&gt;
+&lt;p&gt;然而用一般计算机语言中的List表示数据组，却有以下两种缺点:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一，不能表示无限数据组&lt;/li&gt;
+&lt;li&gt;二，每次处理都必须对每个元素都进行处理，造成了资源的浪费。(但实际上我们的程序可能只需要处理前几个数据就可以得出结果了)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此，出现了一种新的数据抽象，流(stream)。流的主要特征即是惰性求值。而惰性求值很好地避免了以上两个问题。所谓惰性求值，即需要的时候再进行求值。&lt;/p&gt;
+&lt;p&gt;比方说我们的数据组是一串5个白色乒乓球。要对这些乒乓球进行如下处理，首先是染蓝色颜料，其次染黄色颜料，最后我们要拿到第二个染色后的乒乓球。按照List的处理逻辑，我们要先把所有的球染成蓝色，然后将所有的球染成黄色，最后再取出第二个球。但是按照stream的处理逻辑，我们首先知道了要把球
+染成蓝色，但我们先记住这个命令，却不实际操作。然后记住要染黄色的命令，也不实际操作。在最后一步，我们要拿出第二个染色后的球。这时候我们再依次对这些球进行处理。先处理完第一个球，然后处理第二个球，这时直接拿出第二个球即可，
+而不需要对剩余球进行染色。&lt;/p&gt;
+&lt;p&gt;此处笔者自感表达不清，关于stream的解释详见&lt;a href=&#34;https://sarabander.github.io/sicp/html/3_002e5.xhtml#g_t3_002e5&#34;&gt;SICP3.5&lt;/a&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;stream-api&#34;&gt;stream API&lt;/h3&gt;
+&lt;p&gt;由于stream的强大抽象能力，java8中新引入了stream API。java8中的stream即是上述概念模型的一种实现，并无特殊性。其主要操作自然也是分为stream的构造，处理以及约简三部分。下面三部分将分别记录常用的API。&lt;/p&gt;
+&lt;h2 id=&#34;构造&#34;&gt;构造&lt;/h2&gt;
+&lt;h3 id=&#34;由collection或array转化&#34;&gt;由collection或Array转化&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Collection:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;default Stream&amp;lt;E&amp;gt; stream()&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Array:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;public static &amp;lt;T&amp;gt; Stream&amp;lt;T&amp;gt; stream(T[] array)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;public static &amp;lt;T&amp;gt; Stream&amp;lt;T&amp;gt; stream(T[] array, int startInclusive, int endExclusive)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;public static IntStream stream(int[] array)&lt;/code&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

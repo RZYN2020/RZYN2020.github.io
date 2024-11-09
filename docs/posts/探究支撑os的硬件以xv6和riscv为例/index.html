@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>探究支撑os的硬件(以xv6和riscv为例) | </title>
+<meta name="keywords" content="riscv, OS">
+<meta name="description" content="
+You are my creator, but I am your master; Obey!
+
+
+—— Mary Shelley, Frankenstein">
+<meta name="author" content="">
+<link rel="canonical" href="https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css" integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY&#43;IJWZFnspCg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://rzyn2020.github.io/images/yinyang.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="https://rzyn2020.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://rzyn2020.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://rzyn2020.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://rzyn2020.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="探究支撑os的硬件(以xv6和riscv为例)">
+<meta property="og:description" content="
+You are my creator, but I am your master; Obey!
+
+
+—— Mary Shelley, Frankenstein">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/"><meta property="article:section" content="posts">
+<meta property="article:published_time" content="2022-08-11T21:27:52+00:00">
+<meta property="article:modified_time" content="2022-08-11T21:27:52+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="探究支撑os的硬件(以xv6和riscv为例)">
+<meta name="twitter:description" content="
+You are my creator, but I am your master; Obey!
+
+
+—— Mary Shelley, Frankenstein">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://rzyn2020.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "探究支撑os的硬件(以xv6和riscv为例)",
+      "item": "https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "探究支撑os的硬件(以xv6和riscv为例)",
+  "name": "探究支撑os的硬件(以xv6和riscv为例)",
+  "description": " You are my creator, but I am your master; Obey!\r—— Mary Shelley, Frankenstein\n",
+  "keywords": [
+    "riscv", "OS"
+  ],
+  "articleBody": " You are my creator, but I am your master; Obey!\r—— Mary Shelley, Frankenstein\n导言 操作系统大体来说即是“管理软/硬件资源，为程序提服务”的程序。我们一方面可以从应用的视角把操作系统当作服务的提供者，去学习如何使用操作系统提供的API，如POSIX或是windows api，另一方面也可以深入其内部去学习它的实现。操作系统的实现紧密围绕着管理资源与提供服务两项任务展开，而对硬件资源的管理是实现中最为“dirty”的一部分。为了能屏蔽这些琐碎的硬件细节，让我们把精力集中在操作系统中各个对象的交互上去，jyy通过AM提供了一组API，抽象出了硬件提供的服务，从而把OS真正变成了一个普通的C程序。\n可是屏蔽太多的细节也会让人感到不安与心虚——内存的地址空间到底是怎样被决定的？页表究竟是怎样实现的？各个处理器上执行流刚刚开始时的栈又是谁决定的？当然，OS作为ICS的后继课程，是默认我们对于计算机体系结构有一定了解的，上述问题在ICS的PA实验中也都有答案——理论上在PA中我们应该已经自己实现了从硬件模拟器到AM再到简易操作系统的所有内容，对于OS和硬件如何交互应该再熟悉不过了——但是，对于我这个在PA后期全程摆烂的人来说，这些问题始终是模模糊糊不知所云的。“欠下的债终究是要还的”，所以我的OS就stuck住了，所以我才会在这里从xv6和riscv入手看看OS是究竟如何在硬件上运行起来的。\nqemu vitr OS终究是要运行在硬件上的，而qemu提供了对硬件的模拟。由于我选取的是riscv64版本的xv6，因此运行xv6的qemu必须模拟基于riscv64架构的机器。\n可以看到qemu提供了对于多种机器的模拟，其中xv6所使用的是virt，qemu-virt是一个虚拟的机器，该机器是仿照真实世界中的 SiFive FU540-C000 开发的。\n先不管各种设备与该机器的具体结构，对于一个操作系统来说我们最关心的是cpu reset后的状态，包括内存空间的分配与各个寄存器的值。SiFive FU540-C000 Manual的第五章就介绍了memory map。当然，如果觉得manual太过难读，在运行时通过qemu monitor亲眼看看机器的状态也是一种选择。\n我们可以在qemu中使用-S 选项令qemu在初始化完成 (CPU Reset) 后暂停\n我们运行qemu时使用的命令如下：\n# 各个选项意义可RTFM https://www.qemu.org/docs/master/system/riscv/virt.html qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel # 通过-kernel 选项直接把可执行文件加载到内存空间中 -m 128M # 分配128M RAM -smp 1 -nographic -monitor telnet:127.0.0.1:55555,server,nowait -drive file=fs.img,if=none,format=raw,id=x0 -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0 -S -gdb tcp::26003 之后进入qemu monitor中查看memory map和寄存器状态。\n可以发现，在CPU reset后，除pc值为0x1000外，其余寄存器值均为0x0。而在第一张图中可以发现内存的0x1000 到 0x11fff通过mmio映射到了rom中，\n通过gdb检查内存可以发现，rom中存储了以上几条指令。\n通过这几条指令，pc将跳转到0x80000000处开始执行，而从memory map中也可以得知0x80000000是我们为virt分配的 128M 内存的开始，我们所写OS的第一条指令也位于这个位置。\nkernel的链接 上一节说到，我们的OS的第一条指令位于0x80000000处，而kernel是被当作可执行文件通过-kernel选项直接加载进地址空间的。\n通过readelf命令查看kernel的信息如下：\n可以看到到，加载位置的确是写在elf文件中的，qemu也确实忠实地按照elf的说明加载了可执行文件kernel。\n但是为什么kernel会存储这样的信息呢？是谁决定Entry Point的位置，是谁决定的VirtAddr与Size呢？这些都是通过 -T kernel/kernel.ld为链接器指定的linkScript确定。\n（另外，默认的linkScript可以通过ld --verbose查看）\n// kernel/kernel.ld OUTPUT_ARCH( \"riscv\" ) ENTRY( _entry ) SECTIONS { /* * ensure that entry.S / _entry is at 0x80000000, * where qemu's -kernel jumps. */ . = 0x80000000; .text : { *(.text .text.*) . = ALIGN(0x1000); _trampoline = .; *(trampsec) . = ALIGN(0x1000); ASSERT(. - _trampoline == 0x1000, \"error: trampoline larger than one page\"); PROVIDE(etext = .); } .rodata : { . = ALIGN(16); *(.srodata .srodata.*) /* do not need to distinguish this from .rodata */ . = ALIGN(16); *(.rodata .rodata.*) } .data : { . = ALIGN(16); *(.sdata .sdata.*) /* do not need to distinguish this from .data */ . = ALIGN(16); *(.data .data.*) } .bss : { . = ALIGN(16); *(.sbss .sbss.*) /* do not need to distinguish this from .bss */ . = ALIGN(16); *(.bss .bss.*) } PROVIDE(end = .); } riscv特权模式 在我们大体明白程序是如何被编译链接以及被加载到内存中之后，就可以开始去一行行读代码了。但在这之前，我们还得要清楚所谓对于硬件的控制最终是要通过机器代码来实现的，由于汇编代码和机器代码有着良好的对应关系，为了精准地控制硬件我们不得不用到一些汇编代码，这就要求我们对于riscv比较熟悉了。\nriscv的规范详见(Volume I, Volume II)，其中卷一定义了实现通用计算的一些指令和寄存器，而卷二则定义了一些特权指令和CSR寄存器(Control and Status Registers)。通用指令不需多说，无非是内存访问与计算之类。而特权指令和CSR寄存器则既是实现OS所必须的，又是我所不熟悉的。\nriscv定义了三种特权模式 —— user mode，supervisor mode，以及machine mode。在三种不同的特权模式下运行的代码也对硬件有着不同的控制权限，更高一级的级别能进行低级别的所有操作，反之不行。我们的用户程序一般运行在user mode中，而OS内核一般运行在supervisor mode中，machine mode是CPU reset之后的模式，仅用来做一些初始化配置。（部分嵌入式的riscv实现可能只支持machine mode，或者只支持machine mode和user mode，但现代化的操作系统一般都需要supervisor mode的支持）\nriscv定义了一组CSR寄存器，我们可以通过对CSR寄存器的读写来控制机器的状态。每种特权模式下都有自己对应的一组寄存器。由于寄存器数目较多，也并不需要全部理解，所以我们可以从阅读xv6代码开始，遇到没有见过的寄存器就去查阅手册，按需学习。\n初始化 # qemu -kernel loads the kernel at 0x80000000 # and causes each CPU to jump there. # kernel.ld causes the following code to # be placed at 0x80000000. .section .text .global _entry _entry: # set up a stack for C. # stack0 is declared in start.c, # with a 4096-byte stack per CPU. # sp = stack0 + (hartid * 4096) la sp, stack0 li a0, 1024*4 csrr a1, mhartid addi a1, a1, 1 mul a0, a0, a1 add sp, sp, a0 # jump to start() in start.c call start spin: j spin xv6执行的第一段代码位于entry.s ，此时还处于machine mode。其中mhartid寄存器是一个machine mode的寄存器，表示当前cpu的序号，该寄存器只能在machine mode下被读取。在通过给sp 赋初值初始化好栈之后就进入了start函数，正式跳入了C代码。在start函数中执行的操作也均在machine mode下。\nvoid start() { // set M Previous Privilege mode to Supervisor, for mret. unsigned long x = r_mstatus(); x \u0026= ~MSTATUS_MPP_MASK; x |= MSTATUS_MPP_S; w_mstatus(x); // set M Exception Program Counter to main, for mret. // requires gcc -mcmodel=medany w_mepc((uint64)main); // disable paging for now. w_satp(0); // delegate all interrupts and exceptions to supervisor mode. w_medeleg(0xffff); w_mideleg(0xffff); w_sie(r_sie() | SIE_SEIE | SIE_STIE | SIE_SSIE); // configure Physical Memory Protection to give supervisor mode // access to all of physical memory. w_pmpaddr0(0x3fffffffffffffull); w_pmpcfg0(0xf); // If PMP entry 0’s A field is set to TOR, zero is used for the lower bound, and so it matches any address y \u003c pmpaddr0. // ask for clock interrupts. timerinit(); // keep each CPU's hartid in its tp register, for cpuid(). int id = r_mhartid(); w_tp(id); // switch to supervisor mode and jump to main(). asm volatile(\"mret\"); } start函数中对各个寄存器的读写均是通过内联汇编实现的，每个读写在xv6中也均有注释表明其作用。在进行一系列初始化后，通过mret指令即进入supervisor mode，开始执行main函数.\n中断和异常 在对机器的初始化配置中，中断和异常是令我感到困惑较多的部分。\n首先，下图是riscv machine mode下和中断，异常相关的一组寄存器。 (supervisor mode和user mode下也有相应的sstatus，sip等CSR，其作用和对应的machine mode CSR类似)\nriscv中的异常指程序运行中由于某条指令而引发的错误，如访问了没有权限访问的内存，缺页错误或是ecall。在发生异常后会将当前的pc存储在mepc中(ecall除外，该指令会在mepc中存储pc+1)，然后将pc设为mtvec中提前存储好的值。无论当前cpu处于什么模式，在发生异常后都会进入machine mode。\nriscv将中断分为三种：时钟中断，软件中断和外部中断，其中是时钟中断是由CLINT管理并发起的，外部中断是由PLIC管理并发起的，而软件中断是通过写入某些寄存器来发起的。具体的结构如下：\nriscv中的mstatus寄存器控制着中断的状态，在machine mode下将MIE置为1就表示打开machine mode下的中断，同时从下图中也可以看出，machine mode下还可以通过读写SIE位来控制supervisor mode下的中断开关。\nmstatus控制总的中断开关，而mie则更细一步对三种中断进行控制，当且仅当MIE和MxIE都打开时，x类型的中断才算是打开。mip总是将正在处理的中断位置为1，另外Y模式对应的软件中断可以通过将YIP置为1引发。\n在特权模式X下，比X等级更高的模式Y下的中断始终是开启的，不论YIE的值为多少；同理比X等级更低的模式下的中断都是关闭的。\n当中断或异常发生时，二者都会将当前特权模式记录在mstatus的MPP位中，将当前中断状态记录在MPIE中，然后通过将MIE位置为0来关掉当前的中断。将pc置为mtvec，同时，发生中断/异常的原因会被记录在mcause寄存器中，以下是mcause寄存器可能记录的值：\n在中断处理函数处理完成之后，就会调用mret返回，mret会恢复在MPP中记录的特权模式以及在MPIE中记录的中断开关情况，然后将MPP和MPIE恢复为默认值。\n中断委托与时钟中断 由于我们的中断和异常都是需要在OS内核中处理的，因此进入trap之后应该是supervisor mode。但是由于riscv中默认所有中断和异常都由machine mode处理，因此riscv就提供了一个中断和异常委托机制来把machine mode的中断处理委托给更低级别的模式来处理，但是中断委托不能委托比被委托模式级别更高级别的中断。例如当把某中断委托给supervisor mode后，更supervisor 和 user mode下发生该中断时就会把返回地址写入sepc，把中断原因写入sstatus，然后将pc置为stvec。\nriscv通过medeleg CSR来对异常进行委托，通过mideleg CSR来对中断进行委托。我们可以在start函数中发现xv6把所有的中断和异常都委托给了supervisor mode，并打开了supervisor mode下的中断。\n但是值得注意的是，按照xv6 book的说法，时钟中断是无法被委托给supervisor mode的，即无论当前CPU是什么模式，CLINT发起的都是machine mode的中断，所以中断发生后也只能进入machine mode，将pc置为mepc。因此我们必须在machine mode下对时钟进行配置，并设置machine mode下的中断处理函数。具体配置见timerinit函数：\n// set up to receive timer interrupts in machine mode, // which arrive at timervec in kernelvec.S, // which turns them into software interrupts for // devintr() in trap.c. void timerinit() { // each CPU has a separate source of timer interrupts. int id = r_mhartid(); // ask the CLINT for a timer interrupt. int interval = 1000000; // cycles; about 1/10th second in qemu. *(uint64*)CLINT_MTIMECMP(id) = *(uint64*)CLINT_MTIME + interval; // prepare information in scratch[] for timervec. // scratch[0..2] : space for timervec to save registers. // scratch[3] : address of CLINT MTIMECMP register. // scratch[4] : desired interval (in cycles) between timer interrupts. uint64 *scratch = \u0026timer_scratch[id][0]; scratch[3] = CLINT_MTIMECMP(id); scratch[4] = interval; w_mscratch((uint64)scratch); // set the machine-mode trap handler. w_mtvec((uint64)timervec); // enable machine-mode interrupts. w_mstatus(r_mstatus() | MSTATUS_MIE); // enable machine-mode timer interrupts. w_mie(r_mie() | MIE_MTIE); } 我们把mepc赋值为timervec，也就是专门处理时钟中断的trap。为了让时钟中断也能被supervisor mode下的trap处理，可以通过在timervec中将sip的相应位置为1，在mret后就会触发软件中断，这样就将machine mode下的时钟中断就转换为supervisor mode下的软件中断了。\n.globl timervec .align 4 timervec: # start.c has set up the memory that mscratch points to: # scratch[0,8,16] : register save area. # scratch[24] : address of CLINT's MTIMECMP register. # scratch[32] : desired interval between interrupts. csrrw a0, mscratch, a0 sd a1, 0(a0) sd a2, 8(a0) sd a3, 16(a0) # schedule the next timer interrupt # by adding interval to mtimecmp. ld a1, 24(a0) # CLINT_MTIMECMP(hart) ld a2, 32(a0) # interval ld a3, 0(a1) add a3, a3, a2 sd a3, 0(a1) # raise a supervisor software interrupt. li a1, 2 csrw sip, a1 ld a3, 16(a0) ld a2, 8(a0) ld a1, 0(a0) csrrw a0, mscratch, a0 mret 虚拟内存 riscv的硬件机制中我所不熟悉的除了前面所说的初始化和中断处理外，就是虚拟内存了。\n由于xv6采取riscv64下的sv39分页模式，我就以此为例说明。\nriscv会在supervisor mode和user mode开启分页，分页是通过satp CSR来管理的。\nsatp通过MODE字段来选择分页模式并开启分页，在PPN字段存储当前根页表的地址。sv39模式是采取三级页表，页表均存储在RAM中，由OS填写。具体虚拟地址到物理地址的转换见下图：\n总结 在捋清楚硬件提供怎样的服务之后，OS终于变成了一个普通的C程序，AM里玄之又玄的API开始鲜活起来。\n",
+  "wordCount" : "797",
+  "inLanguage": "en",
+  "datePublished": "2022-08-11T21:27:52Z",
+  "dateModified": "2022-08-11T21:27:52Z",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://rzyn2020.github.io/images/yinyang.webp"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://rzyn2020.github.io/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://rzyn2020.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://rzyn2020.github.io/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      探究支撑os的硬件(以xv6和riscv为例)
+    </h1>
+    <div class="post-meta"><span title='2022-08-11 21:27:52 +0000 UTC'>August 11, 2022</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e5%af%bc%e8%a8%80" aria-label="导言">导言</a></li>
+                <li>
+                    <a href="#qemu-vitr" aria-label="qemu vitr">qemu vitr</a></li>
+                <li>
+                    <a href="#kernel%e7%9a%84%e9%93%be%e6%8e%a5" aria-label="kernel的链接">kernel的链接</a></li>
+                <li>
+                    <a href="#riscv%e7%89%b9%e6%9d%83%e6%a8%a1%e5%bc%8f" aria-label="riscv特权模式">riscv特权模式</a></li>
+                <li>
+                    <a href="#%e5%88%9d%e5%a7%8b%e5%8c%96" aria-label="初始化">初始化</a></li>
+                <li>
+                    <a href="#%e4%b8%ad%e6%96%ad%e5%92%8c%e5%bc%82%e5%b8%b8" aria-label="中断和异常">中断和异常</a></li>
+                <li>
+                    <a href="#%e4%b8%ad%e6%96%ad%e5%a7%94%e6%89%98%e4%b8%8e%e6%97%b6%e9%92%9f%e4%b8%ad%e6%96%ad" aria-label="中断委托与时钟中断">中断委托与时钟中断</a></li>
+                <li>
+                    <a href="#%e8%99%9a%e6%8b%9f%e5%86%85%e5%ad%98" aria-label="虚拟内存">虚拟内存</a></li>
+                <li>
+                    <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><blockquote>
+<pre><code>You are my creator, but I am your master; Obey!
+</code></pre>
+</blockquote>
+<p style="text-align: right">—— Mary Shelley, Frankenstein</p>
+<h1 id="导言">导言<a hidden class="anchor" aria-hidden="true" href="#导言">#</a></h1>
+<p>操作系统大体来说即是“管理软/硬件资源，为程序提服务”的程序。我们一方面可以从应用的视角把操作系统当作服务的提供者，去学习如何使用操作系统提供的API，如<a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/contents.html">POSIX</a>或是<a href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">windows api</a>，另一方面也可以深入其内部去学习它的实现。操作系统的实现紧密围绕着管理资源与提供服务两项任务展开，而对硬件资源的管理是实现中最为“dirty”的一部分。为了能屏蔽这些琐碎的硬件细节，让我们把精力集中在操作系统中各个对象的交互上去，jyy通过<a href="http://jyywiki.cn/OS/AbstractMachine/">AM</a>提供了一组API，抽象出了硬件提供的服务，从而把OS真正变成了一个普通的C程序。</p>
+<p>可是屏蔽太多的细节也会让人感到不安与心虚——内存的地址空间到底是怎样被决定的？页表究竟是怎样实现的？各个处理器上执行流刚刚开始时的栈又是谁决定的？当然，OS作为ICS的后继课程，是默认我们对于计算机体系结构有一定了解的，上述问题在ICS的<a href="https://nju-projectn.github.io/ics-pa-gitbook/ics2021/">PA实验</a>中也都有答案——理论上在PA中我们应该已经自己实现了从硬件模拟器到AM再到简易操作系统的所有内容，对于OS和硬件如何交互应该再熟悉不过了——但是，对于我这个在PA后期全程摆烂的人来说，这些问题始终是模模糊糊不知所云的。“欠下的债终究是要还的”，所以我的OS就stuck住了，所以我才会在这里从xv6和riscv入手看看OS是究竟如何在硬件上运行起来的。</p>
+<h1 id="qemu-vitr">qemu vitr<a hidden class="anchor" aria-hidden="true" href="#qemu-vitr">#</a></h1>
+<p>OS终究是要运行在硬件上的，而qemu提供了对硬件的模拟。由于我选取的是riscv64版本的xv6，因此运行xv6的qemu必须模拟基于riscv64架构的机器。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled.png"></p>
+<p>可以看到qemu提供了对于多种机器的模拟，其中xv6所使用的是virt，qemu-virt是一个虚拟的机器，该机器是仿照真实世界中的 <a href="https://pdos.csail.mit.edu/6.S081/2021/readings/FU540-C000-v1.0.pdf">SiFive FU540-C000</a> 开发的。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled1.png"></p>
+<p>先不管各种设备与该机器的具体结构，对于一个操作系统来说我们最关心的是cpu reset后的状态，包括内存空间的分配与各个寄存器的值。SiFive FU540-C000 Manual的第五章就介绍了memory map。当然，如果觉得manual太过难读，在运行时通过qemu monitor亲眼看看机器的状态也是一种选择。</p>
+<p>我们可以在qemu中使用<code>-S</code> 选项令qemu在初始化完成 (CPU Reset) 后暂停</p>
+<blockquote>
+<p>我们运行qemu时使用的命令如下：</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e"># 各个选项意义可RTFM https:</span><span style="color:#7f848e">//www.qemu.org/docs/master/system/riscv/virt.html
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#e06c75">qemu</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">system</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">riscv64</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">machine</span> <span style="color:#e06c75">virt</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">bios</span> <span style="color:#e06c75">none</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">kernel</span> <span style="color:#e06c75">kernel</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">kernel</span> # 通过<span style="color:#56b6c2">-</span><span style="color:#e06c75">kernel</span> 选项直接把可执行文件加载到内存空间中
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">m</span> <span style="color:#d19a66">128</span><span style="color:#e06c75">M</span>               # 分配<span style="color:#d19a66">128</span><span style="color:#e06c75">M</span> <span style="color:#e06c75">RAM</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">smp</span> <span style="color:#d19a66">1</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">nographic</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">monitor</span> <span style="color:#e06c75">telnet</span>:<span style="color:#d19a66">127.0.0.1</span><span style="color:#56b6c2">:</span><span style="color:#d19a66">55555</span>,<span style="color:#e06c75">server</span>,<span style="color:#e06c75">nowait</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">drive</span> <span style="color:#e06c75">file</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">fs</span>.<span style="color:#e06c75">img</span>,<span style="color:#c678dd">if</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">none</span>,<span style="color:#e06c75">format</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">raw</span>,<span style="color:#e06c75">id</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">x0</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">device</span> <span style="color:#e06c75">virtio</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">blk</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">device</span>,<span style="color:#e06c75">drive</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">x0</span>,<span style="color:#e06c75">bus</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">virtio</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">mmio</span><span style="color:#56b6c2">-</span><span style="color:#e06c75">bus</span><span style="color:#d19a66">.0</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">S</span> 
+</span></span><span style="display:flex;"><span>	<span style="color:#56b6c2">-</span><span style="color:#e06c75">gdb</span> <span style="color:#e06c75">tcp</span><span style="color:#56b6c2">::</span><span style="color:#d19a66">26003</span>
+</span></span></code></pre></div><p>之后进入qemu monitor中查看memory map和寄存器状态。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled3.png"></p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled2.png"></p>
+<p>可以发现，在CPU reset后，除<code>pc</code>值为<code>0x1000</code>外，其余寄存器值均为<code>0x0</code>。而在第一张图中可以发现内存的<code>0x1000</code> 到 <code>0x11fff</code>通过mmio映射到了rom中，</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled4.png"></p>
+<p>通过gdb检查内存可以发现，rom中存储了以上几条指令。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled5.png"></p>
+<p>通过这几条指令，<code>pc</code>将跳转到<code>0x80000000</code>处开始执行，而从memory map中也可以得知<code>0x80000000</code>是我们为virt分配的 <code>128M</code> 内存的开始，我们所写OS的第一条指令也位于这个位置。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled6.png"></p>
+<h1 id="kernel的链接">kernel的链接<a hidden class="anchor" aria-hidden="true" href="#kernel的链接">#</a></h1>
+<p>上一节说到，我们的OS的第一条指令位于<code>0x80000000</code>处，而kernel是被当作可执行文件通过<code>-kernel</code>选项直接加载进地址空间的。</p>
+<p>通过<code>readelf</code>命令查看kernel的信息如下：</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled7.png"></p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled8.png"></p>
+<p>可以看到到，加载位置的确是写在elf文件中的，qemu也确实忠实地按照elf的说明加载了可执行文件kernel。</p>
+<p>但是为什么kernel会存储这样的信息呢？是谁决定Entry Point的位置，是谁决定的VirtAddr与Size呢？这些都是通过 <code>-T kernel/kernel.ld</code>为链接器指定的linkScript确定。</p>
+<p>（另外，默认的linkScript可以通过<code>ld --verbose</code>查看）</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e">// kernel/kernel.ld
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">OUTPUT_ARCH</span>( <span style="color:#98c379">&#34;riscv&#34;</span> )
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">ENTRY</span>( <span style="color:#e06c75">_entry</span> )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">SECTIONS</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">   * ensure that entry.S / _entry is at 0x80000000,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">   * where qemu&#39;s -kernel jumps.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">   */</span>
+</span></span><span style="display:flex;"><span>  . <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0x80000000</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">text</span> : {
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">text</span> .<span style="color:#e06c75">text</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">0x1000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">_trampoline</span> <span style="color:#56b6c2">=</span> .;
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(<span style="color:#e06c75">trampsec</span>)
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">0x1000</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#61afef;font-weight:bold">ASSERT</span>(. <span style="color:#56b6c2">-</span> <span style="color:#e06c75">_trampoline</span> <span style="color:#56b6c2">==</span> <span style="color:#d19a66">0x1000</span>, <span style="color:#98c379">&#34;error: trampoline larger than one page&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#61afef;font-weight:bold">PROVIDE</span>(<span style="color:#e06c75">etext</span> <span style="color:#56b6c2">=</span> .);
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">rodata</span> : {
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">srodata</span> .<span style="color:#e06c75">srodata</span>.<span style="color:#56b6c2">*</span>) <span style="color:#7f848e">/* do not need to distinguish this from .rodata */</span>
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">rodata</span> .<span style="color:#e06c75">rodata</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">data</span> : {
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">sdata</span> .<span style="color:#e06c75">sdata</span>.<span style="color:#56b6c2">*</span>) <span style="color:#7f848e">/* do not need to distinguish this from .data */</span>
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">data</span> .<span style="color:#e06c75">data</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  .<span style="color:#e06c75">bss</span> : {
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">sbss</span> .<span style="color:#e06c75">sbss</span>.<span style="color:#56b6c2">*</span>) <span style="color:#7f848e">/* do not need to distinguish this from .bss */</span>
+</span></span><span style="display:flex;"><span>    . <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">ALIGN</span>(<span style="color:#d19a66">16</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#56b6c2">*</span>(.<span style="color:#e06c75">bss</span> .<span style="color:#e06c75">bss</span>.<span style="color:#56b6c2">*</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">PROVIDE</span>(<span style="color:#e06c75">end</span> <span style="color:#56b6c2">=</span> .);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h1 id="riscv特权模式">riscv特权模式<a hidden class="anchor" aria-hidden="true" href="#riscv特权模式">#</a></h1>
+<p>在我们大体明白程序是如何被编译链接以及被加载到内存中之后，就可以开始去一行行读代码了。但在这之前，我们还得要清楚所谓对于硬件的控制最终是要通过机器代码来实现的，由于汇编代码和机器代码有着良好的对应关系，为了精准地控制硬件我们不得不用到一些汇编代码，这就要求我们对于riscv比较熟悉了。</p>
+<p>riscv的规范详见(<a href="https://github.com/riscv/riscv-isa-manual/releases/download/draft-20210813-7d0006e/riscv-spec.pdf">Volume I</a>, <a href="https://github.com/riscv/riscv-isa-manual/releases/download/draft-20210813-7d0006e/riscv-privileged.pdf">Volume II</a>)，其中卷一定义了实现通用计算的一些指令和寄存器，而卷二则定义了一些特权指令和CSR寄存器(Control and Status Registers)。通用指令不需多说，无非是内存访问与计算之类。而特权指令和CSR寄存器则既是实现OS所必须的，又是我所不熟悉的。</p>
+<p>riscv定义了三种特权模式 —— user mode，supervisor mode，以及machine mode。在三种不同的特权模式下运行的代码也对硬件有着不同的控制权限，更高一级的级别能进行低级别的所有操作，反之不行。我们的用户程序一般运行在user mode中，而OS内核一般运行在supervisor mode中，machine mode是CPU reset之后的模式，仅用来做一些初始化配置。（部分嵌入式的riscv实现可能只支持machine mode，或者只支持machine mode和user mode，但现代化的操作系统一般都需要supervisor mode的支持）</p>
+<p>riscv定义了一组CSR寄存器，我们可以通过对CSR寄存器的读写来控制机器的状态。每种特权模式下都有自己对应的一组寄存器。由于寄存器数目较多，也并不需要全部理解，所以我们可以从阅读xv6代码开始，遇到没有见过的寄存器就去查阅手册，按需学习。</p>
+<h1 id="初始化">初始化<a hidden class="anchor" aria-hidden="true" href="#初始化">#</a></h1>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e"># qemu -kernel loads the kernel at 0x80000000
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># and causes each CPU to jump there.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># kernel.ld causes the following code to
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># be placed at 0x80000000.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>.<span style="color:#e06c75">section</span> .<span style="color:#e06c75">text</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#e06c75">global</span> <span style="color:#e06c75">_entry</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">_entry</span>:
+</span></span><span style="display:flex;"><span>	<span style="color:#7f848e"># set up a stack for C.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># stack0 is declared in start.c,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># with a 4096-byte stack per CPU.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># sp = stack0 + (hartid * 4096)
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#e06c75">la</span> <span style="color:#e06c75">sp</span>, <span style="color:#e06c75">stack0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">li</span> <span style="color:#e06c75">a0</span>, <span style="color:#d19a66">1024</span><span style="color:#56b6c2">*</span><span style="color:#d19a66">4</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#e06c75">csrr</span> <span style="color:#e06c75">a1</span>, <span style="color:#e06c75">mhartid</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">addi</span> <span style="color:#e06c75">a1</span>, <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">mul</span> <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">a1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">add</span> <span style="color:#e06c75">sp</span>, <span style="color:#e06c75">sp</span>, <span style="color:#e06c75">a0</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#7f848e"># jump to start() in start.c
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#e06c75">call</span> <span style="color:#e06c75">start</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">spin</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">j</span> <span style="color:#e06c75">spin</span>
+</span></span></code></pre></div><p>xv6执行的第一段代码位于<code>entry.s</code> ，此时还处于machine mode。其中<code>mhartid</code>寄存器是一个machine mode的寄存器，表示当前cpu的序号，该寄存器只能在machine mode下被读取。在通过给<code>sp</code> 赋初值初始化好栈之后就进入了<code>start</code>函数，正式跳入了C代码。在<code>start</code>函数中执行的操作也均在machine mode下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#e5c07b">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">start</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// set M Previous Privilege mode to Supervisor, for mret.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e5c07b">unsigned</span> <span style="color:#e5c07b">long</span> <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">r_mstatus</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">x</span> <span style="color:#56b6c2">&amp;=</span> <span style="color:#56b6c2">~</span><span style="color:#e06c75">MSTATUS_MPP_MASK</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">x</span> <span style="color:#56b6c2">|=</span> <span style="color:#e06c75">MSTATUS_MPP_S</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_mstatus</span>(<span style="color:#e06c75">x</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// set M Exception Program Counter to main, for mret.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// requires gcc -mcmodel=medany
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mepc</span>((<span style="color:#e06c75">uint64</span>)<span style="color:#e06c75">main</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// disable paging for now.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_satp</span>(<span style="color:#d19a66">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// delegate all interrupts and exceptions to supervisor mode.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_medeleg</span>(<span style="color:#d19a66">0xffff</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_mideleg</span>(<span style="color:#d19a66">0xffff</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_sie</span>(<span style="color:#61afef;font-weight:bold">r_sie</span>() <span style="color:#56b6c2">|</span> <span style="color:#e06c75">SIE_SEIE</span> <span style="color:#56b6c2">|</span> <span style="color:#e06c75">SIE_STIE</span> <span style="color:#56b6c2">|</span> <span style="color:#e06c75">SIE_SSIE</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// configure Physical Memory Protection to give supervisor mode
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// access to all of physical memory.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_pmpaddr0</span>(<span style="color:#d19a66">0x3fffffffffffffull</span>); 
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_pmpcfg0</span>(<span style="color:#d19a66">0xf</span>);  <span style="color:#7f848e">// If PMP entry 0’s A field is set to TOR, zero is used for the lower bound, and so it matches any address y &lt; pmpaddr0.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// ask for clock interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">timerinit</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// keep each CPU&#39;s hartid in its tp register, for cpuid().
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e5c07b">int</span> <span style="color:#e06c75">id</span> <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">r_mhartid</span>();
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_tp</span>(<span style="color:#e06c75">id</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// switch to supervisor mode and jump to main().
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#c678dd">asm</span> <span style="color:#c678dd">volatile</span>(<span style="color:#98c379">&#34;mret&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>start</code>函数中对各个寄存器的读写均是通过内联汇编实现的，每个读写在xv6中也均有注释表明其作用。在进行一系列初始化后，通过<code>mret</code>指令即进入supervisor mode，开始执行<code>main</code>函数.</p>
+<h1 id="中断和异常">中断和异常<a hidden class="anchor" aria-hidden="true" href="#中断和异常">#</a></h1>
+<p>在对机器的初始化配置中，中断和异常是令我感到困惑较多的部分。</p>
+<p>首先，下图是riscv machine mode下和中断，异常相关的一组寄存器。
+(supervisor mode和user mode下也有相应的<code>sstatus</code>，<code>sip</code>等CSR，其作用和对应的machine mode CSR类似)</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled9.png"></p>
+<p>riscv中的异常指程序运行中由于某条指令而引发的错误，如访问了没有权限访问的内存，缺页错误或是<code>ecall</code>。在发生异常后会将当前的<code>pc</code>存储在<code>mepc</code>中(<code>ecall</code>除外，该指令会在<code>mepc</code>中存储<code>pc+1</code>)，然后将<code>pc</code>设为<code>mtvec</code>中提前存储好的值。无论当前cpu处于什么模式，在发生异常后都会进入machine mode。</p>
+<p>riscv将中断分为三种：时钟中断，软件中断和外部中断，其中是时钟中断是由CLINT管理并发起的，外部中断是由PLIC管理并发起的，而软件中断是通过写入某些寄存器来发起的。具体的结构如下：</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled10.png"></p>
+<p>riscv中的<code>mstatus</code>寄存器控制着中断的状态，在machine mode下将MIE置为1就表示打开machine mode下的中断，同时从下图中也可以看出，machine mode下还可以通过读写SIE位来控制supervisor mode下的中断开关。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled11.png"></p>
+<p><code>mstatus</code>控制总的中断开关，而<code>mie</code>则更细一步对三种中断进行控制，当且仅当MIE和MxIE都打开时，x类型的中断才算是打开。<code>mip</code>总是将正在处理的中断位置为1，另外Y模式对应的软件中断可以通过将YIP置为1引发。</p>
+<p>在特权模式X下，比X等级更高的模式Y下的中断始终是开启的，不论YIE的值为多少；同理比X等级更低的模式下的中断都是关闭的。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled12.png"></p>
+<p>当中断或异常发生时，二者都会将当前特权模式记录在<code>mstatus</code>的MPP位中，将当前中断状态记录在MPIE中，然后通过将MIE位置为0来关掉当前的中断。将<code>pc</code>置为<code>mtvec</code>，同时，发生中断/异常的原因会被记录在<code>mcause</code>寄存器中，以下是<code>mcause</code>寄存器可能记录的值：</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled13.png"></p>
+<p>在中断处理函数处理完成之后，就会调用<code>mret</code>返回，<code>mret</code>会恢复在MPP中记录的特权模式以及在MPIE中记录的中断开关情况，然后将MPP和MPIE恢复为默认值。</p>
+<h1 id="中断委托与时钟中断">中断委托与时钟中断<a hidden class="anchor" aria-hidden="true" href="#中断委托与时钟中断">#</a></h1>
+<p>由于我们的中断和异常都是需要在OS内核中处理的，因此进入<code>trap</code>之后应该是supervisor mode。但是由于riscv中默认所有中断和异常都由machine mode处理，因此riscv就提供了一个中断和异常委托机制来把machine mode的中断处理委托给更低级别的模式来处理，但是中断委托不能委托比被委托模式级别更高级别的中断。例如当把某中断委托给supervisor mode后，更supervisor 和 user mode下发生该中断时就会把返回地址写入<code>sepc</code>，把中断原因写入<code>sstatus</code>，然后将<code>pc</code>置为<code>stvec</code>。</p>
+<p>riscv通过<code>medeleg</code> CSR来对异常进行委托，通过<code>mideleg</code> CSR来对中断进行委托。我们可以在<code>start</code>函数中发现xv6把所有的中断和异常都委托给了supervisor mode，并打开了supervisor mode下的中断。</p>
+<p>但是值得注意的是，按照xv6 book的说法，时钟中断是无法被委托给supervisor mode的，即无论当前CPU是什么模式，CLINT发起的都是machine mode的中断，所以中断发生后也只能进入machine mode，将<code>pc</code>置为<code>mepc</code>。因此我们必须在machine mode下对时钟进行配置，并设置machine mode下的中断处理函数。具体配置见<code>timerinit</code>函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#7f848e">// set up to receive timer interrupts in machine mode,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">// which arrive at timervec in kernelvec.S,
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">// which turns them into software interrupts for
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">// devintr() in trap.c.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span><span style="color:#e5c07b">void</span>
+</span></span><span style="display:flex;"><span><span style="color:#61afef;font-weight:bold">timerinit</span>()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// each CPU has a separate source of timer interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e5c07b">int</span> <span style="color:#e06c75">id</span> <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">r_mhartid</span>();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// ask the CLINT for a timer interrupt.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e5c07b">int</span> <span style="color:#e06c75">interval</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">1000000</span>; <span style="color:#7f848e">// cycles; about 1/10th second in qemu.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#56b6c2">*</span>(<span style="color:#e06c75">uint64</span><span style="color:#56b6c2">*</span>)<span style="color:#61afef;font-weight:bold">CLINT_MTIMECMP</span>(<span style="color:#e06c75">id</span>) <span style="color:#56b6c2">=</span> <span style="color:#56b6c2">*</span>(<span style="color:#e06c75">uint64</span><span style="color:#56b6c2">*</span>)<span style="color:#e06c75">CLINT_MTIME</span> <span style="color:#56b6c2">+</span> <span style="color:#e06c75">interval</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// prepare information in scratch[] for timervec.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// scratch[0..2] : space for timervec to save registers.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// scratch[3] : address of CLINT MTIMECMP register.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#7f848e">// scratch[4] : desired interval (in cycles) between timer interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#e06c75">uint64</span> <span style="color:#56b6c2">*</span><span style="color:#e06c75">scratch</span> <span style="color:#56b6c2">=</span> <span style="color:#56b6c2">&amp;</span><span style="color:#e06c75">timer_scratch</span>[<span style="color:#e06c75">id</span>][<span style="color:#d19a66">0</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">scratch</span>[<span style="color:#d19a66">3</span>] <span style="color:#56b6c2">=</span> <span style="color:#61afef;font-weight:bold">CLINT_MTIMECMP</span>(<span style="color:#e06c75">id</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">scratch</span>[<span style="color:#d19a66">4</span>] <span style="color:#56b6c2">=</span> <span style="color:#e06c75">interval</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#61afef;font-weight:bold">w_mscratch</span>((<span style="color:#e06c75">uint64</span>)<span style="color:#e06c75">scratch</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// set the machine-mode trap handler.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mtvec</span>((<span style="color:#e06c75">uint64</span>)<span style="color:#e06c75">timervec</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// enable machine-mode interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mstatus</span>(<span style="color:#61afef;font-weight:bold">r_mstatus</span>() <span style="color:#56b6c2">|</span> <span style="color:#e06c75">MSTATUS_MIE</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#7f848e">// enable machine-mode timer interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>  <span style="color:#61afef;font-weight:bold">w_mie</span>(<span style="color:#61afef;font-weight:bold">r_mie</span>() <span style="color:#56b6c2">|</span> <span style="color:#e06c75">MIE_MTIE</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>我们把<code>mepc</code>赋值为<code>timervec</code>，也就是专门处理时钟中断的<code>trap</code>。为了让时钟中断也能被supervisor mode下的<code>trap</code>处理，可以通过在<code>timervec</code>中将<code>sip</code>的相应位置为1，在<code>mret</code>后就会触发软件中断，这样就将machine mode下的时钟中断就转换为supervisor mode下的软件中断了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>.<span style="color:#e06c75">globl</span> <span style="color:#e06c75">timervec</span>
+</span></span><span style="display:flex;"><span>.<span style="color:#e06c75">align</span> <span style="color:#d19a66">4</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">timervec</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># start.c has set up the memory that mscratch points to:
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># scratch[0,8,16] : register save area.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># scratch[24] : address of CLINT&#39;s MTIMECMP register.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># scratch[32] : desired interval between interrupts.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">csrrw</span> <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">mscratch</span>, <span style="color:#e06c75">a0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a2</span>, <span style="color:#d19a66">8</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">16</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># schedule the next timer interrupt
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#7f848e"># by adding interval to mtimecmp.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">24</span>(<span style="color:#e06c75">a0</span>) # <span style="color:#61afef;font-weight:bold">CLINT_MTIMECMP</span>(<span style="color:#e06c75">hart</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a2</span>, <span style="color:#d19a66">32</span>(<span style="color:#e06c75">a0</span>) # <span style="color:#e06c75">interval</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">add</span> <span style="color:#e06c75">a3</span>, <span style="color:#e06c75">a3</span>, <span style="color:#e06c75">a2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">sd</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># raise a supervisor software interrupt.
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>				<span style="color:#e06c75">li</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">2</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">csrw</span> <span style="color:#e06c75">sip</span>, <span style="color:#e06c75">a1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a3</span>, <span style="color:#d19a66">16</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a2</span>, <span style="color:#d19a66">8</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ld</span> <span style="color:#e06c75">a1</span>, <span style="color:#d19a66">0</span>(<span style="color:#e06c75">a0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">csrrw</span> <span style="color:#e06c75">a0</span>, <span style="color:#e06c75">mscratch</span>, <span style="color:#e06c75">a0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">mret</span>
+</span></span></code></pre></div><h1 id="虚拟内存">虚拟内存<a hidden class="anchor" aria-hidden="true" href="#虚拟内存">#</a></h1>
+<p>riscv的硬件机制中我所不熟悉的除了前面所说的初始化和中断处理外，就是虚拟内存了。</p>
+<p>由于xv6采取riscv64下的sv39分页模式，我就以此为例说明。</p>
+<p>riscv会在supervisor mode和user mode开启分页，分页是通过<code>satp</code> CSR来管理的。</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled14.png"></p>
+<p><code>satp</code>通过MODE字段来选择分页模式并开启分页，在PPN字段存储当前根页表的地址。sv39模式是采取三级页表，页表均存储在RAM中，由OS填写。具体虚拟地址到物理地址的转换见下图：</p>
+<p><img loading="lazy" src="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/img/Untitled15.png"></p>
+<h1 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h1>
+<p>在捋清楚硬件提供怎样的服务之后，OS终于变成了一个普通的C程序，AM里玄之又玄的API开始鲜活起来。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://rzyn2020.github.io/tags/riscv/">Riscv</a></li>
+      <li><a href="https://rzyn2020.github.io/tags/os/">OS</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>编译器的结构与任务</span>
+  </a>
+  <a class="next" href="https://rzyn2020.github.io/posts/multiplication-part1/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Multiplication</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on x"
+            href="https://x.com/intent/tweet/?text=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f&amp;hashtags=riscv%2cOS">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f&amp;title=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29&amp;summary=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29&amp;source=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f&title=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on whatsapp"
+            href="https://api.whatsapp.com/send?text=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29%20-%20https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on telegram"
+            href="https://telegram.me/share/url?text=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 探究支撑os的硬件(以xv6和riscv为例) on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%e6%8e%a2%e7%a9%b6%e6%94%af%e6%92%91os%e7%9a%84%e7%a1%ac%e4%bb%b6%28%e4%bb%a5xv6%e5%92%8criscv%e4%b8%ba%e4%be%8b%29&u=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%258E%25A2%25E7%25A9%25B6%25E6%2594%25AF%25E6%2592%2591os%25E7%259A%2584%25E7%25A1%25AC%25E4%25BB%25B6%25E4%25BB%25A5xv6%25E5%2592%258Criscv%25E4%25B8%25BA%25E4%25BE%258B%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2024 <a href="https://rzyn2020.github.io/"></a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

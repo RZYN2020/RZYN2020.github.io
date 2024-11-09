@@ -1,0 +1,86 @@
+baseURL: "https://rzyn2020.github.io"
+pagination.pagerSize: "Ekstasis's blog"
+paginate: 5
+theme: [PaperMod]
+ignoreLogs: ['warning-goldmark-raw-html']
+publishDir: "docs"
+
+markup:
+  highlight:
+    codeFences: true
+    guessSyntax: true
+    hl_Lines: ""
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: true
+    noClasses: true
+    style: "onedark"
+    tabWidth: 4
+  goldmark:
+    renderer:
+      unsafe: true
+menu:
+  main:
+    - identifier: archives
+      name: Archives
+      url: /archives/
+      weight: 10
+    - identifier: categories
+      name: Categories
+      url: /categories/
+      weight: 20
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 30
+    - identifier: search
+      name: Search
+      url: /search/
+      weight: 40
+      
+# config for serch
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON # necessary for search
+
+taxonomies:
+  category: categories
+  tag: tags
+params:
+  homeInfoParams:
+    Title: 你好！
+    Content: 目前我会这里发表一些技术相关文章...
+
+  assets:
+    favicon: "images/yinyang.webp"
+
+  socialIcons: # optional
+    - name: "github"
+      url: "https://github.com/RZYN2020"
+    - name: "email"
+      url: "mailto:zhaoyzzz@outlook.com"
+    - name: "neodb"
+      url: "https://neodb.social/users/Ekstasis"
+    - name: "mal"
+      url: "https://myanimelist.net/animelist/yuki960"
+
+  fuseOpts:
+    isCaseSensitive: false
+    shouldSort: true
+    location: 0
+    distance: 1000
+    threshold: 0.4
+    minMatchCharLength: 0
+    # limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
+    keys: ["title", "permalink", "summary", "content"]
+
+  ShowShareButtons: true
+  ShowToc: true
+  ShowReadingTime: true
+  ShowBreadCrumbs: true
+  ShowPostNavLinks: true
+  ShowCodeCopyButtons: true
+  # comments: true
+
