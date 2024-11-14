@@ -1,13 +1,9 @@
 ---
-categories: System
+categories: OS
 comment: true
 date: '2022-08-11T21:27:52'
 draft: false
-featured_image: "img/Untitled1.png"
 hidden: false
-tags:
-- riscv 
-- OS
 title: 探究支撑os的硬件(以xv6和riscv为例)
 ---
 >     You are my creator, but I am your master; Obey!

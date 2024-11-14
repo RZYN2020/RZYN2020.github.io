@@ -1,6 +1,5 @@
-baseURL: "https://rzyn2020.github.io"
-pagination.pagerSize: "Ekstasis's blog"
-paginate: 5
+baseURL: https://rzyn2020.github.io/
+title: Ekstasis's Blog
 theme: [PaperMod]
 ignoreLogs: ['warning-goldmark-raw-html']
 

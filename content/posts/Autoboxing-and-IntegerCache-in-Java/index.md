@@ -1,11 +1,10 @@
 ---
-categories: PL/Compiler
+categories: Java
 comment: true
 date: '2023-03-07T14:49:32'
 draft: false
 hidden: false
 tags:
-- java 
 - 面试
 title: Autoboxing and IntegerCache in Java
 ---

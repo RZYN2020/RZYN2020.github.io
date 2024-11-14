@@ -1,16 +1,18 @@
 ---
-categories: PL/Compiler
+categories: C
 comment: true
 date: '2021-11-14T09:23:52'
 draft: false
 hidden: false
-tags:
-- ICS C
 title: 浅析jmp_buf的定义
 ---
-`int setjmp(jmp_buf env)`
-`void longjmp(jmp_buf env, int val)`
+
 <!--more-->
+`int setjmp(jmp_buf env)`
+
+`void longjmp(jmp_buf env, int val)`
+
+
 setjmp 和 longjmp 是`setjmp.h`定义的相互协作的一组跳转函数。 调用 setjmp 时可以将当前的环境保存在一个`jmp_buf`类型的变量中，之后调用 longjmp 后会跳转到 setjmp 执行后的下一条语句执行，就好像刚刚从 setjmp返回一样。
 > 函数行为描述见man，源码见[glibc](https://www.gnu.org/software/libc/)。
 

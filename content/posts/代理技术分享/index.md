@@ -3,11 +3,13 @@ title: 打破壁垒：代理技术在家庭网络中的应用
 date: 2024-11-06T23:22:36+08:00
 draft: false
 tags: 
-- Slide
+- slide
 categories: Network
 comment : true
 hidden: false
 ---
+
+<!--more-->
 
 查看本文配套的 slide [点这里](/slides/proxy)
 

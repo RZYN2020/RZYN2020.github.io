@@ -6,16 +6,13 @@ draft: false
 featured_image: "img/image-20220320173825660.png"
 hidden: false
 mathjax: true
-tags:
-- 读书笔记
-- 算法
 title: Multiplication
 ---
 
 > 凡治众如治寡，分数是也；斗众如斗寡，形名是也。
 
 
-<!-- more -->
+<!--more-->
 
 # Multiplication
 

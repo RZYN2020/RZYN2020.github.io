@@ -1,18 +1,16 @@
 ---
-categories: PL/Compiler
+categories: Java
 comment: true
 date: '2021-08-18T20:31:48'
 draft: false
 hidden: false
-tags:
-- java
 title: 浅谈java8中的流
 ---
 
 
 >  万物皆流，无物常驻
 
-<!-- more -->
+<!--more-->
 
 # java8中的流
 ## 导引

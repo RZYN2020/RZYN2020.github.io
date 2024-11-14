@@ -1,18 +1,16 @@
 ---
-categories: PL/Compiler
+categories: Scheme
 comment: true
 date: '2023-03-30T20:36:48'
 draft: false
 featured_image: "img/image-20230330203730153.png"
 hidden: false
-tags:
-- Scheme
 title: Scheme 拾遗：S-Expression，Continuation 以及 Macro
 ---
 
 > Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary  
 
-<!-- more -->
+<!--more-->
 
 之前在 Twitter 上听 [Robert Nystrom](https://twitter.com/intent/user?screen_name=munificentbob) 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。
 
