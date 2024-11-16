@@ -80,5 +80,15 @@ params:
   ShowBreadCrumbs: true
   ShowPostNavLinks: true
   ShowCodeCopyButtons: true
-  # comments: true
+  comments: true
 
+module:
+  mounts:
+  - source: content
+    target: content
+  - source: blogs/tech
+    target: content/posts
+  - source: blogs/human
+    target: content/posts
+  - source: blogs/life
+    target: content/posts
