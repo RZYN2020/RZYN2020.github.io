@@ -6,6 +6,8 @@ draft: false
 featured_image: "img/image-20230330203730153.png"
 hidden: false
 title: Scheme 拾遗：S-Expression，Continuation 以及 Macro
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 
 > Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary  

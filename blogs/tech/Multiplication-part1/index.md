@@ -7,6 +7,8 @@ featured_image: "img/image-20220320173825660.png"
 hidden: false
 mathjax: true
 title: Multiplication
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 
 > 凡治众如治寡，分数是也；斗众如斗寡，形名是也。
@@ -14,11 +16,10 @@ title: Multiplication
 
 <!--more-->
 
-# Multiplication
 
 本篇博客内容大多都来自[Jeff](https://jeffe.cs.illinois.edu/)的算法书籍，因书籍内容充实和有趣，读之后又怕忘记，因此摘抄复述自己感觉有趣内容，并适时加以扩展。
 
-## Intro
+# Intro
 
 在算术中，乘法是最基本的运算。数学往往只关心抽象的一般的东西，它只把数字看作数字本身，只把乘法看作为一种定义在数上的满足某种特定性质的运算，但是为了让数字能真正为我们所用，我们还必须定义数字实际上的表示方法，以及在一种表示方法下对数字进行运算的方法(比如乘法)——按照这种方法，任意给定两个数，我们都能得出其运算结果(乘积)。这样一种确定性的方法就可以称作一种算法。
 
@@ -40,7 +41,7 @@ title: Multiplication
 
 考虑到无论我们实际日常使用还是计算机表示，使用X进制表示法都是最常见的，把个位数的×和＋都作为原子指令也是最自然的，我们的研究对象也就主要集中在这种计算模型上了。那么问题来了，计算乘法的算法多种多样，有没有一种算法能以低于$O(n^2)$的时间复杂度来计算乘法呢？
 
-## SplitMultiply
+# SplitMultiply
 
 分而治之的思想在算法上的应用往往能得很好的效果。比如说利用了分治法的Quick-Sort, Merge-Sort都能得到很好的时间复杂度。相应的，也许分治的思想也能在乘法中起到作用。
 
@@ -65,7 +66,7 @@ title: Multiplication
 
 SplitMultiply算法符合情况一，也就是由于SplitMultiply算法的递归过程中每层节点扩展得太快，导致叶节点完全占据了主导地位，因此复杂度完全由叶节点决定；而两个分治的排序算法都符合情况二，即每层节点代价的总和差不多相同，因此最终时间复杂度为$\Theta(nlogn)$。
 
-## FastMultiply
+# FastMultiply
 
 SplitMultiply的失败之处在于每层节点扩展得太快，即$log_ba$太大，因此有没有一种适用于乘法的分治算法使得$log_ba$较小呢？事实上，Karatsuba就把a从4降到了3，从而使得乘法的时间复杂度由$n^2$降至$n^{log_23}=n^{1.58496……}$。
 

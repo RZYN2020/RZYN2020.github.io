@@ -5,6 +5,8 @@ date: '2021-08-18T20:31:48'
 draft: false
 hidden: false
 title: 浅谈java8中的流
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 
 
@@ -12,9 +14,8 @@ title: 浅谈java8中的流
 
 <!--more-->
 
-# java8中的流
-## 导引
-### 过程的抽象
+# 导引
+## 过程的抽象
 流(stream)是在java8中出现的一种新的数据抽象，它对数据的处理有着较大的简化作用。
 
 流的概念可能最早来自于列表(List)，列表可以理解为按顺序排列的一组对象(数组和链表都是其具体实现)。
@@ -34,7 +35,7 @@ title: 浅谈java8中的流
 
 也许正因为这种对过程的抽象方式天然地存在于人的大脑结构之中(是某种先验的思维模式)，我们才会很自然地将无论是社会还是计算机中的许多过程都按照这种方式进行抽象。
 
-### 从List到Stream
+## 从List到Stream
 程序的三部分抽象中有两个关键部分:一是如何表示数据，二是如何处理数据。
 
 对于数据的表示，我们很自然地会想到使用List这样的计算机能支持的最简单数据集合来表示。
@@ -59,11 +60,11 @@ title: 浅谈java8中的流
 而不需要对剩余球进行染色。
 
 此处笔者自感表达不清，关于stream的解释详见[SICP3.5](https://sarabander.github.io/sicp/html/3_002e5.xhtml#g_t3_002e5)。
-### stream API
+## stream API
 由于stream的强大抽象能力，java8中新引入了stream API。java8中的stream即是上述概念模型的一种实现，并无特殊性。其主要操作自然也是分为stream的构造，处理以及约简三部分。下面三部分将分别记录常用的API。
 
-## 构造
-### 由collection或Array转化
+# 构造
+## 由collection或Array转化
 > Collection:
 > 
 > `default Stream<E> stream()`
@@ -80,7 +81,7 @@ title: 浅谈java8中的流
 > 
 > 以及类似的DoubleStream和LongStream方法
 
-### 由Stream直接创建
+## 由Stream直接创建
 > Stream:
 > 
 > `static <T> Stream<T> empty()`
@@ -112,7 +113,7 @@ title: 浅谈java8中的流
 > Creates a lazily concatenated stream whose elements are all the elements of the first stream followed by all the elements of the second stream.
 > 
 > 另外也可以通过streamBuilder类创建stream
-## 处理
+# 处理
 > Stream:
 > 
 > `Stream<T> filter(Predicate<? super T> predicate)`
@@ -149,7 +150,7 @@ title: 浅谈java8中的流
 > This is a stateful intermediate operation.
 >
 
-## 约简
+# 约简
 > Stream:
 >
 > `void forEach(Consumer<? super T> action)`

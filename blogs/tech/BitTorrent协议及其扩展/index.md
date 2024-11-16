@@ -1,12 +1,14 @@
 ---
 date: '2024-11-16T21:58:53+08:00'
 draft: false
-title: 'BitTorrent协议及其增强'
+title: 'BitTorrent协议及其扩展'
 tags: 
 - BitTorrent
 categories: Network
 comment : true
 hidden: false
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 
 “I call architecture frozen music...” - Goethe

@@ -7,6 +7,8 @@ tags:
 categories: Network
 comment : true
 hidden: false
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 
 <!--more-->

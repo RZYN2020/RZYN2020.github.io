@@ -7,6 +7,8 @@ hidden: false
 tags:
 - 面试
 title: Autoboxing and IntegerCache in Java
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 
 > When you are on the dancefloor, there is nothing to do but dance.
@@ -28,7 +30,7 @@ System.out.print(i == j); // true or false?
 
 这就有点奇怪了——我总觉得缓存多少是具体的编译器或者JVM抑或是相关类库实现的问题，而不该定义在语言规范中，而如果是和具体实现相关的，那么言之凿凿256个数字需要缓存就有点奇怪了。上网查查资料之后，发现256这个数字果然还是Integer类的默认实现中决定的。下面我就综合查找的资料，介绍一下这道题背后可能涉及的知识。
 
-## Reference Type 和 Primitive Type
+# Reference Type 和 Primitive Type
 
 首先Java类型系统以及JVM中，任何 Value(值) 要么是 reference type(引用类型)，要么是 primitive type(基本类型)。所谓reference type就是指向一个对象的值，总是一条new指令的返回值，往往是自身具有一定状态，并可以改变的(mutable)，在JVM实现中为一个指向具体对象的指针；而 primitive type的值 则只能通过字面量或是预先定义的在primitive type上的操作获得，而操作并不改变值本身，只是产生了一个新的值，即是不可变的(immutable)的，在JVM实现中也对应实现语言的primitive type(可以理解为c++中的Int)。
 
@@ -52,7 +54,7 @@ struct Value_t {
 };
 ```
 
-## Generic
+# Generic
 
 既然有了primitive type的整数，似乎再也不需要作为对象的整数了？看起来似乎是这样，但是Java却依然提供了Integer类表示作为对象的整数——这主要还是因为为了支持泛型的存在。
 
@@ -122,7 +124,7 @@ public class Main {
 
 好，话题又回到Java的Integer类，正是应为Java的泛型是通过类型擦除实现，所以所有的泛型在背后都有一套统一的表示——也就是Object。但是primitive type却在Java OO继承链之外，也就无法使用泛型了——所有就引入了将primitive type封装成wrapper type的机制。将int封装为Integer即是一个例子。
 
-## Autoboxing  and Integer Cache 
+# Autoboxing  and Integer Cache 
 
 虽然已经有了wrapper type，但每次手动封装也是非常麻烦的。所以编译就加入了自动检测类型，在合适的时候将primitive type转化为相应的wrapper type，将wrapper type转化为相应的primitive type的机制，也就是“Autoboxing”与“Unboxing”
 

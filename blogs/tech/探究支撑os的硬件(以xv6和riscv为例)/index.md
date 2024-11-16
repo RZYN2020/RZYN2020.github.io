@@ -5,6 +5,8 @@ date: '2022-08-11T21:27:52'
 draft: false
 hidden: false
 title: 探究支撑os的硬件(以xv6和riscv为例)
+showToc: true # show contents
+TocOpen: true # open contents automantically
 ---
 >     You are my creator, but I am your master; Obey!
  
