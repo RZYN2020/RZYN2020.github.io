@@ -62,11 +62,14 @@ params:
     - name: "github"
       url: "https://github.com/RZYN2020"
     - name: "email"
-      url: "mailto:zhaoyzzz@outlook.com"
+      url: "mailto:zhaoyzzz@outlook.com"    
+    - name: "resume"
+      url: "https://rzyn2020.github.io/resume/resume.html"
     - name: "neodb"
       url: "https://neodb.social/users/Ekstasis"
     - name: "mal"
       url: "https://myanimelist.net/animelist/yuki960"
+
 
   fuseOpts:
     isCaseSensitive: false
