@@ -31,6 +31,10 @@ menu:
       name: Tags
       url: /tags/
       weight: 30
+    - identifier: algorithm
+      name: Algorithm
+      url: /algorithm/
+      weight: 40
     - identifier: search
       name: Search
       url: /search/
