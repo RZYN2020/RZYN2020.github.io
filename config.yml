@@ -33,7 +33,7 @@ menu:
       weight: 30
     - identifier: algorithm
       name: Algorithm
-      url: /algorithm/
+      url: https://rzyn2020.github.io/algorithm/
       weight: 40
     - identifier: search
       name: Search
