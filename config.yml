@@ -15,8 +15,17 @@ markup:
     style: "onedark"
     tabWidth: 4
   goldmark:
-    renderer:
-      unsafe: true
+    extensions:
+      passthrough:
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - $
+            - $
 menu:
   main:
     - identifier: archives
