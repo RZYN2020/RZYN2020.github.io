@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>编译器开发反思 | Ekstasis&#39;s Blog</title>
+<meta name="keywords" content="总结反思">
+<meta name="description" content="
+纵横计不就，慷慨志犹存">
+<meta name="author" content="">
+<link rel="canonical" href="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b3ae8461190bd9c69647da226674b5250eb1633665776ea553f5f6b73184bfb8.css" integrity="sha256-s66EYRkL2caWR9oiZnS1JQ6xYzZld26lU/X2tzGEv7g=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://rzyn2020.github.io/images/yinyang.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="https://rzyn2020.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://rzyn2020.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://rzyn2020.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://rzyn2020.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet"><meta property="og:url" content="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/">
+  <meta property="og:site_name" content="Ekstasis&#39;s Blog">
+  <meta property="og:title" content="编译器开发反思">
+  <meta property="og:description" content=" 纵横计不就，慷慨志犹存">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-09T15:51:53+08:00">
+    <meta property="article:modified_time" content="2024-11-09T15:51:53+08:00">
+    <meta property="article:tag" content="总结反思">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编译器开发反思">
+<meta name="twitter:description" content="
+纵横计不就，慷慨志犹存">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://rzyn2020.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "编译器开发反思",
+      "item": "https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "编译器开发反思",
+  "name": "编译器开发反思",
+  "description": " 纵横计不就，慷慨志犹存\n",
+  "keywords": [
+    "总结反思"
+  ],
+  "articleBody": " 纵横计不就，慷慨志犹存\n今年5月到8月间参加了 CSCC 举办的编译系统设计赛，但实际上集中开发也就是7月。尽管达成了最初的目标——“学习编译器后端知识”与“找回写代码的感觉”，但最后的名次却不尽人意。虽然比赛8月早已结束，近日写总结也不算为晚（总还未完全忘记）。\n我们的编译器实现 前端 使用antlr4生成lexer和parser，构建抽象语法树（AST）。 采用访问者模式遍历AST，构建中间代码（IR）。 中端 IR设计 IR结构设计参考了LLVM IR的设计，基本组件包括：\nModule: Module是IR的顶级容器，用于表示一个完整的程序或翻译单元。它包含函数、全局变量和相关的元数据。 Function: Function表示程序中的一个函数，由一系列基本块（BasicBlock）组成。每个函数在Module中唯一标识。 BasicBlock: BasicBlock是IR中的基本执行单元，由一系列指令组成。每个基本块以终结指令（如br或ret）结束，并且在执行过程中不包含控制流跳转。 Instruction: Instruction是IR中的操作指令，类似于机器指令。每个指令可以产生一个值，并作为其他指令的操作数。常见指令包括算术运算（如add、sub）、内存访问（如load、store）和控制流指令（如br、ret）。 Value: Value是IR中的数据表示，包括变量、常量和指令的结果。所有的Instruction和Constant都是Value的子类。 IR优化 中端实现了各类优化，提升了代码性能。实现的优化包括：\nMemToReg: 实现寄存器提升（Promote Memory to Register），减少内存访问。 CommonSubexpElimination: 消除公共子表达式，减少重复计算。 MergeBlock: 合并基本块以简化控制流图。 Inlining: 函数内联，减少函数调用开销。 LoopSimplify: 简化循环结构。 LoopInvariantCodeMotion: 循环不变代码外提。 GlobalCodeMotion: 全局代码移动。 GlobalValueNumbering: 全局值编号，优化冗余计算。 LoopUnroll: 循环展开，提高性能。 TailRecursionElimination: 消除尾递归。 DeadCodeElimination: 死代码消除。 ConstantFolding: 常量折叠，计算常量表达式。 GlobalVariableLocalize: 全局变量本地化，减少全局变量使用。 StrengthReduction: 强度削减，用更低代价运算代替高代价运算。 LoadElimination: 加载消除，减少不必要的内存加载。 Reassociate: 重结合运算。 GEPSimplify: 简化GEP指令。 CFGSimplify: 控制流图简化。 StoreElimination.cc: 存储消除，减少不必要的内存存储。 LruCache.cc: 缓存递归纯函数的结果，避免冗余函数调用。 InductionVariableSimplify.cc: 简化归纳变量。 后端 Instruction Seletction: 将中间代码转换为面向目标机器的低层IR。 Register Allocation: 采用SSA分配算法，先溢出以减小寄存器压力，再对寄存器进行着色。 Peephole Optimization: 实施一系列小规模的代码优化，如指令合并和消除冗余指令。 Instruction Scheduling: 采用 Local List Scheduling 算法，进行简单的指令重排，并针对 SIFive u74 的双发射特性进行了优化。 Branch Simplification: 实施和控制流相关的一些优化，如消除冗余跳转指令，基本块排序。 开发的流程与思路 理想 vs 现实 最一开始确定的开发原则有两条：\n渐进式开发 测试驱动开发 渐进式开发 主要指先实现 Sysy 的一个可工作子集，然后再不断扩充功能，直到实现完整的 Sysy 语言。在此之后慢慢增加各种优化。\n这样做的好处有：\n在大部分时间都有一个可以正常运作的编译器，可以增强开发者信心\n每次实现一小部分功能，方便实现和测试\n此外就是测试驱动开发，意思是每当实现一个功能时，先写好测试用例，然后进行开发。\n这样做的好处有：\n开发时有一个明确的目标，增强动力 每一部分代码都有测试，保证代码的正确性 同时编译器又可以分为前端，中端和后端三个部分。\n最初的计划是小组四名成员，一人负责前端实现，两人负责中端框架实现，一人负责后端框架以及无优化下的翻译实现。在基本框架实现完成后进行调试，得到一个最简单的无优化编译器。之后再做进一步计划，渐进式不断增加新的优化pass。\n然而这个计划却没有成功——我们前后中三端各自实现了一个月，才分别实现好，最后一起debug十余天后就到ddl了…\n究其原因，是前端成为了我们的开发瓶颈。在后端和中端开发完成后，前端依然不能正常运行，以至于中后端bug无法及时暴露和修复。如果没有前端，中后端测试时只能通过直接调用API构造IR测试用例，但这又过于繁琐（当然也可以再实现一个 IR parser，这就更麻烦了，更何况有许多现成的 Sysy 语言测例可以利用）。所以我们还是选择等待前端完成后再debug，在这段时间抓紧时间实现一些优化 pass。但等到前端实现完成时，中后端也已经积累了非常多的bug，最后大把时间都花在了debug上…\n陷入debug困境的原因 造成这样灾难性后果的原因主要有两点：\n第一，开发规划不明确。\n在一开始我认为前端较为简单，能在短时间内实现完整的 Sysy parser，而中端只是仿照 LLVM 实现，并不复杂（而且中前端的许多知识在本院课程中都已经学过）。所以实现一个可以 work 的无优化编译器应该并不困难。 可是当前端明显暴露出短板时，我才意识到直接实现一个完整前端的工作量较大，也许先实现一个 Sysy 的子集是更合理的。于是我告诉前端开发同学，“只要先实现 Sysy 的一个子集”，“能先跑起来就好”。可是当时的我却并没有 明确规定 Sysy 的哪个子集？如果我不去明确规定划分，前端可能也不知道如何选取一个易于实现的子集——如果前端有选取易于实现子集的能力，那么显然他也能在短时间内实现完整个前端。所以，前端开发同学最后还是花了一个月时间，实现了一个充满 bug 的完整前端。\n第二，测试的基础设施不完善。\n其次是测试驱动开发中遇到的问题：在前端遇到瓶颈时，中端和后端仍然不管不顾蒙头开发。可是现在回想一下，尽管没有前端不能进行系统测试，但是对部分函数进行单元测试总是可以的。实际上我在编写代码时也对部分函数感到不放心，但还是决定先把问题放着，等到集成测试时再 debug ——最后的集成测试时就成了一场灾难。实际上，c++虽然没有 rust 那么方便做单元测试，但是也有 Google test 等框架来帮忙。在前端迟迟没有完成的情况下，单元测试就更为必要了。\n第三，出现问题时没有及时调整分工。\n在前端遇到瓶颈时，当时更优的解决方法其实应该是让后端和中端的同学去协助前端，而不是让他们仍然开发各自模块。但是因为前端同学总是承诺马上就要做完了（实际上却一拖再拖），一直到20余天后中端开发同学才去帮忙实现。承诺往往是不可靠的，进行计划调整时其实应该更重视过往经验，而非开发人员的口头承诺。\n亮点不充分的原因 这里的亮点指我们在比赛中与其他队伍相比，较为亮眼的部分。当然，最后就成绩来看，也并没有什么非常亮眼之处了。\n大部分组的亮点基本可以分为以下三类：\n出色，完备的代码 实现了好的算法 优秀的基础设施 因为赶工，基本就不求 基础设施 和 代码质量 … 可能唯一值得一提的是算法。\n中端参考了往年代码，实现了大部分的常见优化。后端在寄存器分配时使用了基于弦图的SSA分配算法，并且针对硬件做了简单的 Instruction Scheduling。不过SSA分配算法带来的性能提升并不大（实现上也略有粗制滥造之处），指令重排也是后期临时添加，提升效果非常有限。尽管如此，因为中后端优化实现的都比较完全,在初赛时也有一个不错的成绩。\n但8月因为种种事情，在决赛以及之前并没有做多少新的优化，而其他组这期间大都在中端做了许多激进的优化：如函数记忆化，数组访问优化，以及一些针对特殊用例的优化。\n最后也得知，许多队伍都参照了往年代码（这也就是比赛为什么一年比一年卷的原因），因此他们的目标很明确：\n实现往年第一名实现过的所有优化 在此基础上再寻找新的优化可能 而我们组就偏向于蒙头写代码，想到什么写什么了。\n这里的教训时：如果对于名次还是比较在意，比赛开始时就应该早早搜集信息，明确目标。\n团队管理的总结 开发出现问题的一个重要原因就是团队管理没有做好。虽然是四个人的小组，但大部分工作却由两个人完成。可以预想，如果只有两个人，开发效率反而会更高。或许，在开始时应该多了解一些团队管理的技巧的…\n最一开始人们结成团队，肯定是拥有共同的目标。我们经过利益权衡后选择加入团队，以使得自己的利益最大化。可是加入团队后，却往往丢失了主动性，开始变得依赖管理者，并因为各种琐事而推脱团队事物。经常，只有管理者才一直把团队的利益放在心理（这是我在几次合作中的体会）。也许这也和不同文化有关，如「文化与组织」这本书里说的，华人在团队合作中往往习惯于集权，管理者往往具有更大权力，但相应的，成员也会更缺乏“主人翁意识”。在这种情况下，管理者正确运用自己的“权力”，做出更好地决策就更为重要了，在适当时候，不妨果断一些…\n我在团队合作中感受到的问题有：\n信息交流不足 几个陌生人组队，很容易陷入尴尬状态，不能充分讨论，博采众长。 此时就需要管理者破冰，主动召开会议，客观分析现状，让每个都发言，都能有参与感 这样经过充分讨论做出的决策，每个人也更认同 动机不足 偷懒是人的天性… 尤其是成员，如果管理者没有分配任务，明确目标，就很容易偷懒 所以就需要管理者主动给每个人分配有明确验收标准的任务，并确定DDL 难以决策 可能因为华人文化的特点，大家都习惯于听从管理者的命令，不愿意主动提出自己想法 此时决策就需要管理者更自信一点，去一锤定音了 虽然大家没有明确提出自己意见，但是他们认同决策与否可以通过执行决策是否积极来判断 但发现大家的动力不足时，应该主动了解原因，调整决策 后端知识学习经验 我主要负责后端的实现。因为之前对于编译器后端了解较少，实现时也在短时间内学习了大量新知识。\n在学习新知识时，往往会遇到许多困难。比如在学习某个寄存器分配算法时，我会先去看看一些经典的大部头教科书，提出算法的 paper，以及相关课程的slide，或者 youtube 上的讲解视频，最后是一些程序员的博客，中文所写的综述。不过在学习时我也并没有明确规划，而是这个看一点那个看一点，最后还是感到一头雾水。\n经典教科书的问题有：\n英语所写，较难抓住重点和关键的思想；工作记忆有限，梳理不清条理 都是讲最经典的实现，用简单的例子慢慢引入，学习时较为耗费时间，且很难知道研究现状和该问题各种算法的综合比较 paper的问题有：\n因为阅读经验不足，也难抓住重点 context较多，就会变得难以理解；而且不知道该论文在领域内处于一个什么样的位置 slide的问题有：\n虽然能抓住核心，但太简略难懂，许多图像意义需要脑补，不好理解 youtube视频以及博客的问题有：\n虽然许多资料深入浅出，但许多深入内容的较少，也有许多价值不高的内容 ….\n经过一些挫折后，我尝试着给出一个较为系统化的新知识学习方案，也许能以后作为参考。\nSTFW 搜集各种信息，并分类整理搜集到的信息 了解相关背景知识和发展历程，心里有一个大概的框架 深入学习其中一个经典案例，搞清楚核心的思想，基本的抽象；这一步可以做一些笔记，或者在草稿纸上模拟，以加深理解 再去搜集一些综述，了解该领域发展现状，能有一个更细致的框架 此时根据自己的目标 以及 刚刚学习到的框架，为目标选择一个适合的目标算法，然后去学习 当选定目标算法并实现时，可以参考开源项目代码以及开发人员的实现相关博客 总结 项目 明确规定目标：可以文档化规范化需求 完善基础设施：既有集成测试，也有单元测试 及时识别瓶颈并处理 留够时间做killer feature 管理 交流：充分协商，打开思路，让每个人获得参与感 动机：设置ddl 决策：果断决策，不断迭代（对于集中式团队） 比如：通过ddl完成情况来了解每个人的动力值，及时给动力值不足的人重新分配任务 学习 系统化 ",
+  "wordCount" : "231",
+  "inLanguage": "en",
+  "datePublished": "2024-11-09T15:51:53+08:00",
+  "dateModified": "2024-11-09T15:51:53+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ekstasis's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://rzyn2020.github.io/images/yinyang.webp"
+    }
+  }
+}
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://rzyn2020.github.io/" accesskey="h" title="Ekstasis&#39;s Blog (Alt + H)">Ekstasis&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://rzyn2020.github.io/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/algorithm/" title="Algorithm">
+                    <span>Algorithm</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://rzyn2020.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://rzyn2020.github.io/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      编译器开发反思
+    </h1>
+    <div class="post-meta"><span title='2024-11-09 15:51:53 +0800 +0800'>November 9, 2024</span>&nbsp;·&nbsp;2 min
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e6%88%91%e4%bb%ac%e7%9a%84%e7%bc%96%e8%af%91%e5%99%a8%e5%ae%9e%e7%8e%b0" aria-label="我们的编译器实现">我们的编译器实现</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%89%8d%e7%ab%af" aria-label="前端">前端</a></li>
+                    <li>
+                        <a href="#%e4%b8%ad%e7%ab%af" aria-label="中端">中端</a><ul>
+                            
+                    <li>
+                        <a href="#ir%e8%ae%be%e8%ae%a1" aria-label="IR设计">IR设计</a></li>
+                    <li>
+                        <a href="#ir%e4%bc%98%e5%8c%96" aria-label="IR优化">IR优化</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%90%8e%e7%ab%af" aria-label="后端">后端</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%bc%80%e5%8f%91%e7%9a%84%e6%b5%81%e7%a8%8b%e4%b8%8e%e6%80%9d%e8%b7%af" aria-label="开发的流程与思路">开发的流程与思路</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%90%86%e6%83%b3-vs-%e7%8e%b0%e5%ae%9e" aria-label="理想 vs 现实">理想 vs 现实</a></li>
+                    <li>
+                        <a href="#%e9%99%b7%e5%85%a5debug%e5%9b%b0%e5%a2%83%e7%9a%84%e5%8e%9f%e5%9b%a0" aria-label="陷入debug困境的原因">陷入debug困境的原因</a></li>
+                    <li>
+                        <a href="#%e4%ba%ae%e7%82%b9%e4%b8%8d%e5%85%85%e5%88%86%e7%9a%84%e5%8e%9f%e5%9b%a0" aria-label="亮点不充分的原因">亮点不充分的原因</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%9b%a2%e9%98%9f%e7%ae%a1%e7%90%86%e7%9a%84%e6%80%bb%e7%bb%93" aria-label="团队管理的总结">团队管理的总结</a></li>
+                    <li>
+                        <a href="#%e5%90%8e%e7%ab%af%e7%9f%a5%e8%af%86%e5%ad%a6%e4%b9%a0%e7%bb%8f%e9%aa%8c" aria-label="后端知识学习经验">后端知识学习经验</a></li>
+                    <li>
+                        <a href="#%e6%80%bb%e7%bb%93" aria-label="总结">总结</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><blockquote>
+<p>纵横计不就，慷慨志犹存</p></blockquote>
+<p>今年5月到8月间参加了 CSCC 举办的编译系统设计赛，但实际上集中开发也就是7月。尽管达成了最初的目标——“学习编译器后端知识”与“找回写代码的感觉”，但最后的名次却不尽人意。虽然比赛8月早已结束，近日写总结也不算为晚（总还未完全忘记）。</p>
+<h1 id="我们的编译器实现">我们的编译器实现<a hidden class="anchor" aria-hidden="true" href="#我们的编译器实现">#</a></h1>
+<h2 id="前端">前端<a hidden class="anchor" aria-hidden="true" href="#前端">#</a></h2>
+<ul>
+<li>使用<code>antlr4</code>生成<code>lexer</code>和<code>parser</code>，构建抽象语法树（AST）。</li>
+<li>采用访问者模式遍历AST，构建中间代码（IR）。</li>
+</ul>
+<h2 id="中端">中端<a hidden class="anchor" aria-hidden="true" href="#中端">#</a></h2>
+<h3 id="ir设计">IR设计<a hidden class="anchor" aria-hidden="true" href="#ir设计">#</a></h3>
+<p>IR结构设计参考了LLVM IR的设计，基本组件包括：</p>
+<ul>
+<li><strong>Module</strong>: Module是IR的顶级容器，用于表示一个完整的程序或翻译单元。它包含函数、全局变量和相关的元数据。</li>
+<li><strong>Function</strong>: Function表示程序中的一个函数，由一系列基本块（BasicBlock）组成。每个函数在Module中唯一标识。</li>
+<li><strong>BasicBlock</strong>: BasicBlock是IR中的基本执行单元，由一系列指令组成。每个基本块以终结指令（如<code>br</code>或<code>ret</code>）结束，并且在执行过程中不包含控制流跳转。</li>
+<li><strong>Instruction</strong>:  Instruction是IR中的操作指令，类似于机器指令。每个指令可以产生一个值，并作为其他指令的操作数。常见指令包括算术运算（如<code>add</code>、<code>sub</code>）、内存访问（如<code>load</code>、<code>store</code>）和控制流指令（如<code>br</code>、<code>ret</code>）。</li>
+<li><strong>Value</strong>:  Value是IR中的数据表示，包括变量、常量和指令的结果。所有的Instruction和Constant都是Value的子类。</li>
+</ul>
+<h3 id="ir优化">IR优化<a hidden class="anchor" aria-hidden="true" href="#ir优化">#</a></h3>
+<p>中端实现了各类优化，提升了代码性能。实现的优化包括：</p>
+<ul>
+<li><strong>MemToReg</strong>: 实现寄存器提升（Promote Memory to Register），减少内存访问。</li>
+<li><strong>CommonSubexpElimination</strong>: 消除公共子表达式，减少重复计算。</li>
+<li><strong>MergeBlock</strong>: 合并基本块以简化控制流图。</li>
+<li><strong>Inlining</strong>: 函数内联，减少函数调用开销。</li>
+<li><strong>LoopSimplify</strong>: 简化循环结构。</li>
+<li><strong>LoopInvariantCodeMotion</strong>: 循环不变代码外提。</li>
+<li><strong>GlobalCodeMotion</strong>: 全局代码移动。</li>
+<li><strong>GlobalValueNumbering</strong>: 全局值编号，优化冗余计算。</li>
+<li><strong>LoopUnroll</strong>: 循环展开，提高性能。</li>
+<li><strong>TailRecursionElimination</strong>: 消除尾递归。</li>
+<li><strong>DeadCodeElimination</strong>: 死代码消除。</li>
+<li><strong>ConstantFolding</strong>: 常量折叠，计算常量表达式。</li>
+<li><strong>GlobalVariableLocalize</strong>: 全局变量本地化，减少全局变量使用。</li>
+<li><strong>StrengthReduction</strong>: 强度削减，用更低代价运算代替高代价运算。</li>
+<li><strong>LoadElimination</strong>: 加载消除，减少不必要的内存加载。</li>
+<li><strong>Reassociate</strong>: 重结合运算。</li>
+<li><strong>GEPSimplify</strong>: 简化GEP指令。</li>
+<li><strong>CFGSimplify</strong>: 控制流图简化。</li>
+<li><strong>StoreElimination.cc</strong>: 存储消除，减少不必要的内存存储。</li>
+<li><strong>LruCache.cc</strong>: 缓存递归纯函数的结果，避免冗余函数调用。</li>
+<li><strong>InductionVariableSimplify.cc</strong>: 简化归纳变量。</li>
+</ul>
+<h2 id="后端">后端<a hidden class="anchor" aria-hidden="true" href="#后端">#</a></h2>
+<ul>
+<li><strong>Instruction Seletction</strong>: 将中间代码转换为面向目标机器的低层IR。</li>
+<li><strong>Register Allocation</strong>: 采用SSA分配算法，先溢出以减小寄存器压力，再对寄存器进行着色。</li>
+<li><strong>Peephole Optimization</strong>: 实施一系列小规模的代码优化，如指令合并和消除冗余指令。</li>
+<li><strong>Instruction Scheduling</strong>: 采用 Local List Scheduling 算法，进行简单的指令重排，并针对 SIFive u74 的双发射特性进行了优化。</li>
+<li><strong>Branch Simplification</strong>: 实施和控制流相关的一些优化，如消除冗余跳转指令，基本块排序。</li>
+</ul>
+<h1 id="开发的流程与思路">开发的流程与思路<a hidden class="anchor" aria-hidden="true" href="#开发的流程与思路">#</a></h1>
+<h2 id="理想-vs-现实">理想 vs 现实<a hidden class="anchor" aria-hidden="true" href="#理想-vs-现实">#</a></h2>
+<p>最一开始确定的开发原则有两条：</p>
+<ol>
+<li>渐进式开发</li>
+<li>测试驱动开发</li>
+</ol>
+<p>渐进式开发 主要指先实现 Sysy 的一个可工作子集，然后再不断扩充功能，直到实现完整的 Sysy 语言。在此之后慢慢增加各种优化。</p>
+<p>这样做的好处有：</p>
+<ol>
+<li>
+<p>在大部分时间都有一个可以正常运作的编译器，可以增强开发者信心</p>
+</li>
+<li>
+<p>每次实现一小部分功能，方便实现和测试</p>
+</li>
+</ol>
+<p>此外就是测试驱动开发，意思是每当实现一个功能时，先写好测试用例，然后进行开发。</p>
+<p>这样做的好处有：</p>
+<ol>
+<li>开发时有一个明确的目标，增强动力</li>
+<li>每一部分代码都有测试，保证代码的正确性</li>
+</ol>
+<p>同时编译器又可以分为前端，中端和后端三个部分。</p>
+<p>最初的计划是小组四名成员，一人负责前端实现，两人负责中端框架实现，一人负责后端框架以及无优化下的翻译实现。在基本框架实现完成后进行调试，得到一个最简单的无优化编译器。之后再做进一步计划，渐进式不断增加新的优化pass。</p>
+<p>然而这个计划却没有成功——我们前后中三端各自实现了一个月，才分别实现好，最后一起debug十余天后就到ddl了&hellip;</p>
+<p>究其原因，是前端成为了我们的开发瓶颈。在后端和中端开发完成后，前端依然不能正常运行，以至于中后端bug无法及时暴露和修复。如果没有前端，中后端测试时只能通过直接调用API构造IR测试用例，但这又过于繁琐（当然也可以再实现一个 IR parser，这就更麻烦了，更何况有许多现成的 Sysy 语言测例可以利用）。所以我们还是选择等待前端完成后再debug，在这段时间抓紧时间实现一些优化 pass。但等到前端实现完成时，中后端也已经积累了非常多的bug，最后大把时间都花在了debug上&hellip;</p>
+<h2 id="陷入debug困境的原因">陷入debug困境的原因<a hidden class="anchor" aria-hidden="true" href="#陷入debug困境的原因">#</a></h2>
+<p>造成这样灾难性后果的原因主要有两点：</p>
+<p>第一，<strong>开发规划不明确</strong>。</p>
+<p>在一开始我认为前端较为简单，能在短时间内实现完整的 Sysy parser，而中端只是仿照 LLVM 实现，并不复杂（而且中前端的许多知识在本院课程中都已经学过）。所以实现一个可以 work 的无优化编译器应该并不困难。 可是当前端明显暴露出短板时，我才意识到直接实现一个完整前端的工作量较大，也许先实现一个 Sysy 的子集是更合理的。于是我告诉前端开发同学，“只要先实现 Sysy 的一个子集”，“能先跑起来就好”。可是当时的我却并没有 <strong>明确规定</strong> Sysy 的哪个子集？如果我不去明确规定划分，前端可能也不知道如何选取一个易于实现的子集——如果前端有选取易于实现子集的能力，那么显然他也能在短时间内实现完整个前端。所以，前端开发同学最后还是花了一个月时间，实现了一个充满 bug 的完整前端。</p>
+<p>第二，<strong>测试的基础设施不完善</strong>。</p>
+<p>其次是测试驱动开发中遇到的问题：在前端遇到瓶颈时，中端和后端仍然不管不顾蒙头开发。可是现在回想一下，尽管没有前端不能进行系统测试，但是对部分函数进行<strong>单元测试</strong>总是可以的。实际上我在编写代码时也对部分函数感到不放心，但还是决定先把问题放着，等到集成测试时再 debug ——最后的集成测试时就成了一场灾难。实际上，c++虽然没有 rust 那么方便做单元测试，但是也有 Google test 等框架来帮忙。在前端迟迟没有完成的情况下，单元测试就更为必要了。</p>
+<p>第三，<strong>出现问题时没有及时调整分工</strong>。</p>
+<p>在前端遇到瓶颈时，当时更优的解决方法其实应该是让后端和中端的同学去协助前端，而不是让他们仍然开发各自模块。但是因为前端同学总是承诺马上就要做完了（实际上却一拖再拖），一直到20余天后中端开发同学才去帮忙实现。承诺往往是不可靠的，进行计划调整时其实应该更重视过往经验，而非开发人员的口头承诺。</p>
+<h2 id="亮点不充分的原因">亮点不充分的原因<a hidden class="anchor" aria-hidden="true" href="#亮点不充分的原因">#</a></h2>
+<p>这里的亮点指我们在比赛中与其他队伍相比，较为亮眼的部分。当然，最后就成绩来看，也并没有什么非常亮眼之处了。</p>
+<p>大部分组的亮点基本可以分为以下三类：</p>
+<ol>
+<li>出色，完备的代码</li>
+<li>实现了好的算法</li>
+<li>优秀的基础设施</li>
+</ol>
+<p>因为赶工，基本就不求 基础设施 和 代码质量 &hellip; 可能唯一值得一提的是算法。</p>
+<p>中端参考了往年代码，实现了大部分的常见优化。后端在寄存器分配时使用了基于弦图的SSA分配算法，并且针对硬件做了简单的 Instruction Scheduling。不过SSA分配算法带来的性能提升并不大（实现上也略有粗制滥造之处），指令重排也是后期临时添加，提升效果非常有限。尽管如此，因为中后端优化实现的都比较完全,在初赛时也有一个不错的成绩。</p>
+<p>但8月因为种种事情，在决赛以及之前并没有做多少新的优化，而其他组这期间大都在中端做了许多激进的优化：如函数记忆化，数组访问优化，以及一些针对特殊用例的优化。</p>
+<p>最后也得知，许多队伍都参照了往年代码（这也就是比赛为什么一年比一年卷的原因），因此他们的目标很明确：</p>
+<ol>
+<li>实现往年第一名实现过的所有优化</li>
+<li>在此基础上再寻找新的优化可能</li>
+</ol>
+<p>而我们组就偏向于蒙头写代码，想到什么写什么了。</p>
+<p>这里的教训时：如果对于名次还是比较在意，比赛开始时就应该早早搜集信息，明确目标。</p>
+<h1 id="团队管理的总结">团队管理的总结<a hidden class="anchor" aria-hidden="true" href="#团队管理的总结">#</a></h1>
+<p>开发出现问题的一个重要原因就是团队管理没有做好。虽然是四个人的小组，但大部分工作却由两个人完成。可以预想，如果只有两个人，开发效率反而会更高。或许，在开始时应该多了解一些<a href="https://wiki.mbalib.com/wiki/%E5%9B%A2%E9%98%9F%E7%AE%A1%E7%90%86">团队管理的技巧</a>的&hellip;</p>
+<p>最一开始人们结成团队，肯定是拥有共同的目标。我们经过利益权衡后选择加入团队，以使得自己的利益最大化。可是加入团队后，却往往丢失了主动性，开始变得依赖管理者，并因为各种琐事而推脱团队事物。经常，只有管理者才一直把团队的利益放在心理（这是我在几次合作中的体会）。也许这也和不同文化有关，如「文化与组织」这本书里说的，华人在团队合作中往往习惯于集权，管理者往往具有更大权力，但相应的，成员也会更缺乏“主人翁意识”。在这种情况下，管理者正确运用自己的“权力”，做出更好地决策就更为重要了，在适当时候，不妨果断一些&hellip;</p>
+<p>我在团队合作中感受到的问题有：</p>
+<ol>
+<li>信息交流不足
+<ol>
+<li>几个陌生人组队，很容易陷入尴尬状态，不能充分讨论，博采众长。</li>
+<li>此时就需要管理者破冰，主动召开会议，客观分析现状，让每个都发言，都能有参与感
+<ol>
+<li>这样经过充分讨论做出的决策，每个人也更认同</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>动机不足
+<ol>
+<li>偷懒是人的天性&hellip; 尤其是成员，如果管理者没有分配任务，明确目标，就很容易偷懒</li>
+<li>所以就需要管理者主动给每个人分配有明确验收标准的任务，并确定DDL</li>
+</ol>
+</li>
+<li>难以决策
+<ol>
+<li>可能因为华人文化的特点，大家都习惯于听从管理者的命令，不愿意主动提出自己想法</li>
+<li>此时决策就需要管理者更自信一点，去一锤定音了
+<ol>
+<li>虽然大家没有明确提出自己意见，但是他们认同决策与否可以通过执行决策是否积极来判断</li>
+<li>但发现大家的动力不足时，应该主动了解原因，调整决策</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h1 id="后端知识学习经验">后端知识学习经验<a hidden class="anchor" aria-hidden="true" href="#后端知识学习经验">#</a></h1>
+<p>我主要负责后端的实现。因为之前对于编译器后端了解较少，实现时也在短时间内学习了大量新知识。</p>
+<p>在学习新知识时，往往会遇到许多困难。比如在学习某个寄存器分配算法时，我会先去看看一些经典的大部头教科书，提出算法的 paper，以及相关课程的slide，或者 youtube 上的讲解视频，最后是一些程序员的博客，中文所写的综述。不过在学习时我也并没有明确规划，而是这个看一点那个看一点，最后还是感到一头雾水。</p>
+<p>经典教科书的问题有：</p>
+<ol>
+<li>英语所写，较难抓住重点和关键的思想；工作记忆有限，梳理不清条理</li>
+<li>都是讲最经典的实现，用简单的例子慢慢引入，学习时较为耗费时间，且很难知道研究现状和该问题各种算法的综合比较</li>
+</ol>
+<p>paper的问题有：</p>
+<ol>
+<li>因为阅读经验不足，也难抓住重点</li>
+<li>context较多，就会变得难以理解；而且不知道该论文在领域内处于一个什么样的位置</li>
+</ol>
+<p>slide的问题有：</p>
+<ol>
+<li>虽然能抓住核心，但太简略难懂，许多图像意义需要脑补，不好理解</li>
+</ol>
+<p>youtube视频以及博客的问题有：</p>
+<ol>
+<li>虽然许多资料深入浅出，但许多深入内容的较少，也有许多价值不高的内容</li>
+</ol>
+<p>&hellip;.</p>
+<p>经过一些挫折后，我尝试着给出一个较为系统化的新知识学习方案，也许能以后作为参考。</p>
+<ol>
+<li>STFW 搜集各种信息，并分类整理搜集到的信息</li>
+<li>了解相关背景知识和发展历程，心里有一个大概的框架</li>
+<li>深入学习其中一个经典案例，搞清楚核心的思想，基本的抽象；这一步可以做一些笔记，或者在草稿纸上模拟，以加深理解</li>
+<li>再去搜集一些综述，了解该领域发展现状，能有一个更细致的框架</li>
+<li>此时根据自己的目标 以及 刚刚学习到的框架，为目标选择一个适合的目标算法，然后去学习</li>
+<li>当选定目标算法并实现时，可以参考开源项目代码以及开发人员的实现相关博客</li>
+</ol>
+<h1 id="总结">总结<a hidden class="anchor" aria-hidden="true" href="#总结">#</a></h1>
+<ul>
+<li>项目
+<ul>
+<li>明确规定目标：可以文档化规范化需求</li>
+<li>完善基础设施：既有集成测试，也有单元测试</li>
+<li>及时识别瓶颈并处理</li>
+<li>留够时间做killer feature</li>
+</ul>
+</li>
+<li>管理
+<ul>
+<li>交流：充分协商，打开思路，让每个人获得参与感</li>
+<li>动机：设置ddl</li>
+<li>决策：果断决策，不断迭代（对于集中式团队）
+<ul>
+<li>比如：通过ddl完成情况来了解每个人的动力值，及时给动力值不足的人重新分配任务</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>学习
+<ul>
+<li>系统化</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://rzyn2020.github.io/tags/%E6%80%BB%E7%BB%93%E5%8F%8D%E6%80%9D/">总结反思</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>BitTorrent协议及其扩展</span>
+  </a>
+  <a class="next" href="https://rzyn2020.github.io/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">
+    <span class="title">Next »</span>
+    <br>
+    <span>打破壁垒：代理技术在家庭网络中的应用</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on x"
+            href="https://x.com/intent/tweet/?text=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f&amp;hashtags=%e6%80%bb%e7%bb%93%e5%8f%8d%e6%80%9d">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f&amp;title=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d&amp;summary=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d&amp;source=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f&title=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on whatsapp"
+            href="https://api.whatsapp.com/send?text=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d%20-%20https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on telegram"
+            href="https://telegram.me/share/url?text=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 编译器开发反思 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%e7%bc%96%e8%af%91%e5%99%a8%e5%bc%80%e5%8f%91%e5%8f%8d%e6%80%9d&u=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E7%25BC%2596%25E8%25AF%2591%25E5%2599%25A8%25E5%25BC%2580%25E5%258F%2591%25E5%258F%258D%25E6%2580%259D%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><script src="https://giscus.app/client.js"
+        data-repo="RZYN2020/RZYN2020.github.io"
+        data-repo-id="R_kgDONMpsCg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDONMpsCs4CkUS9"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

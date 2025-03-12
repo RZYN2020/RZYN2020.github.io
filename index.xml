@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Ekstasis&#39;s Blog</title>
+    <link>https://rzyn2020.github.io/</link>
+    <description>Recent content on Ekstasis&#39;s Blog</description>
+    <follow_challenge>
+      <feedId>83085992970863616</feedId>
+      <userId>81891412466736128</userId>
+    </follow_challenge>
+    <generator>Hugo -- 0.145.0</generator>
+    <language>en</language>
+    <lastBuildDate>Wed, 12 Mar 2025 11:12:50 +0800</lastBuildDate>
+    <atom:link href="https://rzyn2020.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL 知识点总结 </title>
+      <link>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Wed, 12 Mar 2025 11:12:50 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;p&gt;在后端实习面试中，有 数据库，Java，网络，OS 四大考点，其中又以数据库考察最为频繁。数据库问题中，除了少部分范式相关理论，基本为 &lt;a href=&#34;https://db-engines.com/en/ranking&#34;&gt;MySQL&lt;/a&gt; 问题。因此，在这里摘录相关知识点，做一个总结，既是为秋招做准备，也是总结找实习过程中的所学知识。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1mg411s7Ej/?spm_id_from=333.337.search-card.all.click&amp;amp;vd_source=226da368954a7c68d6b7e4bbdc91b2cd&#34;&gt;b 站视频解析&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&#34;架构&#34;&gt;架构&lt;/h1&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250312144230196&#34; loading=&#34;lazy&#34; src=&#34;https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/img/image-20250312144230196.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;MySQL 整体可分为 Server 层 和 存储引擎 层。Server 层处理客户连接，接收 SQL 语句，生成执行计划，并调用存储引擎 API 来获取 / 写入具体数据。每一个客户端连接都由一个线程来负责处理。每个 table 都可以设置不同的存储引擎。&lt;a href=&#34;https://tangocc.github.io/2018/10/11/mysql-sourcecode/&#34;&gt;具体流程&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;img&#34; loading=&#34;lazy&#34; src=&#34;https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/img/post-mysql-client-server.jpg&#34;&gt;&lt;/p&gt;
+&lt;p&gt;存储引擎自定义实现数据的物理，逻辑组织以及索引，事务等特性。（因此面试考察的问题几乎都属于存储引擎层）抽象存储引擎层 api 是通过抽象类 &lt;a href=&#34;https://github.com/MariaDB/server/blob/11.4/sql/handler.h#L3200&#34;&gt;handler&lt;/a&gt; 来实现。&lt;a href=&#34;https://notes.eatonphil.com/2024-01-09-minimal-in-memory-storage-engine-for-mysql.html&#34;&gt;a minimal sorage engine in c++&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The current limitations of the storage API are not intrinsic aspects of MySQL/MariaDB or Postgres&amp;rsquo;s design. For both project there used to be no pluggable storage at all. We can imagine a future patch to either project that allows support for batched row reads and writes that together could make column-wise storage and vectorized execution more feasible.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>深度学习基础知识总结</title>
+      <link>https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Mon, 13 Jan 2025 19:29:29 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>吉登斯「社会学」笔记</title>
+      <link>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sat, 23 Nov 2024 11:31:25 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;人们自己创造自己的历史，但是他们并不是随心所欲地创造，并不是在他们自己选定的条件下创造，而是在直接碰到的、既定的、从过去继承下来的条件下创造。&lt;/p&gt;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>BitTorrent协议及其扩展</title>
+      <link>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
+      <pubDate>Sat, 16 Nov 2024 21:58:53 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
+      <description>&lt;p&gt;“I call architecture frozen music&amp;hellip;” - Goethe&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>编译器开发反思</title>
+      <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
+      <pubDate>Sat, 09 Nov 2024 15:51:53 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;纵横计不就，慷慨志犹存&lt;/p&gt;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>打破壁垒：代理技术在家庭网络中的应用</title>
+      <link>https://rzyn2020.github.io/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/</link>
+      <pubDate>Wed, 06 Nov 2024 23:22:36 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
+      <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
+      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary&lt;/p&gt;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>Autoboxing and IntegerCache in Java</title>
+      <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
+      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    <item>
+      <title>编译器的结构与任务</title>
+      <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
+      <pubDate>Mon, 06 Mar 2023 11:52:38 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;Surely all this is not without meaning.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    <item>
+      <title>探究支撑os的硬件(以xv6和riscv为例)</title>
+      <link>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</link>
+      <pubDate>Thu, 11 Aug 2022 21:27:52 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</guid>
+      <description>&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;You are my creator, but I am your master; Obey!
+&lt;/code&gt;&lt;/pre&gt;&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    <item>
+      <title>Multiplication</title>
+      <link>https://rzyn2020.github.io/posts/multiplication-part1/</link>
+      <pubDate>Sun, 20 Mar 2022 20:41:38 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/multiplication-part1/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;凡治众如治寡，分数是也；斗众如斗寡，形名是也。&lt;/p&gt;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>浅析jmp_buf的定义</title>
+      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</link>
+      <pubDate>Sun, 14 Nov 2021 09:23:52 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>树的非递归遍历—用栈模拟递归</title>
+      <link>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</link>
+      <pubDate>Tue, 09 Nov 2021 18:02:23 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</guid>
+      <description>&lt;p&gt;由于树本身定义的递归性，置于树上的操作往往也是递归性的的。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>浅谈java8中的流</title>
+      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
+    </item>
+    <item>
+      <title>About</title>
+      <link>https://rzyn2020.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/about/</guid>
+      <description>&lt;hr&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;2021-03-06~2021-08-18 hexo next
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;2021-08-18~2023-04-21 hexo keep
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;2023-04-21~?          hugo diary
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+  </channel>
+</rss>

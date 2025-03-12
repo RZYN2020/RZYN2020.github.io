@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>深度学习基础知识总结 | Ekstasis&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="深度学习基础知识总结 - Ekstasis&#39;s Blog">
+<meta name="author" content="">
+<link rel="canonical" href="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b3ae8461190bd9c69647da226674b5250eb1633665776ea553f5f6b73184bfb8.css" integrity="sha256-s66EYRkL2caWR9oiZnS1JQ6xYzZld26lU/X2tzGEv7g=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://rzyn2020.github.io/images/yinyang.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="https://rzyn2020.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://rzyn2020.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://rzyn2020.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://rzyn2020.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet"><meta property="og:url" content="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">
+  <meta property="og:site_name" content="Ekstasis&#39;s Blog">
+  <meta property="og:title" content="深度学习基础知识总结">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-01-13T19:29:29+08:00">
+    <meta property="article:modified_time" content="2025-01-13T19:29:29+08:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习基础知识总结">
+<meta name="twitter:description" content="">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://rzyn2020.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "深度学习基础知识总结",
+      "item": "https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "深度学习基础知识总结",
+  "name": "深度学习基础知识总结",
+  "description": "",
+  "keywords": [
+    
+  ],
+  "articleBody": " cheat sheet Machine Learning Glossary 基本概念 什么是机器学习？\n机器学习致力于研究如何通过计算的手段，利用经验来改善系统自身的性能。\n经验通常以\"数据“形式存在，因此机器学习研究的主要内容，是关于在计算机上从数据中产生”模型\"(model) 的算法，即\"学习算法\" (learning algorithm).\n记录的集合称为一个\"数据集\" (data set) ，其中每条记录是关于一个事件或对象的描述，称为一个\"示例\"(instance) 或\"样本\"(sample). 反映事件或对象在某方面的表现或性质的事项称为\"属性\"(attribute) 或\"特征\"(feature); 属性上的取值称为\"属性值\" (attribute value). 属性张成的空间称为\"属性空间\" (attribute space) 、\"样本空间\" (sample space)或\"输入空间\"。我们也把一个示例称为一个\"特征向量\" (feature vector).属性的数目被称为样本的\"维数\" (dimensionality).\n从数据中学得模型的过程称为\"学习\"(learning)或\"训练\" (training),这个过程通过执行某个学习算法来完成.训练过程中使用的数据称为\"训练数据\" (training data) ，其中每个样本称为一个\"训练样本\" (training sample),训练样本组成的集合称为\"训练集\" (training set). 学得模型对应了关于数据的某种潜在的规律，因此亦称\"假设\" (hypothesis); 这种潜在规律自身，则称为\"真相“或”真实\"(ground-truth) ，学习过程就是为了找出或逼近真相.\n学得模型后，使用其母行预测的过程称为\"测试\"(testing) ，被预测的样本 称为\"测试样本\" (testing sample).\n都有哪些机器学习算法？\n一份算法列表\n除如图所示的监督和非监督学习外，强化学习也是一类基本学习算法。\n什么是深度学习\n深度学习（Deep Learning）是机器学习的一个分支，是一种基于人工神经网络的算法模型。它模仿人类大脑处理信息的方式，采用多层神经网络从大量数据中提取特征并进行决策。深度学习在监督，非监督，强化学习中均有应用。\n对学习的理解 我们可以把学习过程看作一个在所有假设 (hypothesis)组成的空间中进行搜索的过程，搜索目标是找到与训练集\"匹配\"(fit) 的假设，即能够将训练集中的瓜判断正确的假设.假设的表示一旦确定，假设空间及其规模大小就确定了.\n可能有多个假设与训练集一致，即存在着一个与训练集一致的\"假设集合\"，我们称之为\"版本空间\" (version space).\n机器学习算法在学习过程中对某种类型假设的偏好，称为\"归纳偏好\" (inductive bias) ,或简称为\"偏好\".任何一个有效的机器学习算法必有其归纳偏好，否则它将被假设空间中看似在训练集上\"等效\"的假设所迷惑，而无法产生确定的学习结果.\n归纳偏好可看作学习算法自身在一个可能很庞大的假设空间中对假设进行选择的启发式或\"价值观\"。“奥卡姆剃刀” (Occam’s razor)是一种常用的、自然科学研究中最基本的原则，即\"若有多个假设与观察一致，则选最简单的那个。\n事实上，归纳偏好对应了学习算法本身所做出的关于\"什么样的模型更好\"的假设.在具体的现实问题中，这个假设是否成立，即算法的归纳偏好是否与问题本身匹配，大多数时候直接决定了算法能否取得好的性能.\n不同的神经网络架构既体现了不同的假设空间，也体现了不同的归纳偏好\n假设空间：由架构定义，是模型可以表示的所有可能函数。\n理论上来说，一层全连接神经网络（具有足够的神经元和非线性激活函数）就能逼近任意连续函数。\n归纳偏好：由架构及其优化过程（例如损失函数、正则化策略）定义，是模型在有限数据下更倾向选择的函数。\n而同时，根据NFL 定理，没有任何一种学习算法在所有问题上都优于其他算法。\n直观来说：\n如果我们对问题分布一无所知，那么所有算法在这些问题上成功的概率是等价的。 要在特定任务中取得好性能，算法必须对任务的特定性质做出假设（即引入归纳偏好）。 模型评估和选择 经验误差与过拟合 在机器学习中，我们通常用以下指标来衡量模型的性能：\n错误率（Error Rate）：分类错误的样本数占样本总数的比例。例如，如果在 $m$ 个样本中有 $\\alpha$ 个样本被分类错误，则： $\\text{错误率} = \\frac{\\alpha}{m}$ 精度（Accuracy）：分类正确的样本数占样本总数的比例，与错误率互补： $\\text{精度} = 1 - \\text{错误率}$ 更广义地，我们把学习器的实际预测输出与样本的真实输出之间的差异称为“误差（Error）”：\n训练误差（Training Error）：学习器在训练集上的误差，又称为“经验误差（Empirical Error）”。 泛化误差（Generalization Error）：学习器在新样本上的误差。 我们的目标是构建一个泛化误差尽可能小的学习器。然而，由于事先无法得知新样本的分布，我们通常通过最小化经验误差来间接优化泛化误差。\n在实践中，我们希望学习器能对新样本做出准确预测，这要求它从训练数据中学到能适用于所有潜在样本的“普遍规律”。但模型的学习能力可能出现两种极端情况：\n过拟合（Overfitting）： 学习器对训练样本学得过于“精准”，甚至将训练样本中特有的噪声或不普遍的特性当成一般规律。这会导致模型对新样本的泛化性能下降。 欠拟合（Underfitting）： 学习器没有充分捕捉训练样本的一般规律，导致模型在训练集和测试集上的表现都不理想。 常见原因：\n过拟合：学习能力过强，模型复杂度过高。 欠拟合：学习能力不足，模型复杂度过低。 过拟合是机器学习中的一个普遍现象，无法彻底避免，但可以通过以下方法缓解或减小其影响：\n增加训练数据。 使用正则化（如 $L_1$ 或 $L_2$ 正则化）。 采用早停（Early Stopping）策略。 使用更简单的模型（降低复杂度）。 引入交叉验证（Cross-Validation）评估模型性能。 本质限制：过拟合无法完全避免，因为机器学习问题通常是 NP 难或更复杂的，而有效的学习算法必然是多项式时间内运行完成。要彻底避免过拟合，经验误差最小化就能找到最优解，而这在理论上等同于 $P=NP$（构造性地证明），目前尚未被证明。\n许多学习问题（如神经网络权重优化、支持向量机中的核参数选择等）涉及非凸优化问题，或需要在一个离散的组合空间中搜索最佳解。这类问题通常被证明为 NP难。\n在实际任务中，我们面临许多选择，包括：\n不同的学习算法（如决策树、支持向量机、深度学习）。 同一算法的不同参数配置（如正则化强度、学习率、网络结构）。 这引出了模型选择（Model Selection）问题： 如何选择一个泛化性能最好的模型？\n理想目标：直接评估候选模型的泛化误差，选择泛化误差最小的模型。 现实困境：泛化误差无法直接获得，训练误差又可能因过拟合而无法准确反映模型性能。\n评估方法 在机器学习中，模型的性能评估是关键的一环。为了衡量模型的泛化能力（即在新样本上的表现），我们通常通过实验测试来评估泛化误差。以下将介绍几种常用的数据集划分与评估方法，并探讨参数调节的技巧。\n在评估模型时，需将原始数据集 $D$（包含 $m$ 个样本）划分为训练集 $S$ 和测试集 $T$，即 $D = S \\cup T$ 且 $S \\cap T = \\emptyset$。训练集用于训练模型，测试集用于评估模型在未见样本上的表现。测试误差（Testing Error）被视为泛化误差的近似，假设测试样本与训练样本是从相同分布中独立同分布抽取的。\n1. 留出法（Hold-out Method） 留出法是最简单的评估方法，将数据集 $D$ 随机划分为训练集和测试集。例如，常用 2/3 至 4/5 的样本作为训练集，其余作为测试集。\n注意事项：\n数据划分需尽量保持分布一致性（如分类任务中保持类别比例），可通过分层采样（Stratified Sampling）实现。 单次划分的评估结果可能不稳定，因此需多次随机划分，取平均值作为最终评估结果。 权衡：\n训练集比例过大：模型更接近使用全数据训练的情况，但测试集过小可能导致结果不稳定。 测试集比例过大：测试结果更稳定，但训练集与全数据差距较大，可能影响评估结果的保真性（Fidelity）。 2. 交叉验证法（Cross-validation） 交叉验证将数据集 $D$ 分为 $k$ 个大小相等的互斥子集： $D = D_1 \\cup D_2 \\cup … \\cup D_k$​，且 $D_i \\cap D_j = \\emptyset , (i \\neq j)$\n每次用 $k−1$ 个子集作为训练集，剩余一个子集作为测试集，重复 $k$ 次后取测试结果的均值作为最终评估结果。常见的 $k$ 值为 10，称为10 折交叉验证（10-fold Cross-validation）。\n优点：\n比留出法更稳定可靠。 可随机重复多次交叉验证（如 10 次 10 折交叉验证），进一步减少划分差异的影响。 特例：留一法（Leave-One-Out Cross-validation, LOO）\n令 $k=m$，即每次仅用一个样本作为测试集，其余样本作为训练集。 LOO 不受随机划分影响，训练集与全数据集非常接近，但计算复杂度较高，尤其在样本量较大时。 在理论上，多次留出法的随机划分结果有可能与交叉验证法某次划分完全一致\n3. 自助法（Bootstrapping） 自助法通过自助采样（Bootstrap Sampling）生成新的训练集。每次从原始数据集 $D$ 中随机抽取一个样本放入训练集，并将其放回，再次采样，重复 $m$ 次。采样后：\n$D′$ 为训练集，包含 $m$ 个样本，其中部分样本重复出现。 $D \\setminus D’$ 作为测试集，包含约 36.8% 的未被采样样本（概率计算如下）： $P(\\text{样本未被采样}) = (1 - \\frac{1}{m})^m \\approx e^{-1} \\approx 36.8%$ 特点：\n适用于数据量较小或难以划分的场景。 可生成多个训练集，用于集成学习等方法。 局限：\n改变了数据分布，可能引入估计偏差。 参数调节与最终模型选择 机器学习模型通常有多个参数需设定，不同参数配置会显著影响模型性能。调参（Parameter Tuning）是优化模型性能的重要步骤。\n常见调参方法：\n网格搜索（Grid Search）： 为每个参数设定取值范围和步长，逐一评估所有参数组合，选择性能最佳者。 计算复杂度较高，但可行性依赖于参数数量和候选值范围。 示例：3 个参数，每个参数有 5 个候选值，需训练 $5^3 = 125$ 个模型。 随机搜索（Random Search）： 随机采样参数组合，降低计算成本。 验证集（Validation Set）： 在训练数据中留出一部分作为验证集，用于模型评估和参数调节。 实际测试数据则保留用于最终测试。 常用的比例是训练集占 70%~80%，测试集占 20%~30%。再从训练集划分出验证集，常见比例是：训练集占原始数据的 60%~70%，验证集占 10%~20%。 验证集允许模型在开发过程中尝试不同的算法或参数设置，为模型选择和调参提供依据，而测试集不参与这个过程，以防止评估偏差。 神经网络 神经元模型 神经网络是由具有适应性的简单单元组成的广泛并行互连的网络，它的组织能够模拟生物神经系统对真实世界物体所作出的交互反应。神经网络中最基本的成分是神经元 (neuron)模型。\n（M-P 神经元）\n感知机和多层网络 感知机 (Perceptron) 由两层 神经元 组成，感知机能容易地实现逻辑与、或、非运算。\n史一般的，常见的神经网络是形如图所示的层级结构，每层神经元与下 层神经元全互连。神经元之间不存在同层连接，也不存在跨层连接。这样 的 神经网络结构通常称为\" 多层前馈神经网络 \" (multi-layer feedforward neural networks)\n反向传播算法 最常用的神经网络训练方法，详见： https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html\n深度学习训练技巧 深度学习训练中的变量：\n数据集 模型结构（model bias） 超参数 epoch数目，batch大小等 loss function 优化算法 解决问题都得从这几个方面入手\n应对欠拟合问题 优化过程中，神经网络的目标是最小化损失函数。然而，优化过程可能会遇到多种挑战，尤其是在高维空间中。\nAdam算法结合了RMSProp和动量方法，是目前最常用的优化算法之一，能够有效提高训练速度，并避免梯度消失问题。最为常用。\n1. 局部最优与鞍点 局部最优解：损失函数在某个局部区域内达到最小值，这可能导致优化算法在该点停滞，从而影响模型的训练。 鞍点：在高维空间中，鞍点比局部最优解更多。鞍点的梯度为零，但它既不是最小值也不是最大值，优化算法容易被卡在这种点上。 解决鞍点：可以通过计算Hessian矩阵来判断一个点是否为鞍点。训练过程中使用动量和自适应学习率等技术可以帮助避免被卡住。 2. 小批量与噪声 小批量的优势：小批量训练时，由于每个批次的样本较少，噪声较大，这种噪声有助于模型跳出局部最小值，避免陷入“峡谷”中。实验证明，小批量训练有助于提高模型的泛化能力，并且在测试集上的表现通常更好。 劣势：小批量训练需要更多的时间来完成一个epoch，因为每个batch的训练时间较长。 大批量的劣势：大批量训练时，由于噪声较小，模型更容易停留在局部最小值，从而导致训练效果不佳。 3. 自适应学习率 学习率是控制梯度下降步伐的重要超参数。过大的学习率可能导致优化过程不稳定，过小的学习率则可能导致收敛缓慢。\n自适应学习率：使用Adagrad、RMSProp、Adam等自适应学习率算法，可以根据每个参数的梯度大小调整步伐，从而提高训练效率和收敛速度。 学习率调度：逐渐降低学习率（如通过学习率衰减或warm-up策略），能够避免震荡，帮助网络找到更精确的解。 4. 动量（Momentum） 动量方法通过结合当前的梯度和前一时刻的梯度信息，帮助网络在遇到局部最小值时继续向前推进，避免停滞在局部最小值。动量方法模仿物理中小球滚动的现象，在训练过程中具有较强的稳定性。\n5. 批归一化（Batch Normalization） 批归一化通过对每层输入进行标准化，消除不同维度间的差异，使得网络训练更加稳定。\n平坦化误差表面：批归一化能有效平滑损失函数，减少训练过程中出现不均匀的误差。 训练与测试的区别：在训练时，批归一化使用当前批次的数据进行标准化，而在测试时使用训练期间计算的均值和方差。 6. 激活函数的选择 激活函数对优化过程有着重要影响。不同的激活函数会决定网络的非线性能力，从而影响优化效果。\nReLU（Rectified Linear Unit）：ReLU是目前最常用的激活函数，能够有效避免梯度消失问题，并且计算效率高。 Sigmoid和Tanh：这些激活函数适用于浅层网络，但在深层网络中容易出现梯度消失问题，影响训练效果。 应对过拟合问题 过拟合是深度学习训练过程中常见的问题，特别是当模型在训练集上表现很好，但在测试集上性能较差时。为了减少过拟合，可以采用以下方法：\n1. 增加数据量 数据增强：通过对现有数据进行旋转、平移、缩放等变换，生成更多的样本，以减少模型对训练数据的依赖，从而提高泛化能力。 正则化技术：如L2正则化和dropout等，能够有效抑制模型的过拟合。 2. 正则化方法 L2正则化：通过在损失函数中增加惩罚项，迫使模型参数保持较小的值，从而避免模型过于复杂。 Dropout：在训练过程中随机丢弃一定比例的神经元，这样可以避免网络过度依赖某些特定神经元，从而提高泛化能力。 3. 提前停止（Early Stopping） 在训练过程中，通过监控验证集的损失，若验证集损失不再下降或开始上升，则提前停止训练。这样可以避免模型在训练集上过拟合。\n4. 更简单的模型结构 减小网络规模：使用较小的网络结构（例如减少网络层数或神经元数量），可以减少模型的复杂度，从而降低过拟合的风险。 分类任务中的优化策略 在分类任务中，优化策略需要根据任务的特点进行调整：\n1. 分类问题转化为回归问题 有时将分类问题转化为回归问题进行解决，网络输出一个连续值。这种方法可能会引入伪关系，因此更常见的是使用One-hot向量作为输出，并结合Softmax函数进行标准化。\n2. 损失函数的选择 交叉熵损失 (Cross-Entropy Loss)：对于分类任务，尤其是多分类任务，交叉熵损失是更合适的选择，特别是与Softmax结合使用时，能够更好地指导优化过程。 Pytorch——手写数字识别的例子 pytorch internals\nimport torch import torch.nn as nn import torch.optim as optim import torch.nn.functional as F from torch.utils.data import DataLoader from torchvision import datasets, transforms from torch.utils.data import random_split # 超参数 batch_size = 64 learning_rate = 0.001 epochs = 10 dropout_rate = 0.5 # 1. 数据加载和预处理 transform = transforms.Compose([ transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,)) ]) # 加载MNIST数据集 train_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform) test_dataset = datasets.MNIST(root='./data', train=False, download=True, transform=transform) # 数据分批次处理 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True) test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False) # 2. 定义卷积神经网络 (CNN) class SimpleCNN(nn.Module): def __init__(self): super(SimpleCNN, self).__init__() # 第一卷积层，输入1个通道，输出32个通道 self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1) self.bn1 = nn.BatchNorm2d(32) # 批归一化 # 第二卷积层，输入32个通道，输出64个通道 self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1) self.bn2 = nn.BatchNorm2d(64) # 批归一化 # 第三卷积层，输入64个通道，输出128个通道 self.conv3 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1) self.bn3 = nn.BatchNorm2d(128) # 批归一化 # 线性层（全连接层） self.fc1 = nn.Linear(128 * 7 * 7, 512) self.fc2 = nn.Linear(512, 10) # 输出10个类别（MNIST是0-9的数字） # Dropout层，防止过拟合 self.dropout = nn.Dropout(p=dropout_rate) def forward(self, x): # 卷积层 + 激活函数 + 批归一化 + 池化 x = F.relu(self.bn1(self.conv1(x))) x = F.max_pool2d(x, 2) x = F.relu(self.bn2(self.conv2(x))) x = F.max_pool2d(x, 2) x = F.relu(self.bn3(self.conv3(x))) x = F.max_pool2d(x, 2) # 将特征图展平（Flatten） x = x.view(-1, 128 * 7 * 7) # 全连接层 x = F.relu(self.fc1(x)) x = self.dropout(x) # 在全连接层后应用Dropout x = self.fc2(x) return x # 3. 模型、损失函数和优化器 model = SimpleCNN() # Adam优化器，并使用L2正则化（weight decay） optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.0001) # 使用交叉熵损失函数（适用于分类任务） criterion = nn.CrossEntropyLoss() # 4. 训练过程 def train(model, train_loader, optimizer, criterion, epoch): model.train() running_loss = 0.0 correct = 0 total = 0 for batch_idx, (data, target) in enumerate(train_loader): # 将数据移到GPU（如果可用） data, target = data.cuda(), target.cuda() # 清除梯度 optimizer.zero_grad() # 向前传播 output = model(data) # 计算损失 loss = criterion(output, target) running_loss += loss.item() # 向后传播 loss.backward() # 更新参数 optimizer.step() # 计算准确度 _, predicted = torch.max(output, 1) total += target.size(0) correct += (predicted == target).sum().item() # 打印每个epoch的损失和准确率 print(f'Epoch {epoch}, Loss: {running_loss/len(train_loader):.4f}, Accuracy: {100. * correct/total:.2f}%') # 5. 测试过程 def test(model, test_loader, criterion): model.eval() # 切换为评估模式 test_loss = 0.0 correct = 0 total = 0 with torch.no_grad(): # 测试时不需要计算梯度 for data, target in test_loader: # 将数据移到GPU（如果可用） data, target = data.cuda(), target.cuda() # 向前传播 output = model(data) # 计算损失 loss = criterion(output, target) test_loss += loss.item() # 计算准确度 _, predicted = torch.max(output, 1) total += target.size(0) correct += (predicted == target).sum().item() # 打印测试集上的损失和准确率 print(f'Test Loss: {test_loss/len(test_loader):.4f}, Test Accuracy: {100. * correct/total:.2f}%') # 6. 训练和测试模型 # 如果有GPU，使用GPU训练 device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\") model.to(device) for epoch in range(1, epochs + 1): train(model, train_loader, optimizer, criterion, epoch) test(model, test_loader, criterion) ",
+  "wordCount" : "794",
+  "inLanguage": "en",
+  "datePublished": "2025-01-13T19:29:29+08:00",
+  "dateModified": "2025-01-13T19:29:29+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ekstasis's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://rzyn2020.github.io/images/yinyang.webp"
+    }
+  }
+}
+</script>
+    
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
+      inlineMath: [['$', '$']]                  
+    }
+  };
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://rzyn2020.github.io/" accesskey="h" title="Ekstasis&#39;s Blog (Alt + H)">Ekstasis&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://rzyn2020.github.io/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/algorithm/" title="Algorithm">
+                    <span>Algorithm</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://rzyn2020.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://rzyn2020.github.io/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      深度学习基础知识总结
+    </h1>
+    <div class="post-meta"><span title='2025-01-13 19:29:29 +0800 +0800'>January 13, 2025</span>&nbsp;·&nbsp;4 min
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#%e5%9f%ba%e6%9c%ac%e6%a6%82%e5%bf%b5" aria-label="基本概念">基本概念</a></li>
+                    <li>
+                        <a href="#%e5%af%b9%e5%ad%a6%e4%b9%a0%e7%9a%84%e7%90%86%e8%a7%a3" aria-label="对学习的理解">对学习的理解</a></li>
+                    <li>
+                        <a href="#%e6%a8%a1%e5%9e%8b%e8%af%84%e4%bc%b0%e5%92%8c%e9%80%89%e6%8b%a9" aria-label="模型评估和选择">模型评估和选择</a><ul>
+                            
+                    <li>
+                        <a href="#%e7%bb%8f%e9%aa%8c%e8%af%af%e5%b7%ae%e4%b8%8e%e8%bf%87%e6%8b%9f%e5%90%88" aria-label="经验误差与过拟合">经验误差与过拟合</a></li>
+                    <li>
+                        <a href="#%e8%af%84%e4%bc%b0%e6%96%b9%e6%b3%95" aria-label="评估方法">评估方法</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e7%95%99%e5%87%ba%e6%b3%95hold-out-method" aria-label="1. 留出法（Hold-out Method）">1. <strong>留出法（Hold-out Method）</strong></a></li>
+                    <li>
+                        <a href="#2-%e4%ba%a4%e5%8f%89%e9%aa%8c%e8%af%81%e6%b3%95cross-validation" aria-label="2. 交叉验证法（Cross-validation）">2. <strong>交叉验证法（Cross-validation）</strong></a></li>
+                    <li>
+                        <a href="#3-%e8%87%aa%e5%8a%a9%e6%b3%95bootstrapping" aria-label="3. 自助法（Bootstrapping）">3. <strong>自助法（Bootstrapping）</strong></a></li>
+                    <li>
+                        <a href="#%e5%8f%82%e6%95%b0%e8%b0%83%e8%8a%82%e4%b8%8e%e6%9c%80%e7%bb%88%e6%a8%a1%e5%9e%8b%e9%80%89%e6%8b%a9" aria-label="参数调节与最终模型选择">参数调节与最终模型选择</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c" aria-label="神经网络"><a href="https://ml-cheatsheet.readthedocs.io/en/latest/nn_concepts.html">神经网络</a></a><ul>
+                            
+                    <li>
+                        <a href="#%e7%a5%9e%e7%bb%8f%e5%85%83%e6%a8%a1%e5%9e%8b" aria-label="神经元模型">神经元模型</a></li>
+                    <li>
+                        <a href="#%e6%84%9f%e7%9f%a5%e6%9c%ba%e5%92%8c%e5%a4%9a%e5%b1%82%e7%bd%91%e7%bb%9c" aria-label="感知机和多层网络">感知机和多层网络</a></li>
+                    <li>
+                        <a href="#%e5%8f%8d%e5%90%91%e4%bc%a0%e6%92%ad%e7%ae%97%e6%b3%95" aria-label="反向传播算法">反向传播算法</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e8%ae%ad%e7%bb%83%e6%8a%80%e5%b7%a7" aria-label="深度学习训练技巧">深度学习训练技巧</a><ul>
+                            
+                    <li>
+                        <a href="#%e5%ba%94%e5%af%b9%e6%ac%a0%e6%8b%9f%e5%90%88%e9%97%ae%e9%a2%98" aria-label="应对欠拟合问题">应对欠拟合问题</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e5%b1%80%e9%83%a8%e6%9c%80%e4%bc%98%e4%b8%8e%e9%9e%8d%e7%82%b9" aria-label="1. 局部最优与鞍点">1. 局部最优与鞍点</a></li>
+                    <li>
+                        <a href="#2-%e5%b0%8f%e6%89%b9%e9%87%8f%e4%b8%8e%e5%99%aa%e5%a3%b0" aria-label="2. 小批量与噪声">2. 小批量与噪声</a></li>
+                    <li>
+                        <a href="#3-%e8%87%aa%e9%80%82%e5%ba%94%e5%ad%a6%e4%b9%a0%e7%8e%87" aria-label="3. 自适应学习率">3. 自适应学习率</a></li>
+                    <li>
+                        <a href="#4-%e5%8a%a8%e9%87%8fmomentum" aria-label="4. 动量（Momentum）">4. 动量（Momentum）</a></li>
+                    <li>
+                        <a href="#5-%e6%89%b9%e5%bd%92%e4%b8%80%e5%8c%96batch-normalization" aria-label="5. 批归一化（Batch Normalization）">5. 批归一化（Batch Normalization）</a></li>
+                    <li>
+                        <a href="#6-%e6%bf%80%e6%b4%bb%e5%87%bd%e6%95%b0%e7%9a%84%e9%80%89%e6%8b%a9" aria-label="6. 激活函数的选择">6. 激活函数的选择</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%ba%94%e5%af%b9%e8%bf%87%e6%8b%9f%e5%90%88%e9%97%ae%e9%a2%98" aria-label="应对过拟合问题">应对过拟合问题</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e5%a2%9e%e5%8a%a0%e6%95%b0%e6%8d%ae%e9%87%8f" aria-label="1. 增加数据量">1. 增加数据量</a></li>
+                    <li>
+                        <a href="#2-%e6%ad%a3%e5%88%99%e5%8c%96%e6%96%b9%e6%b3%95" aria-label="2. 正则化方法">2. 正则化方法</a></li>
+                    <li>
+                        <a href="#3-%e6%8f%90%e5%89%8d%e5%81%9c%e6%ad%a2early-stopping" aria-label="3. 提前停止（Early Stopping）">3. 提前停止（Early Stopping）</a></li>
+                    <li>
+                        <a href="#4-%e6%9b%b4%e7%ae%80%e5%8d%95%e7%9a%84%e6%a8%a1%e5%9e%8b%e7%bb%93%e6%9e%84" aria-label="4. 更简单的模型结构">4. 更简单的模型结构</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#%e5%88%86%e7%b1%bb%e4%bb%bb%e5%8a%a1%e4%b8%ad%e7%9a%84%e4%bc%98%e5%8c%96%e7%ad%96%e7%95%a5" aria-label="分类任务中的优化策略">分类任务中的优化策略</a><ul>
+                            
+                    <li>
+                        <a href="#1-%e5%88%86%e7%b1%bb%e9%97%ae%e9%a2%98%e8%bd%ac%e5%8c%96%e4%b8%ba%e5%9b%9e%e5%bd%92%e9%97%ae%e9%a2%98" aria-label="1. 分类问题转化为回归问题">1. 分类问题转化为回归问题</a></li>
+                    <li>
+                        <a href="#2-%e6%8d%9f%e5%a4%b1%e5%87%bd%e6%95%b0%e7%9a%84%e9%80%89%e6%8b%a9" aria-label="2. 损失函数的选择">2. 损失函数的选择</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#pytorch%e6%89%8b%e5%86%99%e6%95%b0%e5%ad%97%e8%af%86%e5%88%ab%e7%9a%84%e4%be%8b%e5%ad%90" aria-label="Pytorch——手写数字识别的例子">Pytorch——手写数字识别的例子</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><ul>
+<li><a href="https://stanford.edu/~shervine/teaching/">cheat sheet</a></li>
+<li><a href="https://ml-cheatsheet.readthedocs.io/en/latest/">Machine Learning Glossary</a></li>
+</ul>
+<h2 id="基本概念">基本概念<a hidden class="anchor" aria-hidden="true" href="#基本概念">#</a></h2>
+<blockquote>
+<p>什么是机器学习？</p></blockquote>
+<p>机器学习致力于研究如何通过计算的手段，利用经验来改善系统自身的性能。</p>
+<p>经验通常以&quot;<strong>数据</strong>&ldquo;形式存在，因此机器学习研究的主要内容，是关于在计算机上从数据中产生&rdquo;<strong>模型</strong>&quot;(model) 的算法，即&quot;<strong>学习算法</strong>&quot; (learning algorithm).</p>
+<p>记录的集合称为一个&quot;<strong>数据集</strong>&quot; (data set) ，其中每条记录是关于一个事件或对象的描述，称为一个&quot;<strong>示例</strong>&quot;(instance) 或&quot;<strong>样本</strong>&quot;(sample). 反映事件或对象在某方面的表现或性质的事项称为&quot;<strong>属性</strong>&quot;(attribute) 或&quot;<strong>特征</strong>&quot;(feature); 属性上的取值称为&quot;<strong>属性值</strong>&quot; (attribute value). 属性张成的空间称为&quot;<strong>属性空间</strong>&quot; (attribute space) 、&quot;<strong>样本空间</strong>&quot; (sample space)或&quot;<strong>输入空间</strong>&quot;。我们也把一个示例称为一个&quot;<strong>特征向量</strong>&quot; (feature vector).属性的数目被称为样本的&quot;<strong>维数</strong>&quot; (dimensionality).</p>
+<p>从数据中学得模型的过程称为&quot;<strong>学习</strong>&quot;(learning)或&quot;<strong>训练</strong>&quot; (training),这个过程通过执行某个学习算法来完成.训练过程中使用的数据称为&quot;<strong>训练数据</strong>&quot; (training data) ，其中每个样本称为一个&quot;<strong>训练样本</strong>&quot; (training sample),训练样本组成的集合称为&quot;<strong>训练集</strong>&quot; (training set). 学得模型对应了关于数据的某种潜在的规律，因此亦称&quot;<strong>假设</strong>&quot;
+(hypothesis); 这种潜在规律自身，则称为&quot;<strong>真相</strong>&ldquo;或&rdquo;<strong>真实</strong>&quot;(ground-truth) ，学习过程就是为了找出或逼近真相.</p>
+<p>学得模型后，使用其母行预测的过程称为&quot;<strong>测试</strong>&quot;(testing) ，被预测的样本
+称为&quot;<strong>测试样本</strong>&quot; (testing sample).</p>
+<blockquote>
+<p>都有哪些机器学习算法？</p></blockquote>
+<p><a href="https://s3.amazonaws.com/assets.datacamp.com/email/other/ML+Cheat+Sheet_2.pdf">一份算法列表</a></p>
+<p><img loading="lazy" src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png"></p>
+<p>除如图所示的监督和非监督学习外，<strong>强化学习</strong>也是一类基本学习算法。</p>
+<blockquote>
+<p>什么是深度学习</p></blockquote>
+<p>深度学习（Deep Learning）是机器学习的一个分支，是一种基于人工神经网络的算法模型。它模仿人类大脑处理信息的方式，采用<strong>多层神经网络</strong>从大量数据中提取特征并进行决策。深度学习在监督，非监督，强化学习中均有应用。</p>
+<h2 id="对学习的理解">对学习的理解<a hidden class="anchor" aria-hidden="true" href="#对学习的理解">#</a></h2>
+<p>我们可以把学习过程看作一个在所有假设 (hypothesis)组成的空间中进行搜索的过程，搜索目标是找到与训练集&quot;匹配&quot;(fit) 的假设，即能够将训练集中的瓜判断正确的假设.假设的表示一旦确定，假设空间及其规模大小就确定了.</p>
+<p>可能有多个假设与训练集一致，即存在着一个与训练集一致的&quot;<strong>假设集合</strong>&quot;，我们称之为&quot;版本空间&quot; (version space).</p>
+<p>机器学习算法在学习过程中对某种类型假设的偏好，称为&quot;<strong>归纳偏好</strong>&quot; (inductive bias) ,或简称为&quot;偏好&quot;.任何一个有效的机器学习算法必有其归纳偏好，否则它将被假设空间中看似在训练集上&quot;等效&quot;的假设所迷惑，而无法产生确定的学习结果.</p>
+<p>归纳偏好可看作学习算法自身在一个可能很庞大的假设空间中对假设进行选择的启发式或&quot;价值观&quot;。&ldquo;奥卡姆剃刀&rdquo; (Occam&rsquo;s razor)是一种常用的、自然科学研究中最基本的原则，即&quot;若有多个假设与观察一致，则选最简单的那个。</p>
+<p>事实上，归纳偏好对应了学习算法本身所做出的关于&quot;什么样的模型更好&quot;的假设.在具体的现实问题中，这个假设是否成立，即算法的归纳偏好是否与问题本身匹配，大多数时候直接决定了算法能否取得好的性能.</p>
+<blockquote>
+<p>不同的神经网络架构既体现了不同的假设空间，也体现了不同的归纳偏好</p>
+<p><strong>假设空间</strong>：由架构定义，是模型可以表示的所有可能函数。</p>
+<blockquote>
+<p><a href="https://www.wikiwand.com/en/articles/Universal_approximation_theorem">理论上来说</a>，一层全连接神经网络（具有足够的神经元和非线性激活函数）就能逼近任意连续函数。</p></blockquote>
+<p><strong>归纳偏好</strong>：由架构及其优化过程（例如损失函数、正则化策略）定义，是模型在有限数据下更倾向选择的函数。</p></blockquote>
+<p>而同时，根据<a href="https://www.wikiwand.com/en/articles/No_free_lunch_theorem">NFL 定理</a>，<strong>没有任何一种学习算法在所有问题上都优于其他算法</strong>。</p>
+<p>直观来说：</p>
+<ul>
+<li>如果我们对<strong>问题分布</strong>一无所知，那么所有算法在这些问题上成功的概率是等价的。</li>
+<li>要在特定任务中取得好性能，算法必须<strong>对任务的特定性质做出假设</strong>（即引入归纳偏好）。</li>
+</ul>
+<h2 id="模型评估和选择">模型评估和选择<a hidden class="anchor" aria-hidden="true" href="#模型评估和选择">#</a></h2>
+<h3 id="经验误差与过拟合">经验误差与过拟合<a hidden class="anchor" aria-hidden="true" href="#经验误差与过拟合">#</a></h3>
+<p>在机器学习中，我们通常用以下指标来衡量模型的性能：</p>
+<ul>
+<li><strong>错误率（Error Rate）</strong>：分类错误的样本数占样本总数的比例。例如，如果在 $m$ 个样本中有 $\alpha$ 个样本被分类错误，则： $\text{错误率} = \frac{\alpha}{m}$</li>
+<li><strong>精度（Accuracy）</strong>：分类正确的样本数占样本总数的比例，与错误率互补： $\text{精度} = 1 - \text{错误率}$</li>
+</ul>
+<p>更广义地，我们把<strong>学习器的实际预测输出与样本的真实输出之间的差异</strong>称为“误差（Error）”：</p>
+<ul>
+<li><strong>训练误差（Training Error）</strong>：学习器在训练集上的误差，又称为“经验误差（Empirical Error）”。</li>
+<li><strong>泛化误差（Generalization Error）</strong>：学习器在新样本上的误差。</li>
+</ul>
+<p>我们的目标是构建一个泛化误差尽可能小的学习器。然而，<strong>由于事先无法得知新样本的分布</strong>，我们通常通过最小化经验误差来间接优化泛化误差。</p>
+<p>在实践中，我们希望学习器能对新样本做出准确预测，这要求它从训练数据中学到能适用于所有潜在样本的“普遍规律”。但模型的学习能力可能出现两种极端情况：</p>
+<ol>
+<li><strong>过拟合（Overfitting）</strong>：
+学习器对训练样本学得过于“精准”，甚至将训练样本中特有的噪声或不普遍的特性当成一般规律。这会导致模型对新样本的泛化性能下降。</li>
+<li><strong>欠拟合（Underfitting）</strong>：
+学习器没有充分捕捉训练样本的一般规律，导致模型在训练集和测试集上的表现都不理想。</li>
+</ol>
+<p><strong>常见原因：</strong></p>
+<ul>
+<li><strong>过拟合</strong>：学习能力过强，模型复杂度过高。</li>
+<li><strong>欠拟合</strong>：学习能力不足，模型复杂度过低。</li>
+</ul>
+<p>过拟合是机器学习中的一个普遍现象，无法彻底避免，但可以通过以下方法缓解或减小其影响：</p>
+<ul>
+<li>增加训练数据。</li>
+<li>使用正则化（如 $L_1$ 或 $L_2$ 正则化）。</li>
+<li>采用早停（Early Stopping）策略。</li>
+<li>使用更简单的模型（降低复杂度）。</li>
+<li>引入交叉验证（Cross-Validation）评估模型性能。</li>
+</ul>
+<p><strong>本质限制</strong>：过拟合无法完全避免，因为机器学习问题通常是 NP 难或更复杂的，而有效的学习算法必然是多项式时间内运行完成。要彻底避免过拟合，经验误差最小化就能找到最优解，而这在理论上等同于 $P=NP$（构造性地证明），目前尚未被证明。</p>
+<blockquote>
+<p>许多学习问题（如神经网络权重优化、支持向量机中的核参数选择等）涉及<strong>非凸优化</strong>问题，或需要在一个离散的组合空间中搜索最佳解。这类问题通常被证明为 NP难。</p></blockquote>
+<p>在实际任务中，我们面临许多选择，包括：</p>
+<ul>
+<li><strong>不同的学习算法</strong>（如决策树、支持向量机、深度学习）。</li>
+<li><strong>同一算法的不同参数配置</strong>（如正则化强度、学习率、网络结构）。</li>
+</ul>
+<p>这引出了<strong>模型选择</strong>（Model Selection）问题： 如何选择一个泛化性能最好的模型？</p>
+<p><strong>理想目标</strong>：直接评估候选模型的泛化误差，选择泛化误差最小的模型。
+<strong>现实困境</strong>：泛化误差无法直接获得，训练误差又可能因过拟合而无法准确反映模型性能。</p>
+<h3 id="评估方法">评估方法<a hidden class="anchor" aria-hidden="true" href="#评估方法">#</a></h3>
+<p>在机器学习中，模型的性能评估是关键的一环。为了衡量模型的泛化能力（即在新样本上的表现），我们通常通过实验测试来评估泛化误差。以下将介绍几种常用的数据集划分与评估方法，并探讨参数调节的技巧。</p>
+<p>在评估模型时，需将原始数据集 $D$（包含 $m$ 个样本）划分为训练集 $S$ 和测试集 $T$，即 $D = S \cup T$ 且 $S \cap T = \emptyset$。训练集用于训练模型，测试集用于评估模型在未见样本上的表现。测试误差（Testing Error）被视为泛化误差的近似，假设测试样本与训练样本是从相同分布中独立同分布抽取的。</p>
+<h4 id="1-留出法hold-out-method">1. <strong>留出法（Hold-out Method）</strong><a hidden class="anchor" aria-hidden="true" href="#1-留出法hold-out-method">#</a></h4>
+<p>留出法是最简单的评估方法，将数据集 $D$ 随机划分为训练集和测试集。例如，常用 2/3 至 4/5 的样本作为训练集，其余作为测试集。</p>
+<p><strong>注意事项：</strong></p>
+<ul>
+<li>数据划分需尽量保持分布一致性（如分类任务中保持类别比例），可通过<strong>分层采样</strong>（Stratified Sampling）实现。</li>
+<li>单次划分的评估结果可能不稳定，因此需多次随机划分，取平均值作为最终评估结果。</li>
+</ul>
+<p><strong>权衡：</strong></p>
+<ul>
+<li>训练集比例过大：模型更接近使用全数据训练的情况，但测试集过小可能导致结果不稳定。</li>
+<li>测试集比例过大：测试结果更稳定，但训练集与全数据差距较大，可能影响评估结果的保真性（Fidelity）。</li>
+</ul>
+<h4 id="2-交叉验证法cross-validation">2. <strong>交叉验证法（Cross-validation）</strong><a hidden class="anchor" aria-hidden="true" href="#2-交叉验证法cross-validation">#</a></h4>
+<p>交叉验证将数据集 $D$ 分为 $k$ 个大小相等的互斥子集：
+$D = D_1 \cup D_2 \cup &hellip; \cup D_k$​，且 $D_i \cap D_j = \emptyset , (i \neq j)$</p>
+<p>每次用 $k−1$ 个子集作为训练集，剩余一个子集作为测试集，重复 $k$ 次后取测试结果的均值作为最终评估结果。常见的 $k$ 值为 10，称为<strong>10 折交叉验证</strong>（10-fold Cross-validation）。</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>比留出法更稳定可靠。</li>
+<li>可随机重复多次交叉验证（如 10 次 10 折交叉验证），进一步减少划分差异的影响。</li>
+</ul>
+<p><strong>特例：留一法（Leave-One-Out Cross-validation, LOO）</strong></p>
+<ul>
+<li>令 $k=m$，即每次仅用一个样本作为测试集，其余样本作为训练集。</li>
+<li>LOO 不受随机划分影响，训练集与全数据集非常接近，但计算复杂度较高，尤其在样本量较大时。</li>
+</ul>
+<blockquote>
+<p>在理论上，多次留出法的随机划分结果有可能与交叉验证法某次划分完全一致</p></blockquote>
+<h4 id="3-自助法bootstrapping">3. <strong>自助法（Bootstrapping）</strong><a hidden class="anchor" aria-hidden="true" href="#3-自助法bootstrapping">#</a></h4>
+<p>自助法通过<strong>自助采样</strong>（Bootstrap Sampling）生成新的训练集。每次从原始数据集 $D$ 中随机抽取一个样本放入训练集，并将其放回，再次采样，重复 $m$ 次。采样后：</p>
+<ul>
+<li>$D′$ 为训练集，包含 $m$ 个样本，其中部分样本重复出现。</li>
+<li>$D \setminus D&rsquo;$ 作为测试集，包含约 36.8% 的未被采样样本（概率计算如下）： $P(\text{样本未被采样}) = (1 - \frac{1}{m})^m \approx e^{-1} \approx 36.8%$</li>
+</ul>
+<p><strong>特点：</strong></p>
+<ul>
+<li>适用于数据量较小或难以划分的场景。</li>
+<li>可生成多个训练集，用于集成学习等方法。</li>
+</ul>
+<p><strong>局限：</strong></p>
+<ul>
+<li>改变了数据分布，可能引入估计偏差。</li>
+</ul>
+<hr>
+<h4 id="参数调节与最终模型选择">参数调节与最终模型选择<a hidden class="anchor" aria-hidden="true" href="#参数调节与最终模型选择">#</a></h4>
+<p>机器学习模型通常有多个参数需设定，不同参数配置会显著影响模型性能。<strong>调参</strong>（Parameter Tuning）是优化模型性能的重要步骤。</p>
+<p><strong>常见调参方法：</strong></p>
+<ol>
+<li><strong>网格搜索（Grid Search）：</strong>
+<ul>
+<li>为每个参数设定取值范围和步长，逐一评估所有参数组合，选择性能最佳者。</li>
+<li>计算复杂度较高，但可行性依赖于参数数量和候选值范围。</li>
+<li>示例：3 个参数，每个参数有 5 个候选值，需训练 $5^3 = 125$ 个模型。</li>
+</ul>
+</li>
+<li><strong>随机搜索（Random Search）：</strong>
+<ul>
+<li>随机采样参数组合，降低计算成本。</li>
+</ul>
+</li>
+<li><strong>验证集（Validation Set）：</strong>
+<ul>
+<li>在训练数据中留出一部分作为验证集，用于模型评估和参数调节。</li>
+<li>实际测试数据则保留用于最终测试。</li>
+<li>常用的比例是训练集占 70%~80%，测试集占 20%~30%。再从训练集划分出验证集，常见比例是：训练集占原始数据的 60%~70%，验证集占 10%~20%。</li>
+<li>验证集允许模型在开发过程中尝试不同的算法或参数设置，为模型选择和调参提供依据，而测试集不参与这个过程，以<strong>防止评估偏差</strong>。</li>
+</ul>
+</li>
+</ol>
+<h2 id="神经网络"><a href="https://ml-cheatsheet.readthedocs.io/en/latest/nn_concepts.html">神经网络</a><a hidden class="anchor" aria-hidden="true" href="#神经网络">#</a></h2>
+<h3 id="神经元模型">神经元模型<a hidden class="anchor" aria-hidden="true" href="#神经元模型">#</a></h3>
+<p><strong>神经网络</strong>是由具有适应性的简单单元组成的广泛并行互连的网络，它的组织能够模拟生物神经系统对真实世界物体所作出的交互反应。神经网络中最基本的成分是<strong>神经元</strong> (neuron)模型。</p>
+<p><img loading="lazy" src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png"></p>
+<p>（M-P 神经元）</p>
+<h3 id="感知机和多层网络">感知机和多层网络<a hidden class="anchor" aria-hidden="true" href="#感知机和多层网络">#</a></h3>
+<p>感知机 (Perceptron) 由两层 神经元 组成，感知机能容易地实现逻辑与、或、非运算。</p>
+<p><img loading="lazy" src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png"></p>
+<p>史一般的，常见的神经网络是形如图所示的层级结构，每层神经元与下
+层神经元全互连。神经元之间不存在同层连接，也不存在跨层连接。这样 的
+神经网络结构通常称为&quot; 多层前馈神经网络 &quot; (multi-layer feedforward neural networks)</p>
+<p><img loading="lazy" src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png"></p>
+<h3 id="反向传播算法">反向传播算法<a hidden class="anchor" aria-hidden="true" href="#反向传播算法">#</a></h3>
+<p>最常用的神经网络训练方法，详见： <a href="https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html">https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html</a></p>
+<h2 id="深度学习训练技巧">深度学习训练技巧<a hidden class="anchor" aria-hidden="true" href="#深度学习训练技巧">#</a></h2>
+<p>深度学习训练中的变量：</p>
+<ol>
+<li>数据集</li>
+<li>模型结构（model bias）</li>
+<li>超参数
+<ol>
+<li>epoch数目，batch大小等</li>
+<li>loss function</li>
+<li>优化算法</li>
+</ol>
+</li>
+</ol>
+<p>解决问题都得从这几个方面入手</p>
+<h3 id="应对欠拟合问题">应对欠拟合问题<a hidden class="anchor" aria-hidden="true" href="#应对欠拟合问题">#</a></h3>
+<p>优化过程中，神经网络的目标是最小化损失函数。然而，优化过程可能会遇到多种挑战，尤其是在高维空间中。</p>
+<p>Adam算法结合了RMSProp和动量方法，是目前最常用的优化算法之一，能够有效提高训练速度，并避免梯度消失问题。最为常用。</p>
+<h4 id="1-局部最优与鞍点">1. 局部最优与鞍点<a hidden class="anchor" aria-hidden="true" href="#1-局部最优与鞍点">#</a></h4>
+<ul>
+<li><strong>局部最优解</strong>：损失函数在某个局部区域内达到最小值，这可能导致优化算法在该点停滞，从而影响模型的训练。</li>
+<li><strong>鞍点</strong>：在高维空间中，鞍点比局部最优解更多。鞍点的梯度为零，但它既不是最小值也不是最大值，优化算法容易被卡在这种点上。
+<ul>
+<li><strong>解决鞍点</strong>：可以通过计算<strong>Hessian矩阵</strong>来判断一个点是否为鞍点。训练过程中使用<strong>动量</strong>和<strong>自适应学习率</strong>等技术可以帮助避免被卡住。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-小批量与噪声">2. 小批量与噪声<a hidden class="anchor" aria-hidden="true" href="#2-小批量与噪声">#</a></h4>
+<ul>
+<li><strong>小批量的优势</strong>：小批量训练时，由于每个批次的样本较少，噪声较大，这种噪声有助于模型跳出局部最小值，避免陷入“峡谷”中。实验证明，小批量训练有助于提高模型的泛化能力，并且在测试集上的表现通常更好。
+<ul>
+<li><strong>劣势</strong>：小批量训练需要更多的时间来完成一个epoch，因为每个batch的训练时间较长。</li>
+</ul>
+</li>
+<li><strong>大批量的劣势</strong>：大批量训练时，由于噪声较小，模型更容易停留在局部最小值，从而导致训练效果不佳。</li>
+</ul>
+<h4 id="3-自适应学习率">3. 自适应学习率<a hidden class="anchor" aria-hidden="true" href="#3-自适应学习率">#</a></h4>
+<p>学习率是控制梯度下降步伐的重要超参数。过大的学习率可能导致优化过程不稳定，过小的学习率则可能导致收敛缓慢。</p>
+<ul>
+<li><strong>自适应学习率</strong>：使用<strong>Adagrad</strong>、<strong>RMSProp</strong>、<strong>Adam</strong>等自适应学习率算法，可以根据每个参数的梯度大小调整步伐，从而提高训练效率和收敛速度。</li>
+<li><strong>学习率调度</strong>：逐渐降低学习率（如通过<strong>学习率衰减</strong>或<strong>warm-up</strong>策略），能够避免震荡，帮助网络找到更精确的解。</li>
+</ul>
+<h4 id="4-动量momentum">4. 动量（Momentum）<a hidden class="anchor" aria-hidden="true" href="#4-动量momentum">#</a></h4>
+<p>动量方法通过结合当前的梯度和前一时刻的梯度信息，帮助网络在遇到局部最小值时继续向前推进，避免停滞在局部最小值。动量方法模仿物理中小球滚动的现象，在训练过程中具有较强的稳定性。</p>
+<h4 id="5-批归一化batch-normalization">5. 批归一化（Batch Normalization）<a hidden class="anchor" aria-hidden="true" href="#5-批归一化batch-normalization">#</a></h4>
+<p>批归一化通过对每层输入进行标准化，消除不同维度间的差异，使得网络训练更加稳定。</p>
+<ul>
+<li><strong>平坦化误差表面</strong>：批归一化能有效平滑损失函数，减少训练过程中出现不均匀的误差。</li>
+<li><strong>训练与测试的区别</strong>：在训练时，批归一化使用当前批次的数据进行标准化，而在测试时使用训练期间计算的均值和方差。</li>
+</ul>
+<h4 id="6-激活函数的选择">6. 激活函数的选择<a hidden class="anchor" aria-hidden="true" href="#6-激活函数的选择">#</a></h4>
+<p>激活函数对优化过程有着重要影响。不同的激活函数会决定网络的非线性能力，从而影响优化效果。</p>
+<ul>
+<li><strong>ReLU（Rectified Linear Unit）</strong>：ReLU是目前最常用的激活函数，能够有效避免梯度消失问题，并且计算效率高。</li>
+<li><strong>Sigmoid和Tanh</strong>：这些激活函数适用于浅层网络，但在深层网络中容易出现梯度消失问题，影响训练效果。</li>
+</ul>
+<h3 id="应对过拟合问题">应对过拟合问题<a hidden class="anchor" aria-hidden="true" href="#应对过拟合问题">#</a></h3>
+<p>过拟合是深度学习训练过程中常见的问题，特别是当模型在训练集上表现很好，但在测试集上性能较差时。为了减少过拟合，可以采用以下方法：</p>
+<h4 id="1-增加数据量">1. 增加数据量<a hidden class="anchor" aria-hidden="true" href="#1-增加数据量">#</a></h4>
+<ul>
+<li><strong>数据增强</strong>：通过对现有数据进行旋转、平移、缩放等变换，生成更多的样本，以减少模型对训练数据的依赖，从而提高泛化能力。</li>
+<li><strong>正则化技术</strong>：如<strong>L2正则化</strong>和<strong>dropout</strong>等，能够有效抑制模型的过拟合。</li>
+</ul>
+<h4 id="2-正则化方法">2. 正则化方法<a hidden class="anchor" aria-hidden="true" href="#2-正则化方法">#</a></h4>
+<ul>
+<li><strong>L2正则化</strong>：通过在损失函数中增加惩罚项，迫使模型参数保持较小的值，从而避免模型过于复杂。</li>
+<li><strong>Dropout</strong>：在训练过程中随机丢弃一定比例的神经元，这样可以避免网络过度依赖某些特定神经元，从而提高泛化能力。</li>
+</ul>
+<h4 id="3-提前停止early-stopping">3. 提前停止（Early Stopping）<a hidden class="anchor" aria-hidden="true" href="#3-提前停止early-stopping">#</a></h4>
+<p>在训练过程中，通过监控验证集的损失，若验证集损失不再下降或开始上升，则提前停止训练。这样可以避免模型在训练集上过拟合。</p>
+<h4 id="4-更简单的模型结构">4. 更简单的模型结构<a hidden class="anchor" aria-hidden="true" href="#4-更简单的模型结构">#</a></h4>
+<ul>
+<li><strong>减小网络规模</strong>：使用较小的网络结构（例如减少网络层数或神经元数量），可以减少模型的复杂度，从而降低过拟合的风险。</li>
+</ul>
+<h3 id="分类任务中的优化策略">分类任务中的优化策略<a hidden class="anchor" aria-hidden="true" href="#分类任务中的优化策略">#</a></h3>
+<p>在分类任务中，优化策略需要根据任务的特点进行调整：</p>
+<h4 id="1-分类问题转化为回归问题">1. 分类问题转化为回归问题<a hidden class="anchor" aria-hidden="true" href="#1-分类问题转化为回归问题">#</a></h4>
+<p>有时将分类问题转化为回归问题进行解决，网络输出一个连续值。这种方法可能会引入伪关系，因此更常见的是使用<strong>One-hot向量</strong>作为输出，并结合<strong>Softmax</strong>函数进行标准化。</p>
+<h4 id="2-损失函数的选择">2. 损失函数的选择<a hidden class="anchor" aria-hidden="true" href="#2-损失函数的选择">#</a></h4>
+<ul>
+<li><strong>交叉熵损失 (Cross-Entropy Loss)</strong>：对于分类任务，尤其是多分类任务，交叉熵损失是更合适的选择，特别是与Softmax结合使用时，能够更好地指导优化过程。</li>
+</ul>
+<h2 id="pytorch手写数字识别的例子">Pytorch——手写数字识别的例子<a hidden class="anchor" aria-hidden="true" href="#pytorch手写数字识别的例子">#</a></h2>
+<p><a href="http://blog.ezyang.com/2019/05/pytorch-internals/">pytorch internals</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch.nn</span> <span style="color:#c678dd">as</span> <span style="color:#e06c75">nn</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch.optim</span> <span style="color:#c678dd">as</span> <span style="color:#e06c75">optim</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch.nn.functional</span> <span style="color:#c678dd">as</span> <span style="color:#e06c75">F</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">from</span> <span style="color:#e06c75">torch.utils.data</span> <span style="color:#c678dd">import</span> <span style="color:#e06c75">DataLoader</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">from</span> <span style="color:#e06c75">torchvision</span> <span style="color:#c678dd">import</span> <span style="color:#e06c75">datasets</span>, <span style="color:#e06c75">transforms</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">from</span> <span style="color:#e06c75">torch.utils.data</span> <span style="color:#c678dd">import</span> <span style="color:#e06c75">random_split</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 超参数</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">batch_size</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">64</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">learning_rate</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.001</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">epochs</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">10</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">dropout_rate</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 1. 数据加载和预处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">transform</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">transforms</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Compose</span>([
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">transforms</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">ToTensor</span>(),
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">transforms</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Normalize</span>((<span style="color:#d19a66">0.5</span>,), (<span style="color:#d19a66">0.5</span>,))
+</span></span><span style="display:flex;"><span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 加载MNIST数据集</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">train_dataset</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">datasets</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">MNIST</span>(<span style="color:#e06c75">root</span><span style="color:#56b6c2">=</span><span style="color:#98c379">&#39;./data&#39;</span>, <span style="color:#e06c75">train</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>, <span style="color:#e06c75">download</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>, <span style="color:#e06c75">transform</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">transform</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">test_dataset</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">datasets</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">MNIST</span>(<span style="color:#e06c75">root</span><span style="color:#56b6c2">=</span><span style="color:#98c379">&#39;./data&#39;</span>, <span style="color:#e06c75">train</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>, <span style="color:#e06c75">download</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>, <span style="color:#e06c75">transform</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">transform</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 数据分批次处理</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">train_loader</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">DataLoader</span>(<span style="color:#e06c75">train_dataset</span>, <span style="color:#e06c75">batch_size</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">shuffle</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">test_loader</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">DataLoader</span>(<span style="color:#e06c75">test_dataset</span>, <span style="color:#e06c75">batch_size</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">shuffle</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 2. 定义卷积神经网络 (CNN)</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">SimpleCNN</span>(<span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Module</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#56b6c2;font-weight:bold">__init__</span>(<span style="color:#e06c75">self</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#e5c07b">super</span>(<span style="color:#e06c75">SimpleCNN</span>, <span style="color:#e06c75">self</span>)<span style="color:#56b6c2">.</span><span style="color:#56b6c2;font-weight:bold">__init__</span>()
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 第一卷积层，输入1个通道，输出32个通道</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Conv2d</span>(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">32</span>, <span style="color:#e06c75">kernel_size</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">3</span>, <span style="color:#e06c75">stride</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">padding</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">BatchNorm2d</span>(<span style="color:#d19a66">32</span>)  <span style="color:#7f848e"># 批归一化</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 第二卷积层，输入32个通道，输出64个通道</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Conv2d</span>(<span style="color:#d19a66">32</span>, <span style="color:#d19a66">64</span>, <span style="color:#e06c75">kernel_size</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">3</span>, <span style="color:#e06c75">stride</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">padding</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">BatchNorm2d</span>(<span style="color:#d19a66">64</span>)  <span style="color:#7f848e"># 批归一化</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 第三卷积层，输入64个通道，输出128个通道</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv3</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Conv2d</span>(<span style="color:#d19a66">64</span>, <span style="color:#d19a66">128</span>, <span style="color:#e06c75">kernel_size</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">3</span>, <span style="color:#e06c75">stride</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">padding</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn3</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">BatchNorm2d</span>(<span style="color:#d19a66">128</span>)  <span style="color:#7f848e"># 批归一化</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 线性层（全连接层）</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#d19a66">128</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span>, <span style="color:#d19a66">512</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#d19a66">512</span>, <span style="color:#d19a66">10</span>)  <span style="color:#7f848e"># 输出10个类别（MNIST是0-9的数字）</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># Dropout层，防止过拟合</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">dropout</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Dropout</span>(<span style="color:#e06c75">p</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">dropout_rate</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">forward</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">x</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 卷积层 + 激活函数 + 批归一化 + 池化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn1</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv1</span>(<span style="color:#e06c75">x</span>)))
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max_pool2d</span>(<span style="color:#e06c75">x</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn2</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv2</span>(<span style="color:#e06c75">x</span>)))
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max_pool2d</span>(<span style="color:#e06c75">x</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn3</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv3</span>(<span style="color:#e06c75">x</span>)))
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max_pool2d</span>(<span style="color:#e06c75">x</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 将特征图展平（Flatten）</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">x</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">view</span>(<span style="color:#56b6c2">-</span><span style="color:#d19a66">1</span>, <span style="color:#d19a66">128</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 全连接层</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc1</span>(<span style="color:#e06c75">x</span>))
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">dropout</span>(<span style="color:#e06c75">x</span>)  <span style="color:#7f848e"># 在全连接层后应用Dropout</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc2</span>(<span style="color:#e06c75">x</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">x</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 3. 模型、损失函数和优化器</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">model</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">SimpleCNN</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># Adam优化器，并使用L2正则化（weight decay）</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">optimizer</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">optim</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Adam</span>(<span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">parameters</span>(), <span style="color:#e06c75">lr</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">learning_rate</span>, <span style="color:#e06c75">weight_decay</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">0.0001</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 使用交叉熵损失函数（适用于分类任务）</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">criterion</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">CrossEntropyLoss</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 4. 训练过程</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">train</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">train_loader</span>, <span style="color:#e06c75">optimizer</span>, <span style="color:#e06c75">criterion</span>, <span style="color:#e06c75">epoch</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">train</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">running_loss</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">total</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">for</span> <span style="color:#e06c75">batch_idx</span>, (<span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span>) <span style="color:#56b6c2">in</span> <span style="color:#e5c07b">enumerate</span>(<span style="color:#e06c75">train_loader</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 将数据移到GPU（如果可用）</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">data</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>(), <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 清除梯度</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">optimizer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">zero_grad</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 向前传播</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">output</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">model</span>(<span style="color:#e06c75">data</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 计算损失</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">loss</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">criterion</span>(<span style="color:#e06c75">output</span>, <span style="color:#e06c75">target</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">running_loss</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">loss</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 向后传播</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">loss</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">backward</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 更新参数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">optimizer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">step</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 计算准确度</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">_</span>, <span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max</span>(<span style="color:#e06c75">output</span>, <span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">total</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">size</span>(<span style="color:#d19a66">0</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">+=</span> (<span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">target</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">sum</span>()<span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># 打印每个epoch的损失和准确率</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">print</span>(<span style="color:#98c379">f</span><span style="color:#98c379">&#39;Epoch </span><span style="color:#98c379">{</span><span style="color:#e06c75">epoch</span><span style="color:#98c379">}</span><span style="color:#98c379">, Loss: </span><span style="color:#98c379">{</span><span style="color:#e06c75">running_loss</span><span style="color:#56b6c2">/</span><span style="color:#e5c07b">len</span>(<span style="color:#e06c75">train_loader</span>)<span style="color:#98c379">:</span><span style="color:#98c379">.4f</span><span style="color:#98c379">}</span><span style="color:#98c379">, Accuracy: </span><span style="color:#98c379">{</span><span style="color:#d19a66">100.</span> <span style="color:#56b6c2">*</span> <span style="color:#e06c75">correct</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">total</span><span style="color:#98c379">:</span><span style="color:#98c379">.2f</span><span style="color:#98c379">}</span><span style="color:#98c379">%&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 5. 测试过程</span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">test</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">test_loader</span>, <span style="color:#e06c75">criterion</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">eval</span>()  <span style="color:#7f848e"># 切换为评估模式</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">test_loss</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">total</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">with</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">no_grad</span>():  <span style="color:#7f848e"># 测试时不需要计算梯度</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">for</span> <span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span> <span style="color:#56b6c2">in</span> <span style="color:#e06c75">test_loader</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 将数据移到GPU（如果可用）</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">data</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>(), <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 向前传播</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">output</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">model</span>(<span style="color:#e06c75">data</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 计算损失</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">loss</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">criterion</span>(<span style="color:#e06c75">output</span>, <span style="color:#e06c75">target</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">test_loss</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">loss</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 计算准确度</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">_</span>, <span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max</span>(<span style="color:#e06c75">output</span>, <span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">total</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">size</span>(<span style="color:#d19a66">0</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">+=</span> (<span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">target</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">sum</span>()<span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># 打印测试集上的损失和准确率</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">print</span>(<span style="color:#98c379">f</span><span style="color:#98c379">&#39;Test Loss: </span><span style="color:#98c379">{</span><span style="color:#e06c75">test_loss</span><span style="color:#56b6c2">/</span><span style="color:#e5c07b">len</span>(<span style="color:#e06c75">test_loader</span>)<span style="color:#98c379">:</span><span style="color:#98c379">.4f</span><span style="color:#98c379">}</span><span style="color:#98c379">, Test Accuracy: </span><span style="color:#98c379">{</span><span style="color:#d19a66">100.</span> <span style="color:#56b6c2">*</span> <span style="color:#e06c75">correct</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">total</span><span style="color:#98c379">:</span><span style="color:#98c379">.2f</span><span style="color:#98c379">}</span><span style="color:#98c379">%&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 6. 训练和测试模型</span>
+</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 如果有GPU，使用GPU训练</span>
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">device</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">device</span>(<span style="color:#98c379">&#34;cuda&#34;</span> <span style="color:#c678dd">if</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">is_available</span>() <span style="color:#c678dd">else</span> <span style="color:#98c379">&#34;cpu&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">to</span>(<span style="color:#e06c75">device</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">for</span> <span style="color:#e06c75">epoch</span> <span style="color:#56b6c2">in</span> <span style="color:#e5c07b">range</span>(<span style="color:#d19a66">1</span>, <span style="color:#e06c75">epochs</span> <span style="color:#56b6c2">+</span> <span style="color:#d19a66">1</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">train</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">train_loader</span>, <span style="color:#e06c75">optimizer</span>, <span style="color:#e06c75">criterion</span>, <span style="color:#e06c75">epoch</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">test</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">test_loader</span>, <span style="color:#e06c75">criterion</span>)
+</span></span></code></pre></div>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>MySQL 知识点总结 </span>
+  </a>
+  <a class="next" href="https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/">
+    <span class="title">Next »</span>
+    <br>
+    <span>吉登斯「社会学」笔记</span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on x"
+            href="https://x.com/intent/tweet/?text=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f&amp;hashtags=">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f&amp;title=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93&amp;summary=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93&amp;source=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f&title=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on whatsapp"
+            href="https://api.whatsapp.com/send?text=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93%20-%20https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on telegram"
+            href="https://telegram.me/share/url?text=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share 深度学习基础知识总结 on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86%e6%80%bb%e7%bb%93&u=https%3a%2f%2frzyn2020.github.io%2fposts%2f%25E6%25B7%25B1%25E5%25BA%25A6%25E5%25AD%25A6%25E4%25B9%25A0%25E5%259F%25BA%25E7%25A1%2580%25E7%259F%25A5%25E8%25AF%2586%25E6%2580%25BB%25E7%25BB%2593%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><script src="https://giscus.app/client.js"
+        data-repo="RZYN2020/RZYN2020.github.io"
+        data-repo-id="R_kgDONMpsCg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDONMpsCs4CkUS9"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
