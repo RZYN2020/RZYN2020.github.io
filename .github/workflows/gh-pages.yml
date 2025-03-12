@@ -20,8 +20,7 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.119.0'
-          # extended: true
+          hugo-version: 'latest'
 
       - name: Get Theme
         run: git submodule update --init --recursive
