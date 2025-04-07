@@ -6,11 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>BitTorrent协议及其扩展 | Ekstasis&#39;s Blog</title>
-<meta name="keywords" content="BitTorrent">
+<meta name="keywords" content="BitTorrent, Knowledge">
 <meta name="description" content="“I call architecture frozen music&hellip;” - Goethe">
 <meta name="author" content="">
 <link rel="canonical" href="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.b3ae8461190bd9c69647da226674b5250eb1633665776ea553f5f6b73184bfb8.css" integrity="sha256-s66EYRkL2caWR9oiZnS1JQ6xYzZld26lU/X2tzGEv7g=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b3b257500bbfbe3513cdb8af760dc45f91d77c39ba7318cce6a089aeb7e5f8ec.css" integrity="sha256-s7JXUAu/vjUTzbivdg3EX5HXfDm6cxjM5qCJrrfl&#43;Ow=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://rzyn2020.github.io/images/yinyang.webp">
 <link rel="icon" type="image/png" sizes="16x16" href="https://rzyn2020.github.io/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://rzyn2020.github.io/favicon-32x32.png">
@@ -67,6 +67,7 @@
     <meta property="article:published_time" content="2024-11-16T21:58:53+08:00">
     <meta property="article:modified_time" content="2024-11-16T21:58:53+08:00">
     <meta property="article:tag" content="BitTorrent">
+    <meta property="article:tag" content="Knowledge">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BitTorrent协议及其扩展">
 <meta name="twitter:description" content="“I call architecture frozen music&hellip;” - Goethe">
@@ -100,7 +101,7 @@
   "name": "BitTorrent协议及其扩展",
   "description": "“I call architecture frozen music\u0026hellip;” - Goethe\n",
   "keywords": [
-    "BitTorrent"
+    "BitTorrent", "Knowledge"
   ],
   "articleBody": "“I call architecture frozen music…” - Goethe\nBitTorrent 是一个 p2p 下载协议，官网网站见这里。官方网站内不仅含有标准规范，而且仿照PEP（Python Enhancement Protocol），有着自己的 BEP，用来对协议进行增强。\n不过官方标准规范较为难懂，这里有一份协议的非官方版本，更易于理解： Unofficial Specification\n这里也有一份简介： https://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf\np2p 网络 最严格的 p2p 网络定义为：\nA communications model in which each party has the same capabilities and either party can initiate a communication session\n也就是网络中每个节点都起相同功能，且不会出现单点故障。与之相反，server-client 式的架构就被称为 集中式 网络。\nARPNET 就是 p2p 式的；DNS system 可以算 p2p 和 集中式 的一个折中。\n假如 DNS 是集中式的，一个主机负责全世界的 IP 查询，则很容易碰上 单点故障 和 性能限制。因此，DNS 采取了分布式的架构——树形递归查询加上多级缓存。有许多起相同功能的本地 DNS 服务器，挂掉一个也不影响整个系统运作，未尝不可称之为某种程度上的 p2p。\n因此，一个宽松一点的 p2p 定义：\n“A distributed network architecture may be called a Peer-to-Peer (P-to-P, P2P,…) network, if the participants share a part of their own (hardware) resources (processing power, storage capacity, network link capacity, printers,…). These shared resources are necessary to provide the Service and content offered by the network (e.g. file sharing or shared workspaces for collaboration). They are accessible by other peers directly, without passing intermediary entities. The participants of such a network are thus resource (Service and content) providers as well as resource (Service and content) requestors (Servant-concept).”\n这样的定义下，虽然不能完全避免单点故障，但的确体现出来 p2p 的本质：\n每个参与者即是 服务提供者 又是 服务享受者 因此，p2p 就有着以下特点：\n相对可扩展性：增加服务享受者的同时也增加了服务提供者 相对稳定性：许多服务提供者，挂掉一个也无妨 BitTorrent 下面再来介绍典型的 p2p 协议 —— BitTorrent。\nBitTorrent 主要被用来分发/下载文件，因为其 p2p 的特性而不需要耗费上传者太多带宽 —— p2p 网络中的每个用户在下载文件的同时也把自己已下载好的文件传给别人。\nBitTorrent 协议与在它之前的 p2p 协议相比，有一个特点：它会把每个文件都切分为许多小块（piece），一个用户可以同时向许多同伴（peer）请求同一个文件的不同部分。\n而它之前的 p2p 协议往往是一对一协议，一个下载好的人负责给一个没有下载好的人传送文件。但是因为一般网卡的上传带宽都远远小于下载带宽，因此这种模型下，文件传送的最大速率最大也只能等于peer的上传带宽。\n但是在 BitTorrent 下，对于一个非常火爆的已经有很多人下载好的文件，我们就可以同时向他们所有人请求文件块，充分利用自己的下载带宽了。这也是为什么 BitTorrent 一经推出就统治了 p2p 下载界。\n比如上面的文件，有 169 人上传，只有 18 人下载，可想而知下载速度是非常快的\nBitTorrent 的架构中含有如下实体：\n一个元信息文件： torrent file 一个集中式 tracker 第一个参与者：seed 其他参与者：leecher tracker 会记录哪些 peer 正在下载文件，并帮助他们互相认识。peer 通过 http 协议和 tracker 进行通信，以获取相关信息。\n世界上有许多公开的 tracker 服务器，比如这个列表里收录的：trackerlist\n在一开始，一个用户决定分发某个文件时，会先做种（seed）：他会使用本地的bt软件，把文件分为通常是 512 KB 或 256Kb 许多小块（piece），并计算每个小块的 SHA-1 哈希值 ，然后把所有的哈希值和相关元信息封装在一个 torrent 文件里，传给别人。同时他也在 tracker 处登记自己持有这个文件。（通常 torrent 文件里也包含推荐的 tracker）\n当某个用户要下载时，他会向 tracker 请求 peer 列表，然后向 peer 们请求不同的文件块，并用 torrent 文件里的哈希值验证数据是否出错。\n在这个流程中，有两个算法决定着 bt 网络的正常高效运转：\n决定先向 peer 请求那个块（The Piece Selection Algorithm） —— 以达到最大下载速度 决定是否给某个 peer 发送数据（Resource Allocation） —— 以避免懒汉（free rider） The Piece Selection Algorithm 快选择算法的核心目标有两个：\n尽快在不同 peer 上复制不同的块（确保任何时刻网络中总能拼凑出一份完整的文件） 尽快下载完成文件 sub pieces BitTorrent peer 之间通过 TCP 协议进行连接，因此需要避免 TCP 慢启动机制 对传输速率的影响。块常常被划分为 16kb 大小的子块进行传输，BitTorrent 协议保证和一个 peer 之间无论何时总是有一些 子块 等待被传输，以此来维持高速连接。一个块的不同子块可以从不同的 peer 处下载。\npolicys strict policy：每开始下载一个块时，就优先下载该块的所有子块。 random first piece：刚开始下载时，为了尽快得到能给其他 peer 上传的块，就随机选择一个块进行下载。 rarest first：优先下载网络中最稀有的块。 endgame mode：当到最后一块时，向所有 peer 都请求该块的子块，以快速下载完文件。 Resource Allocation Resource Alllocation 算法用来决定和哪个 peer 进行合作。我们采用“tit-for-tat” （以牙还牙）策略，以达到利益最大化。一般来说，你上传的越多，下载的也就越快。\nEnhancements 自从 BitTorrent 被发明以来，许多 BEP 提出了一些改进，下面介绍一些有趣的改进功能。\nDecentralized tracker youtube视频简介\nBitTorrent 中，由于 tracker 服务器的存在，所以不能达到 “真p2p”，因此就有了 去中心化tracker 拓展。它基于 DHT （Distributed hash table）在 peer 间存储 peerlist，以取代中心化 tracker。\nDHT 的基本思想为：将所有 node 连接成一个环，环上每个 node 都负责存储某一范围内的 key，且知道相邻 node 的地址。查询时沿着环就可以找到目标key了。当添加或删除新 node 时，都调整数据分布以使得环结构仍然成立。\nUpnp 问题的起因是这样的：我们的 bt客户端 大都运行在内网，可以通过路由器的 NAT机制 访问外网，可是外网设备就访问不到我们的 bt客户端 了，这就让其他 peer 没办法主动和我们建立连接。为了解决这个问题，我们可以在路由器上手动设置端口转发（当然前提是你的路由器就拥有公网 IP），或者使用 VPN。\nUpnp （Universal Plug and Play）是一个应用层协议，可以在路由器上开启，接受到客户端的请求后，进行自动端口转发。其原本目标是为了让设备之间无需手动配置就能相互连接，不过许多 bt客户端 也实现了 Upnp协议，可以和路由器协商进行自动端口转发。但目前 Upnp协议 存在安全漏洞，很容易成为黑客攻击的目标。\nDDNS DDNS 即 动态（dynamic）DNS服务。如果机器每次启动都是不同的 IP，那么就可以使用 DDNS 服务，在机器每次启动时都向 DDNS 服务器告知新 IP。这适用于当你的路由器被运营商分配动态公网 IP 时，也能对外界提供一个稳定的地址。\n内网穿透 但当路由器本身就被运营商分配了局域网 IP 时，就只能通过内网穿透才能使我们的 bt客户端 暴露在公网中，接受其他 peer 的请求了。内网穿透即是通过外网中持有公网 IP 的服务器提供的中介服务，来暴露我们的客户端（相当于简化版 VPN）。\n",
   "wordCount" : "396",
@@ -141,7 +142,7 @@
         <div class="logo">
             <a href="https://rzyn2020.github.io/" accesskey="h" title="Ekstasis&#39;s Blog (Alt + H)">Ekstasis&#39;s Blog</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -399,6 +400,7 @@
   <footer class="post-footer">
     <ul class="post-tags">
       <li><a href="https://rzyn2020.github.io/tags/bittorrent/">BitTorrent</a></li>
+      <li><a href="https://rzyn2020.github.io/tags/knowledge/">Knowledge</a></li>
     </ul>
 <nav class="paginav">
   <a class="prev" href="https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/">
@@ -417,7 +419,7 @@
 <ul class="share-buttons">
     <li>
         <a target="_blank" rel="noopener noreferrer" aria-label="share BitTorrent协议及其扩展 on x"
-            href="https://x.com/intent/tweet/?text=BitTorrent%e5%8d%8f%e8%ae%ae%e5%8f%8a%e5%85%b6%e6%89%a9%e5%b1%95&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fbittorrent%25E5%258D%258F%25E8%25AE%25AE%25E5%258F%258A%25E5%2585%25B6%25E6%2589%25A9%25E5%25B1%2595%2f&amp;hashtags=BitTorrent">
+            href="https://x.com/intent/tweet/?text=BitTorrent%e5%8d%8f%e8%ae%ae%e5%8f%8a%e5%85%b6%e6%89%a9%e5%b1%95&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fbittorrent%25E5%258D%258F%25E8%25AE%25AE%25E5%258F%258A%25E5%2585%25B6%25E6%2589%25A9%25E5%25B1%2595%2f&amp;hashtags=BitTorrent%2cKnowledge">
             <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
                 <path
                     d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />

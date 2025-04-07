@@ -27,5 +27,22 @@
 &lt;blockquote&gt;
 &lt;p&gt;The current limitations of the storage API are not intrinsic aspects of MySQL/MariaDB or Postgres&amp;rsquo;s design. For both project there used to be no pluggable storage at all. We can imagine a future patch to either project that allows support for batched row reads and writes that together could make column-wise storage and vectorized execution more feasible.&lt;/p&gt;</description>
     </item>
+    <item>
+      <title>Autoboxing and IntegerCache in Java</title>
+      <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
+      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;!-- raw HTML omitted --&gt;</description>
+    </item>
+    <item>
+      <title>浅谈java8中的流</title>
+      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
+      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
+    </item>
   </channel>
 </rss>

@@ -10,8 +10,15 @@
     </follow_challenge>
     <generator>Hugo -- 0.145.0</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 12 Mar 2025 11:12:50 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 06 Apr 2025 09:58:31 +0800</lastBuildDate>
     <atom:link href="https://rzyn2020.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AI</title>
+      <link>https://rzyn2020.github.io/categories/ai/</link>
+      <pubDate>Sun, 06 Apr 2025 09:58:31 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/categories/ai/</guid>
+      <description></description>
+    </item>
     <item>
       <title>Backend</title>
       <link>https://rzyn2020.github.io/categories/backend/</link>
@@ -20,10 +27,10 @@
       <description></description>
     </item>
     <item>
-      <title>AI</title>
-      <link>https://rzyn2020.github.io/categories/ai/</link>
-      <pubDate>Mon, 13 Jan 2025 19:29:29 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/categories/ai/</guid>
+      <title>System</title>
+      <link>https://rzyn2020.github.io/categories/system/</link>
+      <pubDate>Wed, 12 Mar 2025 11:12:50 +0800</pubDate>
+      <guid>https://rzyn2020.github.io/categories/system/</guid>
       <description></description>
     </item>
     <item>
@@ -34,52 +41,10 @@
       <description></description>
     </item>
     <item>
-      <title>Network</title>
-      <link>https://rzyn2020.github.io/categories/network/</link>
-      <pubDate>Sat, 16 Nov 2024 21:58:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/categories/network/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Compiler</title>
-      <link>https://rzyn2020.github.io/categories/compiler/</link>
-      <pubDate>Sat, 09 Nov 2024 15:51:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/categories/compiler/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Scheme</title>
-      <link>https://rzyn2020.github.io/categories/scheme/</link>
-      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/categories/scheme/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Java</title>
-      <link>https://rzyn2020.github.io/categories/java/</link>
-      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/categories/java/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>OS</title>
-      <link>https://rzyn2020.github.io/categories/os/</link>
-      <pubDate>Thu, 11 Aug 2022 21:27:52 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/categories/os/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Algorithms</title>
-      <link>https://rzyn2020.github.io/categories/algorithms/</link>
+      <title>Algorithm</title>
+      <link>https://rzyn2020.github.io/categories/algorithm/</link>
       <pubDate>Sun, 20 Mar 2022 20:41:38 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/categories/algorithms/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>C</title>
-      <link>https://rzyn2020.github.io/categories/c/</link>
-      <pubDate>Sun, 14 Nov 2021 09:23:52 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/categories/c/</guid>
+      <guid>https://rzyn2020.github.io/categories/algorithm/</guid>
       <description></description>
     </item>
   </channel>

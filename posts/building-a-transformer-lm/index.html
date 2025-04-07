@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Building a Transformer LM | Ekstasis&#39;s Blog</title>
+<meta name="keywords" content="LLM, Code">
+<meta name="description" content="Once upon a time, there was a mountain.">
+<meta name="author" content="">
+<link rel="canonical" href="https://rzyn2020.github.io/posts/building-a-transformer-lm/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b3b257500bbfbe3513cdb8af760dc45f91d77c39ba7318cce6a089aeb7e5f8ec.css" integrity="sha256-s7JXUAu/vjUTzbivdg3EX5HXfDm6cxjM5qCJrrfl&#43;Ow=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://rzyn2020.github.io/images/yinyang.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="https://rzyn2020.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://rzyn2020.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://rzyn2020.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://rzyn2020.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://rzyn2020.github.io/posts/building-a-transformer-lm/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet"><meta property="og:url" content="https://rzyn2020.github.io/posts/building-a-transformer-lm/">
+  <meta property="og:site_name" content="Ekstasis&#39;s Blog">
+  <meta property="og:title" content="Building a Transformer LM">
+  <meta property="og:description" content="Once upon a time, there was a mountain.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-06T09:58:31+08:00">
+    <meta property="article:modified_time" content="2025-04-06T09:58:31+08:00">
+    <meta property="article:tag" content="LLM">
+    <meta property="article:tag" content="Code">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Building a Transformer LM">
+<meta name="twitter:description" content="Once upon a time, there was a mountain.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://rzyn2020.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Building a Transformer LM",
+      "item": "https://rzyn2020.github.io/posts/building-a-transformer-lm/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Building a Transformer LM",
+  "name": "Building a Transformer LM",
+  "description": "Once upon a time, there was a mountain.\n",
+  "keywords": [
+    "LLM", "Code"
+  ],
+  "articleBody": "Once upon a time, there was a mountain.\n输入提示 ➜ Once upon a time, there was a mountain.\n生成结果 ➜ Once upon a time, there was a mountain. In the sky, there was a big, round ball. A little boy named Tim and his mom went to the park to play. The sun was shining, and the sky was blue. In the park, Tim saw a big tree. He wanted to play near it. His mom said, “Okay, but be careful.” Tim was happy. He played near the tree. He got up and down. While playing, Tim saw a small bird. The bird was sad. Tim said, “The bird has a hurt wing. Can you help me?” The bird said, “Yes, I can help you.” Tim took the bird to his mom. He gave her a magic rock. The bird said, “Thank you, Tim. You are a good friend.” Now, Tim and the bird were friends. They played together every day.\nIntro 自从 2022 年 ChatGPT 发布后，LLM 开始席卷世界，俨然有一次新的科技浪潮之势。大模型资本市场以每年近 40% 的速度狂飙突进，在 2025 年初已接近 77 亿美元，且预计在 2034 年可达千亿级别，与之相比，较为成熟但应用领域略窄的的计算机视觉市场规模也有 250 亿美元。\n资本市场的火热与否在于应用的前景，而大模型的应用前景也显然十分广阔。现在许多 app 已接入 AI， 增强功能，而 RAG, Agent 等技术也正在迅速发展，更何况未来还有大模型辅助智能制造的广阔的场景。\n应用前景引来资本投资，资本投资引起硬件，算法，以及系统的全方面发展。在摩尔定律失效之后，领域专用硬件成为了提升计算力的绝妙法门。英伟达的 GPU 针对训练和推理做了许多优化，华为，Google 也推出了许多深度学习专用计算设备。算法层面，模型结构和参数量也都在不断演化。而系统层面，也不断有新技术和新项目来适应新的模型和硬件。在这几者的共同协作下，即使科技树点偏了，其探索之深也足以改变世界了。\n在这个背景下，无论是出于好奇还是功利，学习大模型，理解其基本原理就显得有必要了。因此，我参考cs336课程,，试着 build a transformer-language model from scratch。在过程中，我也大量参考了 Umar Jamil 的 live coding 以及李宏毅的机器学习课程。\n最终我使用 TinyStory 数据集，在一张 4090 显卡上花费一个半小时训练出了一个讲故事模型，且称之为 StoryLM。文章开头的故事续写就由 StoryLM 生成。\n这篇文章介绍该模型构建的全过程，并解释相关概念。目标读者是有一些深度学习基础的计算机专业学生（也就是年初的我）。\nArchitecture 首先，从宏观上来介绍大模型的结构以及其生命周期。\n就像任何深度学习模型一样，大模型的训练离不开模型结构，优化器，损失函数三个组成部分。优化器一般为常见的 AdamW，损失函数为分类任务常用的交叉熵，而几乎所有大模型的结构都基于 Transformer。Transformer 可分为编码器和解码器两部分，最初用于语言翻译等任务。编码器理解源语言，自回归解码器生成目标语言。而在生成式语言模型中，我们仅仅保留解码器即可。\n在实际训练中，为了防止过拟合，梯度爆炸/消失，训练难以进行三个问题，会对上面三个组成部分做诸多调整\n除了上面三者之外，训练数据也需要做一些处理。具体而言，我们需要通过 Tokenizer 加上词嵌入把句子变为模型能够理解的形式。具体可见 Tokenizer 和 Model 两小节。简而言之，一个句子会被切分成许多 token，每个 token 会被转化为一个词向量。输入一个句子后，模型会输出一个表示接在该句子后可能的 token 的概率分布。\nStoryLM 的训练数据只有2GB，而真实世界大模型的训练数据动辄数TB，为了爬取并清洗得到这些训练数据，真实的 LLM system 也包含了许多数据处理相关技术。本文暂时不涉及。\n同时 StoryLM 的参数量仅为 22M，而真实的大模型参数量均为 Billion 以上，因此其训练和推理过程的性能优化也是必不可少的。我会在后续文章介绍相关优化。\n最后，通过大量语料进行的自监督训练只是预训练，得到的是基座模型，只具有续写能力。为了使模型更像语言助手，还需要进行监督微调与 RLHF。不过我们现在只考虑训练基座模型。\nTokenizer Byte-Pair Encoding Tokenizer 的目的是把句子转化为 Token 序列，每个 Token 都可以用一个数字表示，以便于模型处理。一个最简单的想法是 word-level tokenizer，但是 word 太多会导致词汇表过大，降低计算效率。而且会将如 “played” “playing” 编码为完全不同的两个Token，没能考虑到两者之间关系。因此，就有了第二个想法—— byte-level tokenizer：既然所有语言在计算机中的表示都是字节序列，那么我们把字节序列送给模型就好了！但是它也有一个问题：这种编码方式有太多冗余，word level 中的一个 Token 可能在 byte level 中就对应了好几个 Token，这样也会降低计算效率。\n而 Byte Pair Encoding 是一种折中的算法：首先基于 byte-level tokenizer，这样就可以使用很小的词汇表处理各种语言了，但同时为了防止 Token 数目过多，BPE 会不断将最常见的 Token Pair 合并为一个新的 Token，直到达到预设的词汇表数目上限，以压缩 Token 长度。\n在实践中，BEP有训练和运行两个过程。训练阶段会学习到哪些 Token 可以合并，构建词汇表。而运行阶段接受一个句子，根据训练好的词汇表将其编码为 Token 数组。\nBPE Implementation Train BPE 首先考虑训练。训练时我们要不断识别最频繁出现的 Token-Pair 并将其合并。最简单的暴力算法就是每次合并时都扫描一遍，找到最出现最多的 Pair。假设 n 为语料长度，m 为词汇表大小上限。显然这个 O(mn) 的算法开销太大。\n但是考虑到每合并一个 Pair 后，只有与这个 Pair 相邻的 Pair 数目才产生变化，我们可以这样设计程序：\n数据结构：\n将 Pair 与其对应 count 存在一个数据结构 PairCounter 中，我们可以获取频率最高的 Pair，并方便地进行增删查改 比如 存储子树最值的平衡搜索树 支持O(logn)删除的堆 延迟删除法（原堆+删除堆） 即时删除法（哈希表记录元素索引） 训练语料转化而来的 Token 链表，L 一个从 Pair 到其出现位置的 map，M 算法：\n每次获取最频繁 Pair 增加到词汇表中 通过 M 修改 Token 链表 L 通过 Token 链表 L 信息更新 PairCounter 和 M 但考虑到大部分语言中常见单词只为几千个，如果忽略跨词 Pair，我们就可以考虑把 Token 链表 L 替换为一个 从单词到该单词 Token 链的 map 加上一个从单词到该单词在训练集中出现数目的map。这样，并把 M 修改 从 Pair 到其出现的单词的 map。这样，又能大大降低实际计算的开销。\n这样，假设k1为最大 Pair 数目，k2为最大单词数目，该算法就可以在O(n + mlogk1 + mk2)的时间内完成训练。\n此外，这个算法比较复杂，实现时要注意：\n及时把大函数拆分为小函数，方便理解 采用 OOP 的设计方法，把数据结构和对其操作的方法结合起来 Run BPE 训练完成后，实际运行时，我们要编码的语料更多，因此更要考虑性能问题。\n首先是算法上的性能。\n假设语料长度为n，词汇表长度为m，简单的暴力算法时间复杂度显然为 O(mn)。\n考虑到我们在训练时，合并的 Pair 都处于一个单词内，所以可以这样设计程序：\n数据结构：\n一个代表原语料的单词 ID List 一个从单词 ID 到该单词 Token 链的 map，M 一个从 Pair 到其出现的单词的 map 算法：\n仿照训练过程，初始化这些数据结构 根据训练过程得到的词汇表，不断进行 Pair 合并 根据单词 ID List 和 M 得到最终编码结果 假设k为最大单词数目，则时间复杂度为 O(n + mk)\n其次是工程上的性能。\n考虑到 TinyStory 语料文件在 GB 级别，我们没办法一次把所有内容都放在内存中，因此只能process incrementally, save incrementally。\n考虑到编码时会在词汇表中指定一个分隔符，而 Pair 是不能跨分隔符的。我们就可以每次从源文件中读取一个 chunk，找到距末尾最近的分隔符，并将之后的内容放进 buffer。然后处理该 chunk 并写入目标文件。处理第二个 chunk 前先在它之前加上 buffer 中内容。\ndef encode_file(self, file_path: str, out_path: str): with open(file_path, \"r\") as f: encoded = [] i = 0 while True: chunk = f.read(self.chunk_size) if not chunk: break i += 1 encoded_chunk = self._process_chunk(chunk) encoded.extend(encoded_chunk) # 增量保存（每处理100个分块写入一次） if len(encoded) \u003e 100*self.chunk_size: self._save_incrementally(encoded, out_path) encoded = [] # 处理最终缓冲区的剩余数据 if self.buffer: final_tokens = self._process_chunk(\"\") encoded.extend(final_tokens) self._save_incrementally(encoded, out_path) Model 当 Tokenizer 把输入转化为 int 数组后，我们就可以直接把该数组输入模型，并得到 logit 了。\n下图是 TinyStory 的模型结构：\n下面是其代码实现：\nclass TransformerLM(nn.Module): def __init__( self, vocab_size: int, context_length: int, d_model: int, num_layers: int, num_heads: int, d_ff: int, attn_pdrop: float, residual_pdrop: float, **kwargs ): super().__init__() self.embed = nn.Embedding(vocab_size, d_model) self.pos_embed = nn.Parameter(torch.zeros(context_length, d_model)) self.drop = nn.Dropout(residual_pdrop) self.layers = nn.Sequential(*[TransformerBlock(d_model, num_heads, d_ff, attn_pdrop, residual_pdrop) for _ in range(num_layers)]) self.ln_f = RMSNorm(d_model) self.head = nn.Linear(d_model, vocab_size, bias=False) self.context_length = context_length def forward(self, x): # x (batch_size, context_length) x = self.embed(x) x = x + self.pos_embed[:x.size(1), :] x = self.drop(x) x = self.layers(x) x = self.ln_f(x) x = self.head(x) return x 可以看到，模型基本由 Embedding，Attention，FFN，Linear 以及负责把函数变平滑的 Norm，Dropout 和 Residual Connection 组成。不同的大模型结构也大体类似。\nEmbedding 层负责生成词向量，TransformerBlock 是主要计算发生的地方，而最后的 Linear 层负责生成下一个 Token 的概率分布。\n下面分别介绍每个层。\nPositional Embedding 这个 layer 负责将 Token 转化为词向量（Word Vector），并在附加上位置信息。\n词向量处于一个高维语义空间中，两个向量间的位置关系即可表示他们的语义关系。如 V(法国)-V(巴黎) = V(德国)-V(柏林)。\n具体的词向量信息我们在神经网络中学习即可。我们首先要做的是把 Token 转化为高维向量。这个功能由 nn.Embeding 实现。该层会维护一个形状为 (num_embeddings, embedding_dim) 的查找表，把每一个 Token 都映射为高维向量。具体的参数在梯度下降时更新。\n除了词嵌入外，我们还需要记录 Token 的位置信息，这个功能由 Positional Embedding 完成。 Positional Embedding 层会给每个不同位置的词都生成一个表示位置的向量，该向量与 Token Embedding 生成的向量相加，得到最终的词向量。\nPositional Embedding 存在多种实现方法，其中旋转位置编码（RoPE）已被证明效果最优。但鉴于其实现复杂度较高，我们选择采用基础的 Absolute Positional Embeddings。具体实现方式为：创建一个可训练的位置嵌入矩阵，其行数设置为预定义的上下文最大长度（context_length）。在模型前向传播时，根据实际输入序列长度对矩阵进行动态截取，并与词嵌入向量进行逐元素相加。其优点是位置编码可以由学习得到，效果好，缺点是不能处理长度超出 context_length 的句子。\nTransformerBlock 上图是一个简化版的 Transformer，其核心组件由两个，Self-Attention 和 FFN。Attention 负责捕捉序列信息，将单独的词向量变为语境中的词向量（真正的能指）；而 FFN 负责存储知识信息，是整个 LM 中参数量最多的地方，也是训练推理时计算量最大的地方。\nAttention 对于变长序列信息，我们需要有一种办法来考虑序列信息。在 attention 之前，我们一般使用 RNN 来完成这点。RNN 会引入隐状态，每个 Token 的计算都会依赖前一个 Token 的隐状态，并重新写入隐状态，以此来传递序列信息。\n但是因为隐状态的相邻依赖关系，RNN 难以并行化，且难以捕捉长距离依赖，因此就有了 self-attention。最初的 attention 的在 RNN 语言模型的 input 序列和 output 序列间传递信息，但是 Transformer 的研究者发现让序列自己做 self-attention，就可以取代 RNN 了。\n虽然 RNN 有着上述缺点，但是因为其恒定推理成本和在短序列中的低成本，也被广泛使用。\n在 attention 机制中，我们有 Q, K, V 三个可学习矩阵。每个词向量分别乘着三个矩阵得到 q，k，v 三个向量。每个词的 q 向量和其他词的 k 向量先点积再做 softmax，得到注意力分数。再根据注意力分数对所有 v 做加权和，得到 attention 值。此时的 attention 值就包括了句中其他词的信息。\n上述过程写成矩阵的形式如下：\n下面是图示：\n但在 decoder-only LM 中，我们要预测下一个 Token，因此计算 attention 时，一个 Token 的 q 只能于它之前的 Token 的 k 做计算，否则在训练时就提前泄露了未来信息。所以我们在计算注意力分数时要加上掩码，不需要的分数设置为一个极小值，这样 softmax 后其概率就接近为 0 了。\n一个 attention 头（即一组 Q,K,V）可以学习一种关联模式，我们可以使用多组 attention 头来实现多头注意力机制（Multi-Head Attention）。简而言之，多头注意力就是使用多个 Q,K,V计算多个 attention 值，然后把所有的 attention 值连在一起，经过一个 Linear 层得到最后的 attention。\n在实际实现中，多个 Q K V 可以拼成一个矩阵，一起运算，这样就减少了计算开销。\ndef scaled_dot_product_attention(K, Q, V, mask=None, pdrop=None): # K, Q (batch_size, [num_heads,] seq_len, k_dim) # V (batch_size, [num_heads,] seq_len, v_dim) # attn_scores (batch_size, [num_heads,] seq_len, seq_len) attn_scores = torch.matmul(Q, K.transpose(-2, -1)) attn_scores = attn_scores / math.sqrt(K.shape[-1]) if mask is not None: attn_scores = attn_scores.masked_fill(mask, -1e9) attn_scores = softmax(attn_scores, dim=-1) attn_scores = attn_scores.masked_fill(mask, 0.0) else: attn_scores = softmax(attn_scores, dim=-1) if pdrop is not None: attn_scores = nn.Dropout(pdrop)(attn_scores) return torch.matmul(attn_scores, V) class MultiHeadSelfAttention(nn.Module): def __init__(self, d_model: int, num_heads: int, dropout: Optional[float] = None): super().__init__() assert d_model % num_heads == 0 self.num_heads = num_heads self.d_model = d_model self.d_k = d_model // num_heads self.w_q = nn.Linear(d_model, d_model, bias=False) self.w_k = nn.Linear(d_model, d_model, bias=False) self.w_v = nn.Linear(d_model, d_model, bias=False) self.w_o = nn.Linear(d_model, d_model, bias=False) self.dropout = dropout def forward( self, in_features: torch.FloatTensor, ): Q = self.w_q(in_features) K = self.w_k(in_features) V = self.w_v(in_features) batch_size, seq_len, _ = Q.size() Q = Q.view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2) K = K.view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2) V = V.view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2) mask = torch.triu(torch.ones(seq_len, seq_len, device=K.device), diagonal=1).bool() attn_scores = scaled_dot_product_attention(K, Q, V, mask, self.dropout) attn_scores = attn_scores.transpose(1, 2).contiguous().view(batch_size, seq_len, -1) return self.w_o(attn_scores) FFN FFN 层是 Transformer 中计算最多的地方。这里可以控制的变量有：\n隐藏层的维度 激活函数的选择 class PointwiseFeedForward(nn.Module): def __init__(self, d_model: int, d_ff: int): super().__init__() self.w1 = nn.Linear(d_model, d_ff, bias=False) self.w2 = nn.Linear(d_ff, d_model, bias=False) def forward(self, x): return self.w2(gelu(self.w1(x))) 此外，现在许多 LLM 在 FFN 层采用 MoE 架构。关键在于，把 FFN 拆成许多小 FFN，运行时选择一个 FFN （专家/export）传播。这样就能保证模型参数的同时提升推理速度。\nOthers 模型剩下的组件还包括，RMSNorm，Residual Connection，以及 Dropout。\nRMSNorm 和 Residual Connection 都可以避免梯度消失和梯度保证，保证函数的 Lipschitz 连续性质。\n而 Dropout 属于一种正则化方法，通过随机将某些参数置为 0，来避免模型过分依赖某些参数，从而保证了其泛化性。\n此外，模型参数的初始化也十分重要。有许多实验表示初始化的好坏对于模型训练过程有很大影响，并且训练结果与初始化偏差并不大。通过合理的初始化（比如对于方差，均值的调整），我们可以使得函数更易于训练。\nTrain 深度学习除了作为 hypothesis 的模型结构，损失函数和优化方法也是训练时不可或缺的组成部分。\nCross-entropy loss 在熵的公式中，熵越大，分布越均匀（不确定性越高）；熵越小，分布越集中（确定性越高）。\n交叉熵衡量两个概率分布之间的差异，对于真实分布 p 和模型预测分布 q，交叉熵的公式为：\n若 q(x) 与 p(x) 完全一致，则交叉熵等于熵 H(p)，否则 H(p,q)\u003eH(p)。\n在训练中 p(x) 一般为真实标签的 one-hot 分布（仅正确类别为1，其他为0），因此只用考虑正确类别。因此，LLM 中使用的交叉熵公式如下：\n对于 one-hot 分布，熵为0，因此交叉熵的最小值也为0。 在训练语言模型时，假设初始状态为均匀分布，收敛状态预测正确 token 概率为 0.9，则交叉熵在区间 [0.1,10.82] 内。\n代码实现如下：\ndef cross_entropy_loss(inputs, target): max_vals = torch.max(inputs, dim=-1, keepdim=True).values shifted_inputs = inputs - max_vals exp_inputs = torch.exp(shifted_inputs) exp_inputs_sum = torch.sum(exp_inputs, dim=-1, keepdim=True) log_softmax_inputs = shifted_inputs - torch.log(exp_inputs_sum) loss = -log_softmax_inputs[torch.arange(target.shape[0]), target] return torch.mean(loss) AdamW 神经网络最经典的优化算法为随机梯度下降法。AdamW 在此基础上增加了：\n一阶矩 动量 m：可以减小随机batch带来的震荡 二阶矩 自适应学习率 v：不同参数的梯度数值大小不同，通过除二阶矩的开放来使得梯度稳定，避免大梯度爆炸，小梯度消失 第四步对学习率的调整实际上是为了应对一开始 m 和 v 太小的情况 weight decay：减去参数，增强泛化性 L2 正则中，正则项梯度会被自适应学习率缩放，导致实际衰减强度与学习率耦合，影响正则化效果。 Learning rate scheduling 学习率调整的核心作用有：\n加速初期收敛：训练初期使用较大学习率，快速逼近最优解区域。 避免后期震荡：后期逐步降低学习率，防止在最优解附近震荡。 逃离局部极小值：周期性或突变的调整策略（如重启）可帮助跳出局部最优。 通过余弦函数平滑地将学习率从初始值（ηmax）降低到最小值（ηmin），形成一个周期性的退火过程。其特点是平滑过渡，避免学习率突变导致的训练不稳定。\n代码实现如下：\ndef get_lr_cosine_schedule(t: int, alpha_max: float, alpha_min: float, Tw: int, Tc: int) -\u003e float: if t \u003c Tw and Tw \u003e 0: return alpha_max * (t / Tw) if Tw \u003c= t \u003c= Tc: ratio = (t - Tw) / (Tc - Tw) # Progress through cosine phase cosine_decay = 0.5 * (1 + math.cos(math.pi * ratio)) return alpha_min + (alpha_max - alpha_min) * cosine_decay return alpha_min Gradient clipping 梯度裁剪用于控制梯度的大小，防止训练过程中因梯度爆炸导致的数值不稳定。它通过限制梯度的最大值或范数，确保参数更新步长合理，从而提升模型训练的稳定性和收敛性。\n代码实现如下：\ndef clip_gradient(parameters, max_norm: float, eps: float = 1e-6): grads = [p.grad for p in parameters if p.grad is not None] if not grads: return device = grads[0].device total_norm = torch.norm( torch.stack([torch.norm(g.detach(), 2) for g in grads]), 2 ).to(device) scaling_factor = max_norm / (total_norm + eps) if total_norm \u003e max_norm: for grad in grads: grad.mul_(scaling_factor) Resource accounting 一个简单的资源估算：\n基本想法：考虑 Y = WX，反向传播时需要分别对 W 和 X 求导，因此反向传播计算量约为正向传播的两倍。\nTrain in Practice 把上面所有组件组合在一起后，就可以进行训练了。\n实际训练时的参数配置如下：\n{ // 模型超参数 \"vocab_size\": 10000, \"context_length\": 256, \"d_model\": 512, \"num_layers\": 4, \"num_heads\": 16, \"d_ff\": 2048, \"attn_pdrop\": 0.1, \"residual_pdrop\": 0.1, // 优化器超参数 \"learning_rate\": 0.001, \"beta1\": 0.9, \"beta2\": 0.95, \"epsilon\": 1e-8, \"weight_decay\": 0.01, // 训练过程超参 \"batch_size\": 64, \"epochs\": 10, // 其他训练相关参数 \"save_every\": 1000, \"save_path\": \"checkpoints/\", \"train_data\": \"valid.npy\", \"valid_data\": \"valid.npy\", \"result_model\": \"model/model.pth\", \"log_path\": \"logs/log.txt\" } 实际训练时，在一张 4090 显卡上运行了 1h30min。\n训练时出了许多 bug（比如奇奇怪怪的 cuda 报错），checkpoint 非常实用。\n下图是 loss 曲线，可以看到在 10000 个迭代后 loss 曲线就不怎动了。最终 loss 为 0.9105。\n可能因为每隔 100 个迭代才记录一次学习率，所以从图中看不出周期性\n同时，Tc 可能设置过小，导致后期 loss 降不下去\nRun 模型训练好之后，就是推理了！\n当输入一个句子时，模型会生成表示下一个Token可能性的logits值。这些logits会除以称为Temperature的超参数——Temperature值越大，模型选择低频词的概率越高。之后我们筛选出概率最高的前k个候选Token（top-k sampling），通过softmax函数将筛选后的logits转换为概率分布，然后依据该概率分布随机选取一个Token作为输出。\n之后，我们将新生成的Token追加至输入序列末尾，重新输入模型进行下一轮预测，循环直至出现终止符（如）或达到最大生成长度。\n文本生成中，也常常使用 beam search 来选择 Token\n",
+  "wordCount" : "1312",
+  "inLanguage": "en",
+  "datePublished": "2025-04-06T09:58:31+08:00",
+  "dateModified": "2025-04-06T09:58:31+08:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://rzyn2020.github.io/posts/building-a-transformer-lm/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ekstasis's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://rzyn2020.github.io/images/yinyang.webp"
+    }
+  }
+}
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://rzyn2020.github.io/" accesskey="h" title="Ekstasis&#39;s Blog (Alt + H)">Ekstasis&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://rzyn2020.github.io/archives/" title="Archives">
+                    <span>Archives</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/algorithm/" title="Algorithm">
+                    <span>Algorithm</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a href="https://rzyn2020.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://rzyn2020.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://rzyn2020.github.io/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Building a Transformer LM
+    </h1>
+    <div class="post-meta"><span title='2025-04-06 09:58:31 +0800 +0800'>April 6, 2025</span>&nbsp;·&nbsp;7 min
+
+</div>
+  </header> <aside id="toc-container" class="toc-container wide">
+    <div class="toc">
+        <details  open>
+            <summary accesskey="c" title="(Alt + C)">
+                <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner"><ul>
+                    <li>
+                        <a href="#intro" aria-label="Intro">Intro</a></li>
+                    <li>
+                        <a href="#architecture" aria-label="Architecture">Architecture</a></li>
+                    <li>
+                        <a href="#tokenizer" aria-label="Tokenizer">Tokenizer</a><ul>
+                            
+                    <li>
+                        <a href="#byte-pair-encoding" aria-label="Byte-Pair Encoding">Byte-Pair Encoding</a></li>
+                    <li>
+                        <a href="#bpe-implementation" aria-label="BPE Implementation">BPE Implementation</a><ul>
+                            
+                    <li>
+                        <a href="#train-bpe" aria-label="Train BPE">Train BPE</a></li>
+                    <li>
+                        <a href="#run-bpe" aria-label="Run BPE">Run BPE</a></li></ul>
+                    </li></ul>
+                    </li>
+                    <li>
+                        <a href="#model" aria-label="Model">Model</a><ul>
+                            
+                    <li>
+                        <a href="#positional-embedding" aria-label="Positional Embedding">Positional Embedding</a></li>
+                    <li>
+                        <a href="#transformerblock" aria-label="TransformerBlock">TransformerBlock</a><ul>
+                            
+                    <li>
+                        <a href="#attention" aria-label="Attention">Attention</a></li>
+                    <li>
+                        <a href="#ffn" aria-label="FFN">FFN</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#others" aria-label="Others">Others</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#train" aria-label="Train">Train</a><ul>
+                            
+                    <li>
+                        <a href="#cross-entropy-loss" aria-label="Cross-entropy loss">Cross-entropy loss</a></li>
+                    <li>
+                        <a href="#adamw" aria-label="AdamW">AdamW</a></li>
+                    <li>
+                        <a href="#learning-rate-scheduling" aria-label="Learning rate scheduling">Learning rate scheduling</a></li>
+                    <li>
+                        <a href="#gradient-clipping" aria-label="Gradient clipping">Gradient clipping</a></li>
+                    <li>
+                        <a href="#resource-accounting" aria-label="Resource accounting">Resource accounting</a></li>
+                    <li>
+                        <a href="#train-in-practice" aria-label="Train in Practice">Train in Practice</a></li></ul>
+                    </li>
+                    <li>
+                        <a href="#run" aria-label="Run">Run</a>
+                    </li>
+                </ul>
+            </div>
+        </details>
+    </div>
+</aside>
+<script>
+    let activeElement;
+    let elements;
+    window.addEventListener('DOMContentLoaded', function (event) {
+        checkTocPosition();
+
+        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
+         
+         activeElement = elements[0];
+         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
+         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+     }, false);
+
+    window.addEventListener('resize', function(event) {
+        checkTocPosition();
+    }, false);
+
+    window.addEventListener('scroll', () => {
+        
+        activeElement = Array.from(elements).find((element) => {
+            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
+                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
+                return element;
+            }
+        }) || activeElement
+
+        elements.forEach(element => {
+             const id = encodeURI(element.getAttribute('id')).toLowerCase();
+             if (element === activeElement){
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
+             } else {
+                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
+             }
+         })
+     }, false);
+
+    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
+    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
+    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
+
+    function checkTocPosition() {
+        const width = document.body.scrollWidth;
+
+        if (width - main - (toc * 2) - (gap * 4) > 0) {
+            document.getElementById("toc-container").classList.add("wide");
+        } else {
+            document.getElementById("toc-container").classList.remove("wide");
+        }
+    }
+
+    function getOffsetTop(element) {
+        if (!element.getClientRects().length) {
+            return 0;
+        }
+        let rect = element.getBoundingClientRect();
+        let win = element.ownerDocument.defaultView;
+        return rect.top + win.pageYOffset;   
+    }
+</script>
+
+  <div class="post-content"><p>Once upon a time, there was a mountain.</p>
+<blockquote>
+<p>输入提示 ➜ Once upon a time, there was a mountain.</p>
+<p>生成结果 ➜
+Once upon a time, there was a mountain. In the sky, there was a big, round ball. A little boy named Tim and his mom went to the park to play. The sun was shining, and the sky was blue.
+In the park, Tim saw a big tree. He wanted to play near it. His mom said, &ldquo;Okay, but be careful.&rdquo; Tim was happy. He played near the tree. He got up and down.
+While playing, Tim saw a small bird. The bird was sad. Tim said, &ldquo;The bird has a hurt wing. Can you help me?&rdquo; The bird said, &ldquo;Yes, I can help you.&rdquo; Tim took the bird to his mom. He gave her a magic rock. The bird said, &ldquo;Thank you, Tim. You are a good friend.&rdquo; Now, Tim and the bird were friends. They played together every day.</p></blockquote>
+<h2 id="intro">Intro<a hidden class="anchor" aria-hidden="true" href="#intro">#</a></h2>
+<p><img alt="Large Language Model Market Size 2025 to 2034" loading="lazy" src="/posts/building-a-transformer-lm/assets/large-language-model-market-size.webp"></p>
+<p>自从 2022 年 ChatGPT 发布后，LLM 开始席卷世界，俨然有一次新的科技浪潮之势。大模型资本市场以每年近 40% 的速度狂飙突进，在 2025 年初已接近 <a href="https://www.precedenceresearch.com/large-language-model-market#:~:text=work%20for%20everyone.-,U.S.%20Large%20Language%20Model%20Market%20Size%20and%20Growth%202025%20to,36.17%25%20from%202025%20to%202034.">77 亿美元</a>，且预计在 2034 年可达千亿级别，与之相比，较为成熟但应用领域略窄的的计算机视觉市场规模也有 250 亿美元。</p>
+<p>资本市场的火热与否在于应用的前景，而大模型的应用前景也显然十分广阔。现在许多 app 已接入 AI， 增强功能，而 RAG, Agent 等技术也正在迅速发展，更何况未来还有大模型辅助智能制造的广阔的场景。</p>
+<p>应用前景引来资本投资，资本投资引起硬件，算法，以及系统的全方面发展。在摩尔定律失效之后，<a href="https://dl.acm.org/doi/pdf/10.1145/3282307">领域专用硬件成为了提升计算力的绝妙法门</a>。英伟达的 GPU 针对训练和推理做了许多优化，华为，Google 也推出了许多深度学习专用计算设备。算法层面，模型结构和参数量也都在不断演化。而系统层面，也不断有新技术和新项目来适应新的模型和硬件。在这<a href="https://hardwarelottery.github.io/">几者的共同协作</a>下，即使科技树点偏了，其探索之深也足以改变世界了。</p>
+<p>在这个背景下，无论是出于好奇还是功利，学习大模型，理解其基本原理就显得有必要了。因此，我参考<a href="https://stanford-cs336.github.io/spring2024/">cs336课程</a>,，试着 build a transformer-language model from scratch。在过程中，我也大量参考了 <a href="https://www.youtube.com/@umarjamilai">Umar Jamil</a> 的 live coding 以及李宏毅的<a href="https://speech.ee.ntu.edu.tw/~hylee/ml/2023-spring.php">机器学习课程</a>。</p>
+<p>最终我使用 <a href="https://arxiv.org/abs/2305.07759">TinyStory</a> 数据集，在一张 4090 显卡上花费一个半小时训练出了一个讲故事模型，且称之为 StoryLM。文章开头的故事续写就由 StoryLM 生成。</p>
+<p>这篇文章介绍该模型构建的全过程，并解释相关概念。目标读者是有一些深度学习基础的计算机专业学生（也就是年初的我）。</p>
+<h2 id="architecture">Architecture<a hidden class="anchor" aria-hidden="true" href="#architecture">#</a></h2>
+<p><img alt="image-20250406162458067" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250406162458067.png#half"></p>
+<p>首先，从宏观上来介绍大模型的结构以及其生命周期。</p>
+<p>就像任何深度学习模型一样，大模型的训练离不开<strong>模型结构，优化器，损失函数</strong>三个组成部分。优化器一般为常见的 AdamW，损失函数为分类任务常用的交叉熵，而几乎所有大模型的结构都基于 Transformer。Transformer 可分为编码器和解码器两部分，最初用于语言翻译等任务。编码器理解源语言，自回归解码器生成目标语言。而在生成式语言模型中，我们仅仅保留解码器即可。</p>
+<blockquote>
+<p>在实际训练中，为了防止过拟合，梯度爆炸/消失，训练难以进行三个问题，会对上面三个组成部分做诸多调整</p></blockquote>
+<p><img alt="image-20250406235457400" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250406235457400.png"></p>
+<p>除了上面三者之外，训练数据也需要做一些处理。具体而言，我们需要通过 Tokenizer 加上词嵌入把句子变为模型能够理解的形式。具体可见 Tokenizer  和 Model 两小节。简而言之，一个句子会被切分成许多 token，每个 token 会被转化为一个词向量。输入一个句子后，模型会输出一个表示接在该句子后可能的 token 的概率分布。</p>
+<p>StoryLM 的训练数据只有2GB，而真实世界大模型的训练数据动辄数TB，为了爬取并清洗得到这些训练数据，真实的 LLM system 也包含了许多数据处理相关技术。本文暂时不涉及。</p>
+<p>同时 StoryLM 的参数量仅为 22M，而真实的大模型参数量均为 Billion 以上，因此其训练和推理过程的性能优化也是必不可少的。我会在后续文章介绍相关优化。</p>
+<p>最后，通过大量语料进行的自监督训练只是预训练，得到的是基座模型，只具有续写能力。为了使模型更像语言助手，还需要进行监督微调与 RLHF。不过我们现在只考虑训练基座模型。</p>
+<h2 id="tokenizer">Tokenizer<a hidden class="anchor" aria-hidden="true" href="#tokenizer">#</a></h2>
+<h3 id="byte-pair-encoding">Byte-Pair Encoding<a hidden class="anchor" aria-hidden="true" href="#byte-pair-encoding">#</a></h3>
+<p>Tokenizer 的目的是把句子转化为 Token 序列，每个 Token 都可以用一个数字表示，以便于模型处理。一个最简单的想法是 word-level tokenizer，但是 word 太多会导致词汇表过大，降低计算效率。而且会将如 &ldquo;played&rdquo; &ldquo;playing&rdquo; 编码为完全不同的两个Token，没能考虑到两者之间关系。因此，就有了第二个想法—— byte-level tokenizer：既然所有语言在计算机中的表示都是字节序列，那么我们把字节序列送给模型就好了！但是它也有一个问题：这种编码方式有太多冗余，word level 中的一个 Token 可能在 byte level 中就对应了好几个 Token，这样也会降低计算效率。</p>
+<p>而 <a href="https://huggingface.co/learn/llm-course/en/chapter2/4?fw=pt#and-more">Byte Pair Encoding</a> 是一种<strong>折中</strong>的算法：首先基于 byte-level tokenizer，这样就可以使用很小的词汇表处理各种语言了，但同时为了防止 Token 数目过多，BPE 会不断将最常见的 Token Pair 合并为一个新的 Token，直到达到预设的词汇表数目上限，以压缩 Token 长度。</p>
+<p>在实践中，BEP有训练和运行两个过程。训练阶段会学习到哪些 Token 可以合并，构建词汇表。而运行阶段接受一个句子，根据训练好的词汇表将其编码为 Token 数组。</p>
+<h3 id="bpe-implementation">BPE Implementation<a hidden class="anchor" aria-hidden="true" href="#bpe-implementation">#</a></h3>
+<h4 id="train-bpe">Train BPE<a hidden class="anchor" aria-hidden="true" href="#train-bpe">#</a></h4>
+<p>首先考虑训练。训练时我们要不断识别最频繁出现的 Token-Pair 并将其合并。最简单的暴力算法就是每次合并时都扫描一遍，找到最出现最多的 Pair。假设 <code>n</code> 为语料长度，<code>m</code> 为词汇表大小上限。显然这个 <code>O(mn)</code> 的算法开销太大。</p>
+<p>但是考虑到每合并一个 Pair 后，只有与这个 Pair 相邻的 Pair 数目才产生变化，我们可以这样设计程序：</p>
+<p>数据结构：</p>
+<ol>
+<li>将 Pair 与其对应 count 存在一个数据结构 PairCounter 中，我们可以获取频率最高的 Pair，并方便地进行增删查改
+<ol>
+<li>比如
+<ol>
+<li>存储子树最值的平衡搜索树</li>
+<li>支持<code>O(logn)</code>删除的堆
+<ol>
+<li>延迟删除法（原堆+删除堆）</li>
+<li>即时删除法（哈希表记录元素索引）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>训练语料转化而来的 Token 链表，L</li>
+<li>一个从 Pair 到其出现位置的 map，M</li>
+</ol>
+<p>算法：</p>
+<ol>
+<li>每次获取最频繁 Pair
+<ol>
+<li>增加到词汇表中</li>
+<li>通过 M 修改 Token 链表 L</li>
+<li>通过 Token 链表 L 信息更新 PairCounter 和 M</li>
+</ol>
+</li>
+</ol>
+<p>但考虑到大部分语言中常见单词只为几千个，如果忽略跨词 Pair，我们就可以考虑把 Token 链表 L 替换为一个 <code>从单词到该单词 Token 链的 map</code> 加上一个<code>从单词到该单词在训练集中出现数目的map</code>。这样，并把 M 修改 <code>从 Pair 到其出现的单词的 map</code>。这样，又能大大降低实际计算的开销。</p>
+<p>这样，假设<code>k1</code>为最大 Pair 数目，<code>k2</code>为最大单词数目，该算法就可以在<code>O(n + mlogk1 + mk2)</code>的时间内完成训练。</p>
+<p>此外，这个算法比较复杂，实现时要注意：</p>
+<ol>
+<li>及时把大函数拆分为小函数，方便理解</li>
+<li>采用 OOP 的设计方法，把数据结构和对其操作的方法结合起来</li>
+</ol>
+<h4 id="run-bpe">Run BPE<a hidden class="anchor" aria-hidden="true" href="#run-bpe">#</a></h4>
+<p>训练完成后，实际运行时，我们要编码的语料更多，因此更要考虑性能问题。</p>
+<p><strong>首先是算法上的性能。</strong></p>
+<p>假设语料长度为<code>n</code>，词汇表长度为<code>m</code>，简单的暴力算法时间复杂度显然为 <code>O(mn)</code>。</p>
+<p>考虑到我们在训练时，合并的 Pair 都处于一个单词内，所以可以这样设计程序：</p>
+<p>数据结构：</p>
+<ol>
+<li>一个代表原语料的单词 ID List</li>
+<li>一个从单词 ID 到该单词 Token 链的 map，M</li>
+<li>一个从 Pair 到其出现的单词的 map</li>
+</ol>
+<p>算法：</p>
+<ol>
+<li>仿照训练过程，初始化这些数据结构</li>
+<li>根据训练过程得到的词汇表，不断进行 Pair 合并</li>
+<li>根据单词 ID List 和 M 得到最终编码结果</li>
+</ol>
+<p>假设<code>k</code>为最大单词数目，则时间复杂度为 <code>O(n + mk)</code></p>
+<p><strong>其次是工程上的性能。</strong></p>
+<p>考虑到 TinyStory 语料文件在 GB 级别，我们没办法一次把所有内容都放在内存中，因此只能process incrementally, save incrementally。</p>
+<p>考虑到编码时会在词汇表中指定一个分隔符，而 Pair 是不能跨分隔符的。我们就可以每次从源文件中读取一个 chunk，找到距末尾最近的分隔符，并将之后的内容放进 buffer。然后处理该 chunk 并写入目标文件。处理第二个 chunk 前先在它之前加上 buffer 中内容。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">encode_file</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">file_path</span>: <span style="color:#e5c07b">str</span>, <span style="color:#e06c75">out_path</span>: <span style="color:#e5c07b">str</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">with</span> <span style="color:#e5c07b">open</span>(<span style="color:#e06c75">file_path</span>, <span style="color:#98c379">&#34;r&#34;</span>) <span style="color:#c678dd">as</span> <span style="color:#e06c75">f</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">encoded</span> <span style="color:#56b6c2">=</span> []
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">i</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#c678dd">while</span> <span style="color:#e5c07b">True</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">chunk</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">f</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">read</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">chunk_size</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#c678dd">if</span> <span style="color:#56b6c2">not</span> <span style="color:#e06c75">chunk</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#c678dd">break</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">i</span> <span style="color:#56b6c2">+=</span> <span style="color:#d19a66">1</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">encoded_chunk</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">_process_chunk</span>(<span style="color:#e06c75">chunk</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">encoded</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">extend</span>(<span style="color:#e06c75">encoded_chunk</span>)
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>                <span style="color:#7f848e"># 增量保存（每处理100个分块写入一次）</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#c678dd">if</span> <span style="color:#e5c07b">len</span>(<span style="color:#e06c75">encoded</span>) <span style="color:#56b6c2">&gt;</span> <span style="color:#d19a66">100</span><span style="color:#56b6c2">*</span><span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">chunk_size</span>:
+</span></span><span style="display:flex;"><span>                    <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">_save_incrementally</span>(<span style="color:#e06c75">encoded</span>, <span style="color:#e06c75">out_path</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#e06c75">encoded</span> <span style="color:#56b6c2">=</span> []
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 处理最终缓冲区的剩余数据</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#c678dd">if</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">buffer</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">final_tokens</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">_process_chunk</span>(<span style="color:#98c379">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>                <span style="color:#e06c75">encoded</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">extend</span>(<span style="color:#e06c75">final_tokens</span>)
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">_save_incrementally</span>(<span style="color:#e06c75">encoded</span>, <span style="color:#e06c75">out_path</span>)   
+</span></span></code></pre></div><h2 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h2>
+<p>当 Tokenizer 把输入转化为 int 数组后，我们就可以直接把该数组输入模型，并得到 <a href="https://www.zhihu.com/question/60751553">logit</a> 了。</p>
+<p>下图是 TinyStory 的模型结构：</p>
+<p><img alt="image-20250406221311897" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250406221311897.png"></p>
+<p>下面是其代码实现：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">TransformerLM</span>(<span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Module</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#56b6c2;font-weight:bold">__init__</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">vocab_size</span>: <span style="color:#e5c07b">int</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">context_length</span>: <span style="color:#e5c07b">int</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">d_model</span>: <span style="color:#e5c07b">int</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">num_layers</span>: <span style="color:#e5c07b">int</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">num_heads</span>: <span style="color:#e5c07b">int</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">d_ff</span>: <span style="color:#e5c07b">int</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_pdrop</span>: <span style="color:#e5c07b">float</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">residual_pdrop</span>: <span style="color:#e5c07b">float</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#56b6c2">**</span><span style="color:#e06c75">kwargs</span>
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        <span style="color:#e5c07b">super</span>()<span style="color:#56b6c2">.</span><span style="color:#56b6c2;font-weight:bold">__init__</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">embed</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Embedding</span>(<span style="color:#e06c75">vocab_size</span>, <span style="color:#e06c75">d_model</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">pos_embed</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Parameter</span>(<span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">zeros</span>(<span style="color:#e06c75">context_length</span>, <span style="color:#e06c75">d_model</span>))
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">drop</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Dropout</span>(<span style="color:#e06c75">residual_pdrop</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">layers</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Sequential</span>(<span style="color:#56b6c2">*</span>[<span style="color:#e06c75">TransformerBlock</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">num_heads</span>, <span style="color:#e06c75">d_ff</span>, <span style="color:#e06c75">attn_pdrop</span>, <span style="color:#e06c75">residual_pdrop</span>) <span style="color:#c678dd">for</span> <span style="color:#e06c75">_</span> <span style="color:#56b6c2">in</span> <span style="color:#e5c07b">range</span>(<span style="color:#e06c75">num_layers</span>)])
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">ln_f</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">RMSNorm</span>(<span style="color:#e06c75">d_model</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">head</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">vocab_size</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">context_length</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">context_length</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">forward</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">x</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># x (batch_size, context_length)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">embed</span>(<span style="color:#e06c75">x</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">x</span> <span style="color:#56b6c2">+</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">pos_embed</span>[:<span style="color:#e06c75">x</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">size</span>(<span style="color:#d19a66">1</span>), :]
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">drop</span>(<span style="color:#e06c75">x</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">layers</span>(<span style="color:#e06c75">x</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">ln_f</span>(<span style="color:#e06c75">x</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">head</span>(<span style="color:#e06c75">x</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">x</span>
+</span></span></code></pre></div><p>可以看到，模型基本由 Embedding，Attention，FFN，Linear 以及负责把函数变平滑的 Norm，Dropout 和 Residual Connection 组成。不同的大模型结构也大体类似。</p>
+<p>Embedding 层负责生成词向量，TransformerBlock 是主要计算发生的地方，而最后的 Linear 层负责生成下一个 Token 的概率分布。</p>
+<p><img alt="image-20250406223955121" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250406223955121.png"></p>
+<p>下面分别介绍每个层。</p>
+<h3 id="positional-embedding">Positional Embedding<a hidden class="anchor" aria-hidden="true" href="#positional-embedding">#</a></h3>
+<p>这个 layer 负责将 Token 转化为词向量（Word Vector），并在附加上位置信息。</p>
+<p>词向量处于一个高维语义空间中，两个向量间的位置关系即可表示他们的语义关系。如 <code>V(法国)-V(巴黎) = V(德国)-V(柏林)</code>。</p>
+<p>具体的词向量信息我们在神经网络中学习即可。我们首先要做的是把 Token 转化为高维向量。这个功能由 <code>nn.Embeding</code> 实现。该层会维护一个形状为 <code>(num_embeddings, embedding_dim)</code> 的查找表，把每一个 Token 都映射为高维向量。具体的参数在梯度下降时更新。</p>
+<p>除了词嵌入外，我们还需要记录 Token 的位置信息，这个功能由 Positional Embedding 完成。 Positional Embedding 层会给每个不同位置的词都生成一个表示位置的向量，该向量与 Token Embedding 生成的向量相加，得到最终的词向量。</p>
+<p><img alt="image-20250407100002999" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407100002999.png"></p>
+<p><img alt="image-20250407100118331" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407100118331.png"></p>
+<p>Positional Embedding 存在多种实现方法，其中旋转位置编码（RoPE）已被证明效果最优。但鉴于其实现复杂度较高，我们选择采用基础的 Absolute Positional Embeddings。具体实现方式为：创建一个可训练的位置嵌入矩阵，其行数设置为预定义的上下文最大长度（<code>context_length</code>）。在模型前向传播时，根据实际输入序列长度对矩阵进行动态截取，并与词嵌入向量进行逐元素相加。其优点是位置编码可以由学习得到，效果好，缺点是不能处理长度超出 <code>context_length</code> 的句子。</p>
+<h3 id="transformerblock">TransformerBlock<a hidden class="anchor" aria-hidden="true" href="#transformerblock">#</a></h3>
+<p><img alt="img" loading="lazy" src="/posts/building-a-transformer-lm/assets/encoder_with_tensors_2.png"></p>
+<p>上图是一个简化版的 Transformer，其核心组件由两个，Self-Attention 和 FFN。Attention 负责捕捉序列信息，将单独的词向量变为语境中的词向量（真正的能指）；而 FFN 负责存储知识信息，是整个 LM 中参数量最多的地方，也是训练推理时计算量最大的地方。</p>
+<h4 id="attention">Attention<a hidden class="anchor" aria-hidden="true" href="#attention">#</a></h4>
+<p>对于变长序列信息，我们需要有一种办法来考虑序列信息。在 attention 之前，我们一般使用 RNN 来完成这点。RNN 会引入隐状态，每个 Token 的计算都会依赖前一个 Token 的隐状态，并重新写入隐状态，以此来传递序列信息。</p>
+<p><img alt="image-20250407102918670" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407102918670.png"></p>
+<p>但是因为隐状态的相邻依赖关系，RNN 难以<strong>并行化</strong>，且难以捕捉<strong>长距离依赖</strong>，因此就有了 self-attention。最初的 attention 的在 RNN 语言模型的 input 序列和 output 序列间传递信息，但是 Transformer 的研究者发现让序列自己做 self-attention，就可以取代 RNN 了。</p>
+<p>虽然 RNN 有着上述缺点，但是因为其恒定推理成本和在短序列中的低成本，也被广泛使用。</p>
+<p><img alt="image-20250407103148923" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407103148923.png"></p>
+<p>在 attention 机制中，我们有 Q, K, V 三个可学习矩阵。每个词向量分别乘着三个矩阵得到 q，k，v 三个向量。每个词的 q 向量和其他词的 k 向量先点积再做 softmax，得到注意力分数。再根据注意力分数对所有 v 做加权和，得到 attention 值。此时的 attention 值就包括了句中其他词的信息。</p>
+<p><img alt="image-20250407112727986" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407112727986.png"></p>
+<p>上述过程写成矩阵的形式如下：</p>
+<p><img alt="image-20250407105446994" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407105446994.png"></p>
+<p>下面是<a href="https://jalammar.github.io/illustrated-transformer/">图示</a>：</p>
+<p><img alt="img" loading="lazy" src="/posts/building-a-transformer-lm/assets/self-attention-matrix-calculation.png"></p>
+<p><img alt="img" loading="lazy" src="/posts/building-a-transformer-lm/assets/self-attention-matrix-calculation-2.png"></p>
+<p>但在 decoder-only LM 中，我们要预测下一个 Token，因此计算 attention 时，一个 Token 的 q 只能于它之前的 Token 的 k 做计算，否则在训练时就提前泄露了未来信息。所以我们在计算注意力分数时要加上掩码，不需要的分数设置为一个极小值，这样 softmax 后其概率就接近为 0 了。</p>
+<p>一个 attention 头（即一组 Q,K,V）可以学习一种关联模式，我们可以使用多组 attention 头来实现多头注意力机制（Multi-Head Attention）。简而言之，多头注意力就是使用多个 Q,K,V计算多个 attention 值，然后把所有的 attention 值连在一起，经过一个 Linear 层得到最后的 attention。</p>
+<p><img alt="image-20250407113734426" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407113734426.png"></p>
+<p><img alt="image-20250407113508298" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407113508298.png#half"></p>
+<p><img alt="img" loading="lazy" src="/posts/building-a-transformer-lm/assets/transformer_multi-headed_self-attention-recap.png"></p>
+<p>在实际实现中，多个 Q K V 可以拼成一个矩阵，一起运算，这样就减少了计算开销。</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">scaled_dot_product_attention</span>(<span style="color:#e06c75">K</span>, <span style="color:#e06c75">Q</span>, <span style="color:#e06c75">V</span>, <span style="color:#e06c75">mask</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">None</span>, <span style="color:#e06c75">pdrop</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">None</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># K, Q (batch_size, [num_heads,] seq_len, k_dim)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># V (batch_size, [num_heads,] seq_len, v_dim)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># attn_scores (batch_size, [num_heads,] seq_len, seq_len)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">matmul</span>(<span style="color:#e06c75">Q</span>, <span style="color:#e06c75">K</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">transpose</span>(<span style="color:#56b6c2">-</span><span style="color:#d19a66">2</span>, <span style="color:#56b6c2">-</span><span style="color:#d19a66">1</span>))
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">/</span> <span style="color:#e06c75">math</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">sqrt</span>(<span style="color:#e06c75">K</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">shape</span>[<span style="color:#56b6c2">-</span><span style="color:#d19a66">1</span>])
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">if</span> <span style="color:#e06c75">mask</span> <span style="color:#56b6c2">is</span> <span style="color:#56b6c2">not</span> <span style="color:#e5c07b">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">attn_scores</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">masked_fill</span>(<span style="color:#e06c75">mask</span>, <span style="color:#56b6c2">-</span><span style="color:#d19a66">1e9</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">softmax</span>(<span style="color:#e06c75">attn_scores</span>, <span style="color:#e06c75">dim</span><span style="color:#56b6c2">=-</span><span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">attn_scores</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">masked_fill</span>(<span style="color:#e06c75">mask</span>, <span style="color:#d19a66">0.0</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">softmax</span>(<span style="color:#e06c75">attn_scores</span>, <span style="color:#e06c75">dim</span><span style="color:#56b6c2">=-</span><span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">if</span> <span style="color:#e06c75">pdrop</span> <span style="color:#56b6c2">is</span> <span style="color:#56b6c2">not</span> <span style="color:#e5c07b">None</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Dropout</span>(<span style="color:#e06c75">pdrop</span>)(<span style="color:#e06c75">attn_scores</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">return</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">matmul</span>(<span style="color:#e06c75">attn_scores</span>, <span style="color:#e06c75">V</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">MultiHeadSelfAttention</span>(<span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Module</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#56b6c2;font-weight:bold">__init__</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">d_model</span>: <span style="color:#e5c07b">int</span>, <span style="color:#e06c75">num_heads</span>: <span style="color:#e5c07b">int</span>, <span style="color:#e06c75">dropout</span>: <span style="color:#e06c75">Optional</span>[<span style="color:#e5c07b">float</span>] <span style="color:#56b6c2">=</span> <span style="color:#e5c07b">None</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#e5c07b">super</span>()<span style="color:#56b6c2">.</span><span style="color:#56b6c2;font-weight:bold">__init__</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">assert</span> <span style="color:#e06c75">d_model</span> <span style="color:#56b6c2">%</span> <span style="color:#e06c75">num_heads</span> <span style="color:#56b6c2">==</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">num_heads</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">num_heads</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">d_model</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">d_model</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">d_k</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">d_model</span> <span style="color:#56b6c2">//</span> <span style="color:#e06c75">num_heads</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_q</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_k</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_v</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_o</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">dropout</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">dropout</span>
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">forward</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">in_features</span>: <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">FloatTensor</span>,
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">Q</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_q</span>(<span style="color:#e06c75">in_features</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">K</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_k</span>(<span style="color:#e06c75">in_features</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">V</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_v</span>(<span style="color:#e06c75">in_features</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">seq_len</span>, <span style="color:#e06c75">_</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">Q</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">size</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">Q</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">Q</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">view</span>(<span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">seq_len</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">num_heads</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">d_k</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">transpose</span>(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">K</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">K</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">view</span>(<span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">seq_len</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">num_heads</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">d_k</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">transpose</span>(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">V</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">V</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">view</span>(<span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">seq_len</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">num_heads</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">d_k</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">transpose</span>(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">mask</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">triu</span>(<span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">ones</span>(<span style="color:#e06c75">seq_len</span>, <span style="color:#e06c75">seq_len</span>, <span style="color:#e06c75">device</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">K</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">device</span>), <span style="color:#e06c75">diagonal</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">bool</span>()
+</span></span><span style="display:flex;"><span>                
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">scaled_dot_product_attention</span>(<span style="color:#e06c75">K</span>, <span style="color:#e06c75">Q</span>, <span style="color:#e06c75">V</span>, <span style="color:#e06c75">mask</span>, <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">dropout</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">attn_scores</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">attn_scores</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">transpose</span>(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">2</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">contiguous</span>()<span style="color:#56b6c2">.</span><span style="color:#e06c75">view</span>(<span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">seq_len</span>, <span style="color:#56b6c2">-</span><span style="color:#d19a66">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w_o</span>(<span style="color:#e06c75">attn_scores</span>)
+</span></span></code></pre></div><h4 id="ffn">FFN<a hidden class="anchor" aria-hidden="true" href="#ffn">#</a></h4>
+<p>FFN 层是 Transformer 中计算最多的地方。这里可以控制的变量有：</p>
+<ol>
+<li>隐藏层的维度</li>
+<li>激活函数的选择</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">PointwiseFeedForward</span>(<span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Module</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#56b6c2;font-weight:bold">__init__</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">d_model</span>: <span style="color:#e5c07b">int</span>, <span style="color:#e06c75">d_ff</span>: <span style="color:#e5c07b">int</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#e5c07b">super</span>()<span style="color:#56b6c2">.</span><span style="color:#56b6c2;font-weight:bold">__init__</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">d_ff</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#e06c75">d_ff</span>, <span style="color:#e06c75">d_model</span>, <span style="color:#e06c75">bias</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">forward</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">x</span>):
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w2</span>(<span style="color:#e06c75">gelu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">w1</span>(<span style="color:#e06c75">x</span>)))
+</span></span></code></pre></div><p>此外，现在许多 LLM 在 FFN 层采用 <a href="https://www.youtube.com/watch?v=sOPDGQjFcuM&amp;ab_channel=MaartenGrootendorst">MoE</a>  架构。关键在于，把 FFN 拆成许多小 FFN，运行时选择一个 FFN （专家/export）传播。这样就能保证模型参数的同时提升推理速度。</p>
+<h3 id="others">Others<a hidden class="anchor" aria-hidden="true" href="#others">#</a></h3>
+<p>模型剩下的组件还包括，RMSNorm，Residual Connection，以及 Dropout。</p>
+<p>RMSNorm 和 Residual Connection 都可以避免梯度消失和梯度保证，保证函数的 <a href="https://www.bilibili.com/video/BV1B64y157DC/?share_source=copy_web&amp;vd_source=70a8bfe51ff36d2bca97cf3df1c52fed">Lipschitz 连续</a>性质。</p>
+<p>而 Dropout 属于一种正则化方法，通过随机将某些参数置为 0，来避免模型过分依赖某些参数，从而保证了其泛化性。</p>
+<p>此外，模型参数的初始化也十分重要。有许多实验表示初始化的好坏对于模型训练过程有很大影响，并且训练结果与初始化偏差并不大。通过合理的初始化（比如对于方差，均值的调整），我们可以使得函数更易于训练。</p>
+<h2 id="train">Train<a hidden class="anchor" aria-hidden="true" href="#train">#</a></h2>
+<p>深度学习除了作为 hypothesis 的模型结构，损失函数和优化方法也是训练时不可或缺的组成部分。</p>
+<h3 id="cross-entropy-loss">Cross-entropy loss<a hidden class="anchor" aria-hidden="true" href="#cross-entropy-loss">#</a></h3>
+<p>在熵的公式中，熵越大，分布越均匀（不确定性越高）；熵越小，分布越集中（确定性越高）。</p>
+<p><img alt="image-20250407203040513" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407203040513.png"></p>
+<p>交叉熵衡量两个概率分布之间的差异，对于真实分布 <em>p</em> 和模型预测分布 <em>q</em>，交叉熵的公式为：</p>
+<p><img alt="image-20250407201910928" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407201910928.png"></p>
+<p>若 <em>q</em>(<em>x</em>) 与 <em>p</em>(<em>x</em>) 完全一致，则交叉熵等于熵 <em>H</em>(<em>p</em>)，否则 <em>H</em>(<em>p</em>,<em>q</em>)&gt;<em>H</em>(<em>p</em>)。</p>
+<p>在训练中 p(x) 一般为真实标签的 <strong>one-hot 分布</strong>（仅正确类别为1，其他为0），因此只用考虑正确类别。因此，LLM 中使用的交叉熵公式如下：</p>
+<p><img alt="image-20250407202734306" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407202734306.png"></p>
+<p>对于 one-hot 分布，熵为0，因此交叉熵的最小值也为0。 在训练语言模型时，假设初始状态为均匀分布，收敛状态预测正确 token 概率为 0.9，则交叉熵在区间 [0.1,10.82] 内。</p>
+<p>代码实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">cross_entropy_loss</span>(<span style="color:#e06c75">inputs</span>, <span style="color:#e06c75">target</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">max_vals</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max</span>(<span style="color:#e06c75">inputs</span>, <span style="color:#e06c75">dim</span><span style="color:#56b6c2">=-</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">keepdim</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">values</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">shifted_inputs</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">inputs</span> <span style="color:#56b6c2">-</span> <span style="color:#e06c75">max_vals</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">exp_inputs</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">exp</span>(<span style="color:#e06c75">shifted_inputs</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">exp_inputs_sum</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">sum</span>(<span style="color:#e06c75">exp_inputs</span>, <span style="color:#e06c75">dim</span><span style="color:#56b6c2">=-</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">keepdim</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">log_softmax_inputs</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">shifted_inputs</span> <span style="color:#56b6c2">-</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">log</span>(<span style="color:#e06c75">exp_inputs_sum</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">loss</span> <span style="color:#56b6c2">=</span> <span style="color:#56b6c2">-</span><span style="color:#e06c75">log_softmax_inputs</span>[<span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">arange</span>(<span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">shape</span>[<span style="color:#d19a66">0</span>]), <span style="color:#e06c75">target</span>]
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">return</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">mean</span>(<span style="color:#e06c75">loss</span>)
+</span></span></code></pre></div><h3 id="adamw">AdamW<a hidden class="anchor" aria-hidden="true" href="#adamw">#</a></h3>
+<p>神经网络最经典的优化算法为随机梯度下降法。<a href="https://arxiv.org/abs/1711.05101v3">AdamW</a> 在此基础上增加了：</p>
+<ol>
+<li>一阶矩 动量 m：可以减小随机batch带来的震荡</li>
+<li>二阶矩 自适应学习率 v：不同参数的梯度数值大小不同，通过除二阶矩的开放来使得梯度稳定，避免大梯度爆炸，小梯度消失</li>
+<li>第四步对学习率的调整实际上是为了应对一开始 m 和 v 太小的情况</li>
+<li>weight decay：减去参数，增强泛化性
+<ol>
+<li>L2 正则中，正则项梯度会被自适应学习率缩放，导致实际衰减强度与学习率耦合，影响正则化效果。</li>
+</ol>
+</li>
+</ol>
+<p><img alt="image-20250407204359210" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407204359210.png"></p>
+<h3 id="learning-rate-scheduling">Learning rate scheduling<a hidden class="anchor" aria-hidden="true" href="#learning-rate-scheduling">#</a></h3>
+<p>学习率调整的核心作用有：</p>
+<ol>
+<li>加速初期收敛：训练初期使用较大学习率，快速逼近最优解区域。</li>
+<li>避免后期震荡：后期逐步降低学习率，防止在最优解附近震荡。</li>
+<li>逃离局部极小值：周期性或突变的调整策略（如重启）可帮助跳出局部最优。</li>
+</ol>
+<p>通过<strong>余弦函数</strong>平滑地将学习率从初始值（<em>η</em>max）降低到最小值（<em>η</em>min），形成一个周期性的退火过程。其特点是<strong>平滑过渡</strong>，避免学习率突变导致的训练不稳定。</p>
+<p><img alt="image-20250407212302447" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407212302447.png"></p>
+<p>代码实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">get_lr_cosine_schedule</span>(<span style="color:#e06c75">t</span>: <span style="color:#e5c07b">int</span>, <span style="color:#e06c75">alpha_max</span>: <span style="color:#e5c07b">float</span>, <span style="color:#e06c75">alpha_min</span>: <span style="color:#e5c07b">float</span>, 
+</span></span><span style="display:flex;"><span>                          <span style="color:#e06c75">Tw</span>: <span style="color:#e5c07b">int</span>, <span style="color:#e06c75">Tc</span>: <span style="color:#e5c07b">int</span>) <span style="color:#56b6c2">-&gt;</span> <span style="color:#e5c07b">float</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">if</span> <span style="color:#e06c75">t</span> <span style="color:#56b6c2">&lt;</span> <span style="color:#e06c75">Tw</span> <span style="color:#56b6c2">and</span> <span style="color:#e06c75">Tw</span> <span style="color:#56b6c2">&gt;</span> <span style="color:#d19a66">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">alpha_max</span> <span style="color:#56b6c2">*</span> (<span style="color:#e06c75">t</span> <span style="color:#56b6c2">/</span> <span style="color:#e06c75">Tw</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">if</span> <span style="color:#e06c75">Tw</span> <span style="color:#56b6c2">&lt;=</span> <span style="color:#e06c75">t</span> <span style="color:#56b6c2">&lt;=</span> <span style="color:#e06c75">Tc</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">ratio</span> <span style="color:#56b6c2">=</span> (<span style="color:#e06c75">t</span> <span style="color:#56b6c2">-</span> <span style="color:#e06c75">Tw</span>) <span style="color:#56b6c2">/</span> (<span style="color:#e06c75">Tc</span> <span style="color:#56b6c2">-</span> <span style="color:#e06c75">Tw</span>)  <span style="color:#7f848e"># Progress through cosine phase</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">cosine_decay</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.5</span> <span style="color:#56b6c2">*</span> (<span style="color:#d19a66">1</span> <span style="color:#56b6c2">+</span> <span style="color:#e06c75">math</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cos</span>(<span style="color:#e06c75">math</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">pi</span> <span style="color:#56b6c2">*</span> <span style="color:#e06c75">ratio</span>))
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">alpha_min</span> <span style="color:#56b6c2">+</span> (<span style="color:#e06c75">alpha_max</span> <span style="color:#56b6c2">-</span> <span style="color:#e06c75">alpha_min</span>) <span style="color:#56b6c2">*</span> <span style="color:#e06c75">cosine_decay</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">return</span> <span style="color:#e06c75">alpha_min</span>
+</span></span></code></pre></div><h3 id="gradient-clipping">Gradient clipping<a hidden class="anchor" aria-hidden="true" href="#gradient-clipping">#</a></h3>
+<p>梯度裁剪用于控制梯度的大小，防止训练过程中因梯度爆炸导致的数值不稳定。它通过限制梯度的最大值或范数，确保参数更新步长合理，从而提升模型训练的稳定性和收敛性。</p>
+<p><img alt="image-20250407212810318" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407212810318.png"></p>
+<p>代码实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">clip_gradient</span>(<span style="color:#e06c75">parameters</span>, <span style="color:#e06c75">max_norm</span>: <span style="color:#e5c07b">float</span>, <span style="color:#e06c75">eps</span>: <span style="color:#e5c07b">float</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">1e-6</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">grads</span> <span style="color:#56b6c2">=</span> [<span style="color:#e06c75">p</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">grad</span> <span style="color:#c678dd">for</span> <span style="color:#e06c75">p</span> <span style="color:#56b6c2">in</span> <span style="color:#e06c75">parameters</span> <span style="color:#c678dd">if</span> <span style="color:#e06c75">p</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">grad</span> <span style="color:#56b6c2">is</span> <span style="color:#56b6c2">not</span> <span style="color:#e5c07b">None</span>]
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">if</span> <span style="color:#56b6c2">not</span> <span style="color:#e06c75">grads</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">device</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">grads</span>[<span style="color:#d19a66">0</span>]<span style="color:#56b6c2">.</span><span style="color:#e06c75">device</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">total_norm</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">norm</span>(
+</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">stack</span>([<span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">norm</span>(<span style="color:#e06c75">g</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">detach</span>(), <span style="color:#d19a66">2</span>) <span style="color:#c678dd">for</span> <span style="color:#e06c75">g</span> <span style="color:#56b6c2">in</span> <span style="color:#e06c75">grads</span>]), 
+</span></span><span style="display:flex;"><span>        <span style="color:#d19a66">2</span>
+</span></span><span style="display:flex;"><span>    )<span style="color:#56b6c2">.</span><span style="color:#e06c75">to</span>(<span style="color:#e06c75">device</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">scaling_factor</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">max_norm</span> <span style="color:#56b6c2">/</span> (<span style="color:#e06c75">total_norm</span> <span style="color:#56b6c2">+</span> <span style="color:#e06c75">eps</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">if</span> <span style="color:#e06c75">total_norm</span> <span style="color:#56b6c2">&gt;</span> <span style="color:#e06c75">max_norm</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">for</span> <span style="color:#e06c75">grad</span> <span style="color:#56b6c2">in</span> <span style="color:#e06c75">grads</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">grad</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">mul_</span>(<span style="color:#e06c75">scaling_factor</span>)
+</span></span></code></pre></div><h3 id="resource-accounting">Resource accounting<a hidden class="anchor" aria-hidden="true" href="#resource-accounting">#</a></h3>
+<p>一个简单的资源估算：</p>
+<p>基本想法：考虑 Y = WX，反向传播时需要分别对 W 和 X 求导，因此反向传播计算量约为正向传播的两倍。</p>
+<p><img alt="image-20250407151357762" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407151357762.png"></p>
+<h3 id="train-in-practice">Train in Practice<a hidden class="anchor" aria-hidden="true" href="#train-in-practice">#</a></h3>
+<p>把上面所有组件组合在一起后，就可以进行训练了。</p>
+<p>实际训练时的参数配置如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e">// 模型超参数
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>    <span style="color:#e06c75">&#34;vocab_size&#34;</span>: <span style="color:#d19a66">10000</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;context_length&#34;</span>: <span style="color:#d19a66">256</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;d_model&#34;</span>: <span style="color:#d19a66">512</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;num_layers&#34;</span>: <span style="color:#d19a66">4</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;num_heads&#34;</span>: <span style="color:#d19a66">16</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;d_ff&#34;</span>: <span style="color:#d19a66">2048</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;attn_pdrop&#34;</span>: <span style="color:#d19a66">0.1</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;residual_pdrop&#34;</span>: <span style="color:#d19a66">0.1</span>,
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e">// 优化器超参数
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>    <span style="color:#e06c75">&#34;learning_rate&#34;</span>: <span style="color:#d19a66">0.001</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;beta1&#34;</span>: <span style="color:#d19a66">0.9</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;beta2&#34;</span>: <span style="color:#d19a66">0.95</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;epsilon&#34;</span>: <span style="color:#d19a66">1e-8</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;weight_decay&#34;</span>: <span style="color:#d19a66">0.01</span>,
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e">// 训练过程超参
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>    <span style="color:#e06c75">&#34;batch_size&#34;</span>: <span style="color:#d19a66">64</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;epochs&#34;</span>: <span style="color:#d19a66">10</span>,
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#7f848e">// 其他训练相关参数
+</span></span></span><span style="display:flex;"><span><span style="color:#7f848e"></span>    <span style="color:#e06c75">&#34;save_every&#34;</span>: <span style="color:#d19a66">1000</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;save_path&#34;</span>: <span style="color:#98c379">&#34;checkpoints/&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;train_data&#34;</span>: <span style="color:#98c379">&#34;valid.npy&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;valid_data&#34;</span>: <span style="color:#98c379">&#34;valid.npy&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;result_model&#34;</span>: <span style="color:#98c379">&#34;model/model.pth&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">&#34;log_path&#34;</span>: <span style="color:#98c379">&#34;logs/log.txt&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>实际训练时，在一张 4090 显卡上运行了 1h30min。</p>
+<p>训练时出了许多 bug（比如奇奇怪怪的  cuda 报错），checkpoint 非常实用。</p>
+<p><img alt="image-20250407143713850" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407143713850.png"></p>
+<p>下图是 loss 曲线，可以看到在 10000 个迭代后 loss 曲线就不怎动了。最终 loss 为 0.9105。</p>
+<blockquote>
+<p>可能因为每隔 100 个迭代才记录一次学习率，所以从图中看不出周期性</p>
+<p>同时，Tc 可能设置过小，导致后期 loss 降不下去</p></blockquote>
+<p><img alt="image-20250407144619463" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407144619463.png"></p>
+<h2 id="run">Run<a hidden class="anchor" aria-hidden="true" href="#run">#</a></h2>
+<p>模型训练好之后，就是推理了！</p>
+<p>当输入一个句子时，模型会生成表示下一个Token可能性的logits值。这些logits会除以称为Temperature的超参数——Temperature值越大，模型选择低频词的概率越高。之后我们筛选出概率最高的前k个候选Token（top-k sampling），通过softmax函数将筛选后的logits转换为概率分布，然后依据该概率分布随机选取一个Token作为输出。</p>
+<p>之后，我们将新生成的Token追加至输入序列末尾，重新输入模型进行下一轮预测，循环直至出现终止符（如）或达到最大生成长度。</p>
+<blockquote>
+<p>文本生成中，也常常使用 <a href="https://www.wikiwand.com/en/articles/Beam_search">beam search</a> 来选择 Token</p></blockquote>
+<p><img alt="image-20250407220917943" loading="lazy" src="/posts/building-a-transformer-lm/assets/image-20250407220917943.png"></p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://rzyn2020.github.io/tags/llm/">LLM</a></li>
+      <li><a href="https://rzyn2020.github.io/tags/code/">Code</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/">
+    <span class="title">Next »</span>
+    <br>
+    <span>MySQL 知识点总结 </span>
+  </a>
+</nav>
+
+
+<ul class="share-buttons">
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on x"
+            href="https://x.com/intent/tweet/?text=Building%20a%20Transformer%20LM&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f&amp;hashtags=LLM%2cCode">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on linkedin"
+            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f&amp;title=Building%20a%20Transformer%20LM&amp;summary=Building%20a%20Transformer%20LM&amp;source=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on reddit"
+            href="https://reddit.com/submit?url=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f&title=Building%20a%20Transformer%20LM">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on facebook"
+            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on whatsapp"
+            href="https://api.whatsapp.com/send?text=Building%20a%20Transformer%20LM%20-%20https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f">
+            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on telegram"
+            href="https://telegram.me/share/url?text=Building%20a%20Transformer%20LM&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f">
+            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+                <path
+                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+            </svg>
+        </a>
+    </li>
+    <li>
+        <a target="_blank" rel="noopener noreferrer" aria-label="share Building a Transformer LM on ycombinator"
+            href="https://news.ycombinator.com/submitlink?t=Building%20a%20Transformer%20LM&u=https%3a%2f%2frzyn2020.github.io%2fposts%2fbuilding-a-transformer-lm%2f">
+            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
+                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
+                <path
+                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
+            </svg>
+        </a>
+    </li>
+</ul>
+
+  </footer><script src="https://giscus.app/client.js"
+        data-repo="RZYN2020/RZYN2020.github.io"
+        data-repo-id="R_kgDONMpsCg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDONMpsCs4CkUS9"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
