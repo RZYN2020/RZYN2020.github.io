@@ -1,7 +1,7 @@
 ---
-date: '2025-01-15T11:47:09+08:00'
+date: '2025-04-06T17:48:46+08:00'
 draft: true
-title: 'Building a Transformer LM'
+title: 'Alignment in Action'
 tags: 
 - null
 categories: null

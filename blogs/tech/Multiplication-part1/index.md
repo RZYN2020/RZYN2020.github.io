@@ -1,5 +1,7 @@
 ---
-categories: Algorithms
+categories: Algorithm
+tags:
+- Book
 comment: true
 date: '2022-03-20T20:41:38'
 draft: false

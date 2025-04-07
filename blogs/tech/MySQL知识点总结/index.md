@@ -4,7 +4,11 @@ draft: false
 title: 'MySQL 知识点总结 '
 tags: 
 - Database
-categories: backend
+- Interview
+- Summary
+categories: 
+- Backend
+- System
 comment : true
 hidden: false
 showToc: true # show contents

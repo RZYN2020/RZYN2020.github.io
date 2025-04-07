@@ -2,6 +2,9 @@
 date: '2025-01-13T19:29:29+08:00'
 draft: false
 title: '深度学习基础知识总结'
+tags:
+- DeepLearning
+- Summary
 categories: AI
 comment : true
 hidden: false

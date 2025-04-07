@@ -1,5 +1,9 @@
 ---
-categories: Java
+categories: Backend
+tags:
+- Java
+- Stream
+- Knowledge
 comment: true
 date: '2021-08-18T20:31:48'
 draft: false

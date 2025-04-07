@@ -1,5 +1,8 @@
 ---
-categories: C
+categories: System
+tags:
+- C
+- Knowledge
 comment: true
 date: '2021-11-14T09:23:52'
 draft: false

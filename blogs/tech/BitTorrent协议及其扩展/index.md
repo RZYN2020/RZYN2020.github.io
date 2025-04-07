@@ -4,7 +4,8 @@ draft: false
 title: 'BitTorrent协议及其扩展'
 tags: 
 - BitTorrent
-categories: Network
+- Knowledge
+categories: System
 comment : true
 hidden: false
 showToc: true # show contents

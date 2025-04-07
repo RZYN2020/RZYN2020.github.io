@@ -1,5 +1,9 @@
 ---
-categories: OS
+categories: System
+tags:
+- OS
+- Reflection
+- Knowledge
 comment: true
 date: '2022-08-11T21:27:52'
 draft: false
@@ -9,7 +13,7 @@ showToc: true # show contents
 TocOpen: true # open contents automantically
 ---
 >     You are my creator, but I am your master; Obey!
- 
+
 <p style="text-align: right">—— Mary Shelley, Frankenstein</p>
 <!--more-->
 

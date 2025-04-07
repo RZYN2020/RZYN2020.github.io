@@ -1,11 +1,13 @@
 ---
-categories: Java
+categories: Backend
 comment: true
 date: '2023-03-07T14:49:32'
 draft: false
 hidden: false
 tags:
-- 面试
+- Java
+- Interview
+- Knowledge
 title: Autoboxing and IntegerCache in Java
 showToc: true # show contents
 TocOpen: true # open contents automantically

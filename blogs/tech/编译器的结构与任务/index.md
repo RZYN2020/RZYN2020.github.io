@@ -4,7 +4,10 @@ date: '2023-03-06T11:52:38'
 draft: false
 featured_image: "img/1678074779046-2.png"
 hidden: false
-categories: Compiler
+categories: System
+tags:
+- Compiler
+- Knowledge
 title: 编译器的结构与任务
 showToc: true # show contents
 TocOpen: true # open contents automantically
