@@ -60,6 +60,7 @@ taxonomies:
   category: categories
   tag: tags
 params:
+  math: true
   homeInfoParams:
     Title: 你好！
     Content: 目前我会这里发表一些技术相关文章...

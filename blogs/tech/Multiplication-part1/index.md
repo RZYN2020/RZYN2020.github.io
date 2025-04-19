@@ -7,7 +7,8 @@ date: '2022-03-20T20:41:38'
 draft: false
 featured_image: "img/image-20220320173825660.png"
 hidden: false
-mathjax: true
+params:
+  math: true
 title: Multiplication
 showToc: true # show contents
 TocOpen: true # open contents automantically
