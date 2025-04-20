@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字尺度数轴</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px; /* Adjust height as needed */
+            border: 1px solid #ccc;
+            background-color: #fff;
+            overflow: hidden; /* Prevent overflow issues during zoom */
+            position: relative; /* Needed for tooltip positioning */
+            margin-bottom: 10px; /* Space below chart for controls */
+            border-radius: 8px; /* Rounded corners for the container */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #888; /* Lighter axis line */
+            shape-rendering: crispEdges;
+        }
+        .axis text {
+            font-size: 11px; /* Slightly smaller axis text */
+            fill: #555;
+        }
+        .number-bar {
+             /* fill and opacity will be set by JS based on category and zoom */
+            stroke: none; /* No border for bars */
+        }
+        .number-icon {
+            font-size: 18px; /* Size of the icon */
+            text-anchor: middle;
+            /* fill will be set by JS based on category */
+            cursor: pointer;
+            transition: font-size 0.2s ease; /* Smooth font-size transition on hover */
+        }
+        .number-icon:hover {
+            font-size: 24px; /* Enlarge font-size on hover */
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 10px; /* More padding */
+            background: rgba(255, 255, 255, 0.95); /* Semi-transparent white */
+            border: 1px solid #aaa;
+            border-radius: 6px; /* Rounded corners */
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+            font-size: 13px; /* Slightly larger tooltip text */
+            color: #333;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* Shadow for tooltip */
+            z-index: 10;
+        }
+         .tooltip strong {
+             color: steelblue; /* Highlight label */
+         }
+        .controls {
+            text-align: center;
+            margin-top: 15px; /* More space above controls */
+        }
+        .controls button {
+            margin: 0 8px; /* More space between buttons */
+            padding: 10px 20px; /* Larger buttons */
+            font-size: 15px;
+            cursor: pointer;
+            border: none; /* No default border */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #5cb85c; /* Green button */
+            color: white;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2); /* Button shadow */
+            transition: background-color 0.2s ease;
+        }
+        .controls button:hover {
+            background-color: #4cae4c; /* Darker green on hover */
+        }
+         #zoom-out { background-color: #d9534f; } /* Red button */
+         #zoom-out:hover { background-color: #c9302c; } /* Darker red */
+         #pan-left, #pan-right { background-color: #f0ad4e; } /* Orange buttons */
+         #pan-left:hover, #pan-right:hover { background-color: #ec971f; } /* Darker orange */
+
+
+        .legend {
+            margin-top: 25px; /* More space above legend */
+            text-align: center;
+            font-size: 13px;
+            color: #555;
+        }
+        .legend-item {
+            display: inline-block;
+            margin: 0 15px; /* More space between legend items */
+        }
+        .legend-icon {
+            display: inline-block;
+            font-size: 18px; /* Icon size in legend */
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .scale-label {
+            font-size: 10px;
+            text-anchor: middle;
+            fill: #555;
+        }
+         .unit-marker {
+             fill: #bbb; /* Color for unit markers - light grey */
+             opacity: 1; /* Full opacity */
+             stroke: none;
+         }
+    </style>
+</head>
+<body>
+
+    <h2>数字尺度交互数轴</h2>
+    <p>通过拖动和滚轮缩放，或使用下方按钮及键盘方向键来探索不同数字的相对位置。</p>
+    <div id="chart" class="chart-container"></div>
+    <div class="controls">
+        <button id="zoom-in">放大 (+)</button>
+        <button id="zoom-out">缩小 (-)</button>
+        <button id="pan-left">左移 (&lt;)</button>
+        <button id="pan-right">右移 (&gt;)</button>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Data for the number line
+        // Each object has:
+        // value: The numerical value
+        // label: A short label for the number
+        // context: A brief description of the number
+        // category: The category of the number for coloring and icon
+        const numberData = [
+            // Removed Units category from here
+
+            // 物理长度
+            { value: 0.2e-9, label: "硅原子直径", context: "约 0.2 nm", category: "Physical Length", icon: "📏" }, // Ruler emoji
+            { value: 2e-9, label: "DNA直径", context: "约 2 nm", category: "Physical Length", icon: "📏" },
+            { value: 100e-9, label: "病毒大小上限", context: "约 100 nm", category: "Physical Length", icon: "🦠" }, // Microbe emoji
+            { value: 5e-6, label: "细菌大小上限", context: "约 5 μm", category: "Physical Length", icon: "🦠" },
+            { value: 100e-6, label: "头发直径上限", context: "约 100 μm", category: "Physical Length", icon: "💈" }, // Barber pole emoji (represents hair)
+            { value: 0.02, label: "蚂蚁长度上限", context: "约 2 cm", category: "Physical Length", icon: "🐜" }, // Ant emoji
+            { value: 2, label: "人的身高上限", context: "约 2 m", category: "Physical Length", icon: "🧍" }, // Person standing emoji
+            { value: 8.8e3, label: "珠峰高", context: "约 8848 m", category: "Physical Length", icon: "⛰️" }, // Mountain emoji
+            { value: 70e3, label: "地壳厚度上限", context: "约 70 km", category: "Physical Length", icon: "🌍" }, // Earth emoji
+            { value: 50e3, label: "平流层高度上限", context: "约 50 km", category: "Physical Length", icon: "☁️" }, // Cloud emoji
+            { value: 6.4e6, label: "地球半径", context: "约 6371 km", category: "Physical Length", icon: "🌎" }, // Earth globe emoji
+            { value: 3.8e8, label: "地月距离", context: "约 38万 km", category: "Physical Length", icon: "🌕" }, // Full moon emoji
+            { value: 1.5e11, label: "日地距离", context: "约 1.5亿 km", category: "Physical Length", icon: "☀️" }, // Sun emoji
+            { value: 1.5e13, label: "太阳系直径", context: "约 100 AU", category: "Physical Length", icon: "🪐" }, // Ringed planet emoji
+            { value: 4e16, label: "比邻星距离", context: "约 4.2 光年", category: "Physical Length", icon: "⭐" }, // Star emoji
+            { value: 1e21, label: "银河系直径", context: "约 10万 光年", category: "Physical Length", icon: "🌌" }, // Milky Way emoji
+            { value: 9e26, label: "可观测宇宙直径", context: "约 930亿 光年", category: "Physical Length", icon: "🔭" }, // Telescope emoji
+
+            // 物理时间
+            { value: 1e-18, label: "阿秒", context: "光速穿过原子时间", category: "Physical Time", icon: "⏱️" }, // Stopwatch emoji
+            { value: 1e-15, label: "飞秒", context: "原子核反应时间", category: "Physical Time", icon: "⏱️" },
+            { value: 1e-12, label: "皮秒", context: "分子振动周期", category: "Physical Time", icon: "⏱️" },
+            { value: 1e-9, label: "纳秒", context: "CPU时钟周期", category: "Physical Time", icon: "⏱️" },
+            { value: 0.1, label: "眨眼时间下限", context: "约 0.1 s", category: "Physical Time", icon: "👁️" }, // Eye emoji
+            { value: 8.64e4, label: "一天", context: "约 8.64万 s", category: "Physical Time", icon: "☀️" }, // Sun emoji (day)
+            { value: 3.15e7, label: "一年", context: "约 3150万 s", category: "Physical Time", icon: "📅" }, // Calendar emoji
+            { value: 2.5e9, label: "人类平均寿命", context: "约 80 年", category: "Physical Time", icon: "👤" }, // Bust in silhouette emoji
+            { value: 1.6e11, label: "有文字记载历史", context: "约 5000 年", category: "Physical Time", icon: "📜" }, // Scroll emoji
+            { value: 3.15e11, label: "农业文明史", context: "约 1 万年", category: "Physical Time", icon: "🌾" }, // Sheaf of rice emoji
+            { value: 6.3e12, label: "智人出现", context: "约 20 万年", category: "Physical Time", icon: "🚶" }, // Person walking emoji
+            { value: 6.3e13, label: "旧石器时代开始", context: "约 200 万年", category: "Physical Time", icon: "🗿" }, // Moai emoji (ancient stone)
+            { value: 2.1e15, label: "恐龙灭绝", context: "约 6600 万年", category: "Physical Time", icon: "🦕" }, // Sauropod emoji
+            { value: 1.7e16, label: "寒武纪大爆发", context: "约 5.4 亿年", category: "Physical Time", icon: "🦑" }, // Squid emoji (represents marine life explosion)
+            { value: 1.4e17, label: "地球形成", context: "约 45 亿年", category: "Physical Time", icon: "🌋" }, // Volcano emoji (early Earth)
+            { value: 4.3e17, label: "宇宙年龄", context: "约 138 亿年", category: "Physical Time", icon: "✨" }, // Sparkles emoji (Big Bang)
+
+            // 社会经济
+            { value: 5e4, label: "大学学生数", context: "约 5 万人", category: "Social/Economy", icon: "🎓" }, // Graduation cap emoji
+            { value: 1e6, label: "产品年销量", context: "约 100 万件", category: "Social/Economy", icon: "📦" }, // Package emoji
+            { value: 1e7, label: "城市人口", context: "约 1000 万人", category: "Social/Economy", icon: "🏙️" }, // Cityscape emoji
+            { value: 1.4e9, label: "中国人口", context: "约 14 亿人", category: "Social/Economy", icon: "🇨🇳" }, // China flag emoji
+            { value: 8e9, label: "世界人口", context: "约 80 亿人", category: "Social/Economy", icon: "🧑‍🤝‍🧑" }, // People holding hands emoji
+            { value: 6e12, label: "美国年预算", context: "约 6 万亿美元", category: "Social/Economy", icon: "💵" }, // Dollar banknote emoji
+            { value: 2e12, label: "大型公司市值", context: "约 2 万亿美元", category: "Social/Economy", icon: "🏢" }, // Office building emoji
+            { value: 1e14, label: "全球GDP", context: "约 100 万亿美元", category: "Social/Economy", icon: "💰" }, // Money bag emoji
+
+            // 计算机
+            { value: 8, label: "1 Byte", context: "8 比特", category: "Computer", icon: "💾" }, // Floppy disk emoji
+            { value: 1e3, label: "1 KB", context: "10^3 Bytes", category: "Computer", icon: "💾" },
+            { value: 1e6, label: "1 MB", context: "10^6 Bytes", category: "Computer", icon: "💾" },
+            { value: 1e9, label: "1 GB", context: "10^9 Bytes", category: "Computer", icon: "💾" },
+            { value: 1e12, label: "1 TB", context: "10^12 Bytes", category: "Computer", icon: "💾" },
+            { value: 1e15, label: "1 PB", context: "10^15 Bytes", category: "Computer", icon: "💾" },
+            { value: 1.25e8, label: "GPT-2 Small 参数", context: "1.25 亿参数", category: "Computer", icon: "🧠" }, // Brain emoji (AI)
+            { value: 1e6, label: "大型软件代码", context: "100 万行", category: "Computer", icon: "💻" }, // Laptop emoji
+            { value: 3e7, label: "Linux 内核代码", context: "3000 万行", category: "Computer", icon: "🐧" }, // Penguin emoji (Linux)
+             { value: 5e7, label: "Windows 代码", context: "5000 万行", category: "Computer", icon: "🪟" }, // Window emoji (Windows)
+            { value: 1.75e11, label: "GPT-3 参数", context: "1750 亿参数", category: "Computer", icon: "🧠" },
+            { value: 1e12, label: "大型AI模型参数", context: "1 万亿参数", category: "Computer", icon: "🧠" },
+        ];
+
+        // Sort data by value for better visualization
+        numberData.sort((a, b) => a.value - b.value);
+
+        const margin = { top: 20, right: 30, bottom: 100, left: 60 }; // Increased bottom margin for more scale labels
+        const container = d3.select("#chart");
+        const containerWidth = container.node().clientWidth;
+        const containerHeight = container.node().clientHeight;
+        const width = containerWidth - margin.left - margin.right;
+        const chartHeight = containerHeight - margin.top - margin.bottom; // Renamed height to chartHeight
+
+
+        // Append SVG to the container
+        const svg = container.append("svg")
+            .attr("width", containerWidth)
+            .attr("height", containerHeight);
+
+        // Add a transparent rectangle to capture zoom events across the chart area
+        const zoomRect = svg.append("rect")
+            .attr("width", containerWidth)
+            .attr("height", containerHeight)
+            .style("fill", "none")
+            .style("pointer-events", "all"); // Capture all pointer events
+
+        const g = svg.append("g") // Group for chart elements
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+
+        // Create a logarithmic scale for the x-axis
+        const x = d3.scaleLog()
+            .domain([d3.min(numberData, d => d.value) * 0.01, d3.max(numberData, d => d.value) * 100]) // Add more padding to domain
+            .range([0, width]);
+
+        // Create a linear scale for bar height (mapping log value to height)
+        const barHeightScale = d3.scaleLinear()
+            .domain([Math.log10(d3.min(numberData, d => d.value)), Math.log10(d3.max(numberData, d => d.value))])
+            .range([5, chartHeight - 40]); // Map log value to a height range (min height 5px, max height leaving space)
+
+
+        // Create the x-axis
+        const xAxis = g.append("g") // Append axis to the group
+            .attr("class", "axis axis--x")
+            .attr("transform", `translate(0,${chartHeight})`) // Position at the bottom of chartHeight
+            .call(d3.axisBottom(x).ticks(10, ".1e")); // Use scientific notation for ticks
+
+        // Define color scale based on category
+        const categories = [...new Set(numberData.map(d => d.category))];
+        const colorScale = d3.scaleOrdinal(d3.schemeCategory10) // Use a built-in D3 color scheme
+            .domain(categories);
+
+        // --- Overlap Handling (Vertical Offset) ---
+        // A more sophisticated stacking logic
+        const verticalSpacing = 20; // Increased vertical space between stacked items
+        const horizontalTolerance = 6; // Horizontal distance in pixels to consider items "close"
+
+        // Calculate vertical offsets - This needs to be done inside zoomed() based on the current scale
+        // Initial calculation outside zoomed() is just for initial render
+        function calculateVerticalOffsets(data, xScale, tolerance) {
+             // Create a copy to sort without changing original data order
+            const sortedData = [...data].sort((a, b) => xScale(a.value) - xScale(b.value));
+
+            const lanes = []; // Array to hold the vertical lanes
+
+            sortedData.forEach(d => {
+                const xPos = xScale(d.value);
+                let placed = false;
+
+                // Try to place the item in an existing lane
+                for (let i = 0; i < lanes.length; i++) {
+                    const lane = lanes[i];
+                    // Check if this item overlaps horizontally with the last item in the lane
+                    if (lane.length === 0 || xPos - lane[lane.length - 1].xPos > tolerance) {
+                        // No overlap, place it in this lane
+                        d.verticalOffset = i * verticalSpacing;
+                        d.xPos = xPos; // Store calculated x position for the current scale
+                        lane.push(d);
+                        placed = true;
+                        break;
+                    }
+                }
+
+                // If not placed, create a new lane
+                if (!placed) {
+                    d.verticalOffset = lanes.length * verticalSpacing;
+                    d.xPos = xPos; // Store calculated x position for the current scale
+                    lanes.push([d]);
+                }
+            });
+             // Update the original data objects with the calculated offsets
+             data.forEach(d => {
+                 const sortedItem = sortedData.find(item => item.value === d.value);
+                 if(sortedItem) {
+                     d.verticalOffset = sortedItem.verticalOffset;
+                 }
+             });
+        }
+
+        // Calculate initial offsets
+        calculateVerticalOffsets(numberData, x, horizontalTolerance);
+
+        // --- End Overlap Handling ---
+
+        // Add visual markers for scale labels (Units)
+        const scaleLabels = [
+            { value: 1e-12, cn: "皮", en: "Pico" },
+            { value: 1e-9, cn: "纳", en: "Nano" },
+            { value: 1e-6, cn: "微", en: "Micro" },
+            { value: 1e-3, cn: "毫", en: "Milli" },
+            { value: 1e0, cn: "个", en: "One" },
+            { value: 1e3, cn: "千", en: "Thousand" },
+            { value: 1e6, cn: "百万", en: "Million" },
+            { value: 1e9, cn: "十亿", en: "Billion" },
+            { value: 1e12, cn: "万亿 (兆)", en: "Trillion" },
+            { value: 1e16, cn: "京", en: "Quadrillion" }, // Approx
+            { value: 1e20, cn: "垓", en: "Quintillion" }, // Approx
+            { value: 1e24, cn: "秭", en: "Septillion" }, // Approx
+            { value: 1e28, cn: "穰", en: "Octillion" }, // Approx
+            { value: 1e32, cn: "沟", en: "Nonillion" }, // Approx
+            { value: 1e36, cn: "涧", en: "Decillion" }, // Approx
+            { value: 1e40, cn: "正", en: "Undecillion" }, // Approx
+            { value: 1e44, cn: "载", en: "Duodecillion" }, // Approx
+            { value: 1e48, cn: "极", en: "Tredecillion" }, // Approx
+            { value: 1e52, cn: "恒河沙", en: "Quattuordecillion" }, // Approx
+            { value: 1e56, cn: "阿僧祇", en: "Quindecillion" }, // Approx
+            { value: 1e60, cn: "那由他", en: "Sexdecillion" }, // Approx
+            { value: 1e64, cn: "不可思议", en: "Septendecillion" }, // Approx
+            { value: 1e68, cn: "无量大数", en: "Octodecillion" }, // Approx
+        ];
+
+        const unitMarkers = g.selectAll(".unit-marker") // Append markers to the group
+            .data(scaleLabels)
+            .enter()
+            .append("rect")
+            .attr("class", "unit-marker")
+            .attr("x", d => x(d.value) - 1) // Position at the value, width 2 (centered)
+            .attr("y", 0)
+            .attr("width", 2) // Made wider
+            .attr("height", chartHeight); // Full height
+
+
+        // Add Bars for each number
+        const bars = g.selectAll(".number-bar") // Append bars to the group
+            .data(numberData)
+            .enter()
+            .append("rect")
+            .attr("class", "number-bar")
+            .attr("x", d => x(d.value) - 1) // Position bar at the value, width 2
+            .attr("width", 2)
+            .attr("fill", d => colorScale(d.category)) // Set color based on category
+            .attr("y", d => {
+                // Bars start from the axis, adjusted by height and vertical offset
+                const barHeight = barHeightScale(Math.log10(d.value));
+                return chartHeight - barHeight - d.verticalOffset;
+            })
+            .attr("height", d => {
+                // Bars use scaled height
+                return barHeightScale(Math.log10(d.value));
+            })
+            .attr("opacity", 0.7); // Initial opacity
+
+
+        // Add Icons for each number
+        const icons = g.selectAll(".number-icon") // Append icons to the group
+            .data(numberData)
+            .enter()
+            .append("text") // Use text element for emojis/characters
+            .attr("class", "number-icon")
+            .attr("x", d => x(d.value)) // Position icon at the value
+            .attr("y", d => {
+                // Position icons based on bar top position + padding
+                const barHeight = barHeightScale(Math.log10(d.value));
+                const barTopY = chartHeight - barHeight - d.verticalOffset;
+                return barTopY - 5; // 5px padding above the bar
+            })
+            .text(d => d.icon) // Set text to the icon
+            .attr("fill", d => colorScale(d.category)) // Set color based on category
+            .on("mouseover", function(event, d) {
+                // Show tooltip on hover
+                d3.select("#tooltip")
+                    .style("opacity", 1)
+                    .html(`<strong>${d.label}</strong><br>Value: ${d.value.toExponential(2)}<br>Category: ${d.category}<br>${d.context}`) // Show value in scientific notation and category
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 20) + "px");
+            })
+            .on("mouseout", function() {
+                // Hide tooltip on mouseout
+                d3.select("#tooltip")
+                    .style("opacity", 0);
+            });
+
+        // Add Chinese and English scale labels
+        const scaleLabelGroup = g.append("g") // Append labels to the group
+            .attr("class", "scale-labels")
+            .attr("transform", `translate(0,${chartHeight + 30})`); // Position below the axis
+
+        scaleLabelGroup.selectAll(".scale-label")
+            .data(scaleLabels)
+            .enter()
+            .append("text")
+            .attr("class", "scale-label")
+            .attr("x", d => x(d.value))
+            .attr("y", 0) // Position for Chinese label
+            .text(d => `${d.cn} / ${d.en}`);
+
+        // Implement Zoom and Pan
+        const zoomBehavior = d3.zoom()
+            .scaleExtent([1, 100000000000]) // Allow significant zoom
+            .translateExtent([[0, 0], [width, chartHeight]]) // Restrict pan
+            .on("zoom", zoomed);
+
+        // Apply zoom behavior to the transparent rectangle
+        zoomRect.call(zoomBehavior);
+
+        // Store the current transform
+        let currentTransform = d3.zoomIdentity;
+
+        function zoomed(event) {
+            currentTransform = event.transform; // Update current transform
+            const newXScale = event.transform.rescaleX(x); // Rescale the x-axis
+
+            // Update the x-axis based on the new scale
+            // The axis itself is appended to 'g', but we update its scale
+            xAxis.call(d3.axisBottom(newXScale).ticks(10, ".1e"));
+
+
+            // Recalculate vertical offsets based on new scale for positioning
+            // This is crucial for overlap handling to work correctly with zoom
+            calculateVerticalOffsets(numberData, newXScale, horizontalTolerance / (currentTransform.k > 1 ? Math.sqrt(currentTransform.k) : 1));
+
+
+            // Update bar positions based on the new horizontal scale and recalculated vertical offset
+            // X position uses the new scale
+            // Y position and Height use static scales and recalculated offset, relative to chartHeight
+            bars.attr("x", d => newXScale(d.value) - 1) // Use newXScale for horizontal position
+                .attr("y", d => {
+                    const barHeight = barHeightScale(Math.log10(d.value));
+                    return chartHeight - barHeight - d.verticalOffset; // Y relative to chartHeight
+                })
+                .attr("height", d => {
+                    return barHeightScale(Math.log10(d.value)); // Height is static
+                })
+                .attr("opacity", Math.min(1, 0.3 + currentTransform.k * 0.1)); // Adjust opacity based on zoom level
+
+
+            // Update icon positions based on the new horizontal scale and recalculated vertical offset
+            icons.attr("x", d => newXScale(d.value)) // Use newXScale for horizontal position
+                 .attr("y", d => {
+                     const barHeight = barHeightScale(Math.log10(d.value));
+                     const barTopY = chartHeight - barHeight - d.verticalOffset;
+                     return barTopY - 5; // Y relative to chartHeight
+                 })
+                 .attr("opacity", Math.min(1, 0.5 + currentTransform.k * 0.1)); // Adjust opacity based on zoom level
+
+
+            // Update scale label positions based on the new horizontal scale
+            scaleLabelGroup.selectAll(".scale-label")
+                .attr("x", d => newXScale(d.value)); // Use newXScale for horizontal position
+             // Y position is static relative to the group/chart area (set during initial creation)
+
+            // Update unit marker positions based on the new horizontal scale
+             unitMarkers.attr("x", d => newXScale(d.value) - 1); // Use newXScale for horizontal position, center the 2px marker
+             // Y and height are static relative to the group/chart area (set during initial creation)
+
+            // The main group 'g' itself is not transformed, but its children's attributes are updated.
+            // The zoom behavior is applied to zoomRect, which triggers this function.
+        }
+
+        // Button event listeners
+        d3.select("#zoom-in").on("click", () => {
+            svg.transition().duration(500).call(zoomBehavior.scaleBy, 2); // Zoom in by a factor of 2
+        });
+
+        d3.select("#zoom-out").on("click", () => {
+            svg.transition().duration(500).call(zoomBehavior.scaleBy, 0.5); // Zoom out by a factor of 0.5
+        });
+
+        d3.select("#pan-left").on("click", () => {
+             // Pan left: move the view left, which means translating the chart content right (positive x)
+            svg.transition().duration(500).call(zoomBehavior.translateBy, 100 / currentTransform.k, 0);
+        });
+
+        d3.select("#pan-right").on("click", () => {
+             // Pan right: move the view right, which means translating the chart content left (negative x)
+            svg.transition().duration(500).call(zoomBehavior.translateBy, -100 / currentTransform.k, 0);
+        });
+
+
+        // Add keyboard event listener for panning and zooming
+        window.addEventListener('keydown', (event) => {
+            const panAmount = 50; // Pixels to pan per key press
+
+            if (event.key === 'ArrowLeft' || event.keyCode === 37) {
+                // Pan left
+                svg.transition().duration(100).call(zoomBehavior.translateBy, panAmount / currentTransform.k, 0);
+                event.preventDefault(); // Prevent default browser scrolling
+            } else if (event.key === 'ArrowRight' || event.keyCode === 39) {
+                // Pan right
+                svg.transition().duration(100).call(zoomBehavior.translateBy, -panAmount / currentTransform.k, 0);
+                event.preventDefault(); // Prevent default browser scrolling
+            } else if (event.key === 'ArrowUp' || event.keyCode === 38) {
+                 // Zoom In
+                svg.transition().duration(100).call(zoomBehavior.scaleBy, 1.2); // Zoom in by a factor
+                event.preventDefault(); // Prevent default browser scrolling
+            } else if (event.key === 'ArrowDown' || event.keyCode === 40) {
+                 // Zoom Out
+                svg.transition().duration(100).call(zoomBehavior.scaleBy, 1 / 1.2); // Zoom out by a factor
+                event.preventDefault(); // Prevent default browser scrolling
+            }
+        });
+
+
+        // Add a title to the x-axis
+        g.append("text") // Append title to the group
+            .attr("transform", `translate(${width/2},${chartHeight + margin.bottom - 10})`) // Position below the axis
+            .style("text-anchor", "middle")
+            .text("数值 (对数尺度)");
+
+        // Add Legend
+        const legend = d3.select("#legend");
+        // Filter out the "Units" category as it's handled separately
+        const categoriesForLegend = categories.filter(cat => cat !== "Units");
+
+        categoriesForLegend.forEach(category => {
+            // Find an icon for this category from the data
+            const sampleData = numberData.find(d => d.category === category);
+            const icon = sampleData ? sampleData.icon : '●'; // Default icon if not found
+
+            const legendItem = legend.append("div")
+                .attr("class", "legend-item");
+
+            legendItem.append("span")
+                .attr("class", "legend-icon")
+                .text(icon)
+                .style("color", colorScale(category)); // Color the legend icon
+
+            legendItem.append("span")
+                .text(category);
+        });
+
+        // Add Units category to legend manually since it's not in numberData anymore
+         const unitCategory = "Units";
+         const unitIcon = "●"; // Using the dot icon for units
+         const unitColor = "#bbb"; // Use the color defined in CSS for unit markers
+         const unitLegendItem = legend.append("div")
+                .attr("class", "legend-item");
+
+         unitLegendItem.append("span")
+                .attr("class", "legend-icon")
+                .text(unitIcon)
+                .style("color", unitColor);
+
+         unitLegendItem.append("span")
+                .text(unitCategory);
+
+
+    </script>
+
+</body>
+</html>

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Stream on Ekstasis&#39;s Blog</title>
     <link>https://rzyn2020.github.io/tags/stream/</link>
     <description>Recent content in Stream on Ekstasis&#39;s Blog</description>
-    <follow_challenge>
-      <feedId>83085992970863616</feedId>
-      <userId>81891412466736128</userId>
-    </follow_challenge>
-    <generator>Hugo -- 0.145.0</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Wed, 18 Aug 2021 20:31:48 +0000</lastBuildDate>
     <atom:link href="https://rzyn2020.github.io/tags/stream/index.xml" rel="self" type="application/rss+xml" />
@@ -17,8 +13,7 @@
       <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
       <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
       <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
     </item>
   </channel>
 </rss>

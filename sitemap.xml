@@ -2,11 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://rzyn2020.github.io/categories/</loc>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
+  </url><url>
+    <loc>https://rzyn2020.github.io/tags/cheatsheet/</loc>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
+  </url><url>
     <loc>https://rzyn2020.github.io/</loc>
-    <lastmod>2025-04-06T17:48:46+08:00</lastmod>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
+  </url><url>
+    <loc>https://rzyn2020.github.io/categories/instinct/</loc>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
   </url><url>
     <loc>https://rzyn2020.github.io/posts/</loc>
-    <lastmod>2025-04-06T17:48:46+08:00</lastmod>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
+  </url><url>
+    <loc>https://rzyn2020.github.io/tags/</loc>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
+  </url><url>
+    <loc>https://rzyn2020.github.io/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/</loc>
+    <lastmod>2025-04-19T17:02:20+08:00</lastmod>
   </url><url>
     <loc>https://rzyn2020.github.io/categories/ai/</loc>
     <lastmod>2025-04-06T09:58:31+08:00</lastmod>
@@ -14,16 +29,10 @@
     <loc>https://rzyn2020.github.io/posts/building-a-transformer-lm/</loc>
     <lastmod>2025-04-06T09:58:31+08:00</lastmod>
   </url><url>
-    <loc>https://rzyn2020.github.io/categories/</loc>
-    <lastmod>2025-04-06T09:58:31+08:00</lastmod>
-  </url><url>
     <loc>https://rzyn2020.github.io/tags/code/</loc>
     <lastmod>2025-04-06T09:58:31+08:00</lastmod>
   </url><url>
     <loc>https://rzyn2020.github.io/tags/llm/</loc>
-    <lastmod>2025-04-06T09:58:31+08:00</lastmod>
-  </url><url>
-    <loc>https://rzyn2020.github.io/tags/</loc>
     <lastmod>2025-04-06T09:58:31+08:00</lastmod>
   </url><url>
     <loc>https://rzyn2020.github.io/categories/backend/</loc>
@@ -133,11 +142,5 @@
   </url><url>
     <loc>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</loc>
     <lastmod>2021-08-18T20:31:48+00:00</lastmod>
-  </url><url>
-    <loc>https://rzyn2020.github.io/about/</loc>
-  </url><url>
-    <loc>https://rzyn2020.github.io/archives/</loc>
-  </url><url>
-    <loc>https://rzyn2020.github.io/search/</loc>
   </url>
 </urlset>

@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Backend on Ekstasis&#39;s Blog</title>
     <link>https://rzyn2020.github.io/categories/backend/</link>
     <description>Recent content in Backend on Ekstasis&#39;s Blog</description>
-    <follow_challenge>
-      <feedId>83085992970863616</feedId>
-      <userId>81891412466736128</userId>
-    </follow_challenge>
-    <generator>Hugo -- 0.145.0</generator>
+    <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate>Wed, 12 Mar 2025 11:12:50 +0800</lastBuildDate>
     <atom:link href="https://rzyn2020.github.io/categories/backend/index.xml" rel="self" type="application/rss+xml" />
@@ -17,32 +13,21 @@
       <link>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</link>
       <pubDate>Wed, 12 Mar 2025 11:12:50 +0800</pubDate>
       <guid>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</guid>
-      <description>&lt;p&gt;在后端实习面试中，有 数据库，Java，网络，OS 四大考点，其中又以数据库考察最为频繁。数据库问题中，除了少部分范式相关理论，基本为 &lt;a href=&#34;https://db-engines.com/en/ranking&#34;&gt;MySQL&lt;/a&gt; 问题。因此，在这里摘录相关知识点，做一个总结，既是为秋招做准备，也是总结找实习过程中的所学知识。&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1mg411s7Ej/?spm_id_from=333.337.search-card.all.click&amp;amp;vd_source=226da368954a7c68d6b7e4bbdc91b2cd&#34;&gt;b 站视频解析&lt;/a&gt;&lt;/p&gt;
-&lt;h1 id=&#34;架构&#34;&gt;架构&lt;/h1&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250312144230196&#34; loading=&#34;lazy&#34; src=&#34;https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/img/image-20250312144230196.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;MySQL 整体可分为 Server 层 和 存储引擎 层。Server 层处理客户连接，接收 SQL 语句，生成执行计划，并调用存储引擎 API 来获取 / 写入具体数据。每一个客户端连接都由一个线程来负责处理。每个 table 都可以设置不同的存储引擎。&lt;a href=&#34;https://tangocc.github.io/2018/10/11/mysql-sourcecode/&#34;&gt;具体流程&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;img&#34; loading=&#34;lazy&#34; src=&#34;https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/img/post-mysql-client-server.jpg&#34;&gt;&lt;/p&gt;
-&lt;p&gt;存储引擎自定义实现数据的物理，逻辑组织以及索引，事务等特性。（因此面试考察的问题几乎都属于存储引擎层）抽象存储引擎层 api 是通过抽象类 &lt;a href=&#34;https://github.com/MariaDB/server/blob/11.4/sql/handler.h#L3200&#34;&gt;handler&lt;/a&gt; 来实现。&lt;a href=&#34;https://notes.eatonphil.com/2024-01-09-minimal-in-memory-storage-engine-for-mysql.html&#34;&gt;a minimal sorage engine in c++&lt;/a&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;The current limitations of the storage API are not intrinsic aspects of MySQL/MariaDB or Postgres&amp;rsquo;s design. For both project there used to be no pluggable storage at all. We can imagine a future patch to either project that allows support for batched row reads and writes that together could make column-wise storage and vectorized execution more feasible.&lt;/p&gt;</description>
+      <description>&lt;p&gt;在后端实习面试中，有 数据库，Java，网络，OS 四大考点，其中又以数据库考察最为频繁。数据库问题中，除了少部分范式相关理论，基本为 &lt;a href=&#34;https://db-engines.com/en/ranking&#34;&gt;MySQL&lt;/a&gt; 问题。因此，在这里摘录相关知识点，做一个总结，既是为秋招做准备，也是总结找实习过程中的所学知识。&lt;/p&gt;</description>
     </item>
     <item>
       <title>Autoboxing and IntegerCache in Java</title>
       <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
       <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
       <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;&lt;/blockquote&gt;
-&lt;!-- raw HTML omitted --&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;!-- raw HTML omitted --&gt;</description>
     </item>
     <item>
       <title>浅谈java8中的流</title>
       <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
       <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
       <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
+      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
     </item>
   </channel>
 </rss>

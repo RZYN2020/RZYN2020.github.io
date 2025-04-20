@@ -1,67 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>Scheme 拾遗：S-Expression，Continuation 以及 Macro | Ekstasis&#39;s Blog</title>
-<meta name="keywords" content="Scheme, PL, Knowledge">
-<meta name="description" content="
-Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
-<meta name="author" content="">
-<link rel="canonical" href="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.b3b257500bbfbe3513cdb8af760dc45f91d77c39ba7318cce6a089aeb7e5f8ec.css" integrity="sha256-s7JXUAu/vjUTzbivdg3EX5HXfDm6cxjM5qCJrrfl&#43;Ow=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://rzyn2020.github.io/images/yinyang.webp">
-<link rel="icon" type="image/png" sizes="16x16" href="https://rzyn2020.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://rzyn2020.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://rzyn2020.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://rzyn2020.github.io/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
-        }
-
-    </style>
-</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet"><meta property="og:url" content="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/">
+<html><head lang="en">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Scheme 拾遗：S-Expression，Continuation 以及 Macro - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="
+Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary" />
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="Scheme 拾遗：S-Expression，Continuation 以及 Macro">
-  <meta property="og:description" content=" Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
+  <meta property="og:description" content="Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -70,242 +17,75 @@ Programming languages should be designed not by piling feature on top of feature
     <meta property="article:tag" content="Scheme">
     <meta property="article:tag" content="PL">
     <meta property="article:tag" content="Knowledge">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Scheme 拾遗：S-Expression，Continuation 以及 Macro">
-<meta name="twitter:description" content="
-Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
 
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Scheme 拾遗：S-Expression，Continuation 以及 Macro">
+  <meta name="twitter:description" content="Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Posts",
-      "item": "https://rzyn2020.github.io/posts/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "Scheme 拾遗：S-Expression，Continuation 以及 Macro",
-      "item": "https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/"
-    }
-  ]
-}
+        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
+		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
+  	
+   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script>
+  MathJax = {
+    tex: {
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
+      inlineMath: [['$', '$']]                  
+    },
+    loader:{
+      load: ['ui/safe']
+    },
+  };
 </script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "Scheme 拾遗：S-Expression，Continuation 以及 Macro",
-  "name": "Scheme 拾遗：S-Expression，Continuation 以及 Macro",
-  "description": " Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary\n",
-  "keywords": [
-    "Scheme", "PL", "Knowledge"
-  ],
-  "articleBody": " Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary\n之前在 Twitter 上听 Robert Nystrom 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。\n在大一时曾读过部分 SICP，对 Scheme 有一点点认知。但对于其很多高级特性还不是很熟悉，尤其是 continuation 和 macro。于是在动写解释器前，打算先熟悉一下 Scheme 的特性。\nS-Expression 1960年，John McCarthy 在函数式编程的开山之作 Recursive Functions of Symbolic Expressions and Their Computation by Machine 中提出了 LSIP 语言，这也是 Scheme 的前身。LISP 语言最初也是为了支持人工智能系统 Advice Taker 而创造的(可惜 Advice Taker 代表的符号主义 AI 研究方法在当前的 AI 浪潮中似乎不见了身影)，其目的在于提供一种操作 expression 的功能以使得 Advice Taker 能在其上推理。\n在 LISP System 中，有 S-Expressions 和 S-Functions(对应 Scheme 中的过程/procedure) 两个概念。S-Expressions 即是 Symbolic Expression，和数学意义上的 expression (表达式)意义相同。S-expressions 本身仅仅是一种数据结构，没有任何求值的含义。 S-Expression 的定义如下：\n(以及list的定义如下)\n在 S-Expression 之上，我们又可以定义对其进行操作的 S-function (S-function事实上为 partial function，因为有可能无限循环)\natom. atom[x] has the value of T or F according to whether x is an atomic symbol.\natom [X] = T atom [(X · A)] = F\ncar. car[x] is defined if and only if x is not atomic. car [(e1 · e2)] = e1. Thus car [X] is undefined.\ncar [(X · A)] = X car [((X · A) · Y )] = (X · A)\n当然S-function也可以递归：\nff[x]. The value of ff[x] is the first atomic symbol of the S-Expression x with the parentheses ignored.\nThus ff[((A · B) · C)] = A\n向上面的式子叫做 M-expressions (meta-expressions)。(注意到 M-expression 之上就有求值的语义了)\n有趣的是，我们可以通过 S-Expressions 来表示 S-Functions，同理可以把任意一个 M-expression 用 S-Expression 表达：\n(这样就有平时用的 Scheme 的感觉了，，)\n然而单是这个转换本身没有什么作用，我们需要有一个函数 eval 来对转换后的 S-Expression 进行求值，其结果相当于对应的 M-Expression 的求值结果。我们在写 LSIP 程序时其实就是在写 S-Expression，但表示的却是 M-Expression。解释器运行程序就相当于把你写好的 S-Expression 丢给 eval 函数并返回结果。 S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过在 Scheme 中这些东西都是小写。而第一条转换规则中的 Atom QUOTE 可以简写为’。 除了 S-Expression，Scheme 还从 LISP 中继承了 GC,动态类型。高阶函数等特征。\nFun Facts: John McCarthy 父亲为爱尔兰移民，母亲为立陶宛犹太人移民，二人都思想开放，加入了美国共产党(Communist Party USA)。John 出身生于1927年，少时通过阅读俄文译作 100,000 Whys (难道中文版的《十万个为什么》也来自苏联？)燃起了对科学的兴趣。John后来也精通俄语，与多苏联科学家相识。但当他在 1968 年正真去苏联旅行之后很快就失望了，转变为共和党支持者。\nContinuation Scheme 于1970年代在 MIT AI Lab 被 Guy L. Steele 和 Gerald Jay Sussman发明(又是AI？)。与父亲 LISP 不同, Scheme 实现了尾递归优化，并引入了宏和 first class continuations，本节主要介绍 continuation，下一节介绍宏(Macro)。\n上一节说了 M-Expression 有求值语义，eval 函数也能求值，但并未说明到底怎样求值。具体来说，eval 接收到一个 S-Expression 后，对 S-Expression 的所有子Expression(接收到的 S-Expression 应为一个list，子 Expression 指的是 list 中的各个子项)逐个调用eval函数。第一个子 Expression 应为一个过程，剩余的 expression 为这个过程的参数，然后eval会调用apply将参数作用到过程上并返回结果。对于 Scheme 语言中定义的基本过程，apply 会直接计算并返回结果，对于复合过程，apply 会将函数形参替换为实际值，再调用 eval 对函数体求值并返回。\n可以看到，对一个 S-Expression 求值的过程可以看作一次次的对 eval 的调用。而每个 eval 调用结束之后都有下面还要进行的求值，这个后面还要进行的求值就叫做当前求值的 Continuation(延续)。\nScheme 中的 Continuation 是一个很抽象的概念，在其它编程语言中往往缺少对于概念。但在C语言中，我们可以通过机器状态来理解 Continuation。在C语言中，假如要调用一个函数 f，会在栈上 push f 的帧，f调用结束之后会将返回值 push 到栈上，再接着做后续计算。如果再将返回值 push 到栈上的一瞬间，我们对整个进程做一个快照，这个快照说明了在 f 返回后应该要做的计算，它其实就是 f 的 Continuation。在C语言中，我们可以通过int setjmp(jmp_buf env)来捕获在调用setjmp时的 Continuation 并保存在 env 中，而在未来调用void longjmp(jmp_buf env, int val) 会继续进行 setjmp 时保存的 Continuation，并把 val 作为 setjmp 的返回值。看起来就像进行了一次“时空穿越”。\nC语言中 setjmp 和 longjmp 的实现很好理解——setjmp 保存当前的 pc 指针以及寄存器的状态，longjmp时复原就行——当然这样也就引出了一个问题：c语言中的 setjmp 并不能真正保存 Continuation，因为 setjmp 不可能将栈上的值也保存了。但 Scheme 中的 Continuation 却是真正的 Continuation\nScheme 是通过 call/cc 这一过程起到和C语言中 setjmp 类似却更完备的功能的。call/cc 接收一个一元 lambda 函数，对其求值时相当于将当前的 Continuation传 入该一元 lambda 函数后对该函数体求值。如果一元 lambda 函数正常返回，则 call/cc 过程的返回值就是一元 lambda 函数的返回值。如过在任何地方调用了 Continuation(Continuation 也是一个一元过程)，当前的所要进行的计算就会变成 Continuation 所记录的计算，就好像 call/cc 过程刚刚返回一样，而此时 call/cc 的返回值为调用 Continuation 时传入的参数：\n(call/cc (lambda (k) (* 5 4))) =\u003e 20 (call/cc (lambda (k) (* 5 (k 4)))) =\u003e 4 (+ 2 (call/cc (lambda (k) (* 5 (k 4))))) =\u003e 6 借助 call/cc，我们可以实现协程(coroutine)：\n(define lwp-list '()) (define lwp (lambda (thunk) (set! lwp-list (append lwp-list (list thunk))))) (define start (lambda () (let ((p (car lwp-list))) (set! lwp-list (cdr lwp-list)) (p)))) (define pause (lambda () (call/cc (lambda (k) (lwp (lambda () (k #f))) (start))))) (define quit (lambda () (if (null? lwp-list) #f (start)))) (lwp (lambda () (let f () (pause) (display \"h\") (f)))) (lwp (lambda () (quit))) (lwp (lambda () (let f () (pause) (display \"e\") (f)))) (lwp (lambda () (let f () (pause) (display \"y\") (f)))) (lwp (lambda () (let f () (pause) (display \"!\") (f)))) (lwp (lambda () (let f () (pause) (newline) (f)))) (start) =\u003e hey! hey! hey! 如果利用 Macro，在每次调用 lambda 函数时插入“中断”指令，我们也可以模拟线程(由于没有迭代，每个 lambda 函数体的执行都是O(1)的时间复杂度，因此每次进入函数体时中断也能达到类似“定时中断”的效果)：\n(define clock 0) (define handler #f) (define start-timer (lambda (ticks new-handler) (set! handler new-handler) (set! clock ticks))) (define stop-timer (lambda () (let ((time-left clock)) (set! clock 0) time-left))) (define decrement-timer (lambda () (when (\u003e clock 0) (set! clock (- clock 1)) (when (= clock 0) (handler))))) (define-syntax timed-lambda (syntax-rules () ((_ formals exp1 exp2 ...) (lambda formals (decrement-timer) exp1 exp2 ...)))) (define make-engine (let ((do-complete #f) (do-expire #f)) (define timer-handler (lambda () (start-timer (call/cc do-expire) timer-handler))) (define new-engine (lambda (resume) (lambda (ticks complete expire) ((call/cc (lambda (escape) (set! do-complete (lambda (ticks value) (escape (lambda () (complete ticks value))))) (set! do-expire (lambda (resume) (escape (lambda () (expire (new-engine resume)))))) (resume ticks))))))) (lambda (proc) (new-engine (lambda (ticks) (start-timer ticks timer-handler) (let ((value (proc))) (let ((ticks (stop-timer))) (do-complete ticks value)))))))) (define fibonacci (timed-lambda (n) (if (\u003c n 2) n (+ (fibonacci (- n 1)) (fibonacci (- n 2)))))) (define eng (make-engine (lambda () (fibonacci 10)))) (eng 1 list (lambda (new-eng) (set! eng new-eng) \"expired\")) Macro C语言的程序需要经过预编译进行宏展开之后才生成真正待编译的程序，同理 Scheme 程序也要经过 syntax expander 展开之后得到真正待解释的 S-Expression。但相比C语言单纯做字符串替换的宏，Scheme 宏有以下两个特点：\nScheme 中的宏是卫生宏（Hygienic Macro，宏扩展的代码和程序中的代码是相互独立的，宏扩展不会引入程序中未定义的变量或函数，也不会改变程序中已有的标识符的含义。\nScheme 中的宏做的是 pattern-based transformations。因为Scheme程序本身用 S-Expression 表达，所以非常容易做 pattern match 之后 transformation。\n具体而言，Scheme 通过 define-syntax 等方法将定义一系列 transformer，并指定一个 keyword，之后只要遇到该 keyword，就会尝试 pattern match 并作变换，例子如下：\n(define-syntax cond (syntax-rules (else) ((_ (else e1 e2 ...)) (begin e1 e2 ...)) ((_ (e0 e1 e2 ...)) (if e0 (begin e1 e2 ...))) ((_ (e0 e1 e2 ...) c1 c2 ...) (if e0 (begin e1 e2 ...) (cond c1 c2 ...))))) 上述例子中，cond 为 keyword，else 为 literal，表示程序中本来就有的 identifieer，不会在后续pattern match 中被认为是 pattern variable。当遇到一个 keyword 时，就会调用上述宏定义的 transformer，并一个 pattern 一个 pattern 试着匹配，如果匹配成功则进行变换。 如\n(cond (e0 e1 e2 e3) (else e4 e5 e6)) =\u003e (if e0 (begin e1 e2 e3) (cond e4 e5 e6)) =\u003e (if e0 (begin e1 e2 e3) (if e4 (begin e5 e6))) Summary 本文简单梳理了一下 Scheme 中我不太了解的几个特性——当然也仅仅是了解了一下，且背后牵扯到的PL/逻辑学理论甚至是精巧的实现都是没有本文涉及的。\n如果后面能够实现 continuation 以及 pattern match，也可谓是壮举了。\n",
-  "wordCount" : "851",
-  "inLanguage": "en",
-  "datePublished": "2023-03-30T20:36:48Z",
-  "dateModified": "2023-03-30T20:36:48Z",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Ekstasis's Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://rzyn2020.github.io/images/yinyang.webp"
-    }
-  }
-}
-</script>
-    
+  	
+
+	
 </head>
-
-<body class="" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
-        <div class="logo">
-            <a href="https://rzyn2020.github.io/" accesskey="h" title="Ekstasis&#39;s Blog (Alt + H)">Ekstasis&#39;s Blog</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <ul id="menu">
-            <li>
-                <a href="https://rzyn2020.github.io/archives/" title="Archives">
-                    <span>Archives</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://rzyn2020.github.io/categories/" title="Categories">
-                    <span>Categories</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://rzyn2020.github.io/tags/" title="Tags">
-                    <span>Tags</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://rzyn2020.github.io/algorithm/" title="Algorithm">
-                    <span>Algorithm</span>&nbsp;
-                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
-                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
-                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
-                        <path d="M15 3h6v6"></path>
-                        <path d="M10 14L21 3"></path>
-                    </svg>
-                </a>
-            </li>
-            <li>
-                <a href="https://rzyn2020.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
-                    <span>Search</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
+	</div>
+	<nav>
+		
+		<a href="/posts/">All Posts</a>
+		
+		<a href="/categories/">Categories</a>
+		
+		<a href="/tags/">Tags</a>
+		
+		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
+		
+		
+	</nav>
 </header>
-<main class="main">
 
-<article class="post-single">
-  <header class="post-header">
-    <div class="breadcrumbs"><a href="https://rzyn2020.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://rzyn2020.github.io/posts/">Posts</a></div>
-    <h1 class="post-title entry-hint-parent">
-      Scheme 拾遗：S-Expression，Continuation 以及 Macro
-    </h1>
-    <div class="post-meta"><span title='2023-03-30 20:36:48 +0000 UTC'>March 30, 2023</span>&nbsp;·&nbsp;4 min
-
-</div>
-  </header> <aside id="toc-container" class="toc-container wide">
-    <div class="toc">
-        <details  open>
-            <summary accesskey="c" title="(Alt + C)">
-                <span class="details">Table of Contents</span>
-            </summary>
-
-            <div class="inner"><ul>
-                    <li>
-                        <a href="#s-expression" aria-label="S-Expression">S-Expression</a></li>
-                    <li>
-                        <a href="#continuation" aria-label="Continuation">Continuation</a></li>
-                    <li>
-                        <a href="#macro" aria-label="Macro">Macro</a></li>
-                    <li>
-                        <a href="#summary" aria-label="Summary">Summary</a>
-                    </li>
-                </ul>
-            </div>
-        </details>
-    </div>
-</aside>
-<script>
-    let activeElement;
-    let elements;
-    window.addEventListener('DOMContentLoaded', function (event) {
-        checkTocPosition();
-
-        elements = document.querySelectorAll('h1[id],h2[id],h3[id],h4[id],h5[id],h6[id]');
-         
-         activeElement = elements[0];
-         const id = encodeURI(activeElement.getAttribute('id')).toLowerCase();
-         document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
-     }, false);
-
-    window.addEventListener('resize', function(event) {
-        checkTocPosition();
-    }, false);
-
-    window.addEventListener('scroll', () => {
+<main>
+  <article>
+    <div class="post-container">
+      
+      <div class="post-content">
+        <div class="title">
+          <h1 class="title">Scheme 拾遗：S-Expression，Continuation 以及 Macro</h1>
+          <div class="meta">Posted on Mar 30, 2023</div>
+        </div>
         
-        activeElement = Array.from(elements).find((element) => {
-            if ((getOffsetTop(element) - window.pageYOffset) > 0 && 
-                (getOffsetTop(element) - window.pageYOffset) < window.innerHeight/2) {
-                return element;
-            }
-        }) || activeElement
-
-        elements.forEach(element => {
-             const id = encodeURI(element.getAttribute('id')).toLowerCase();
-             if (element === activeElement){
-                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.add('active');
-             } else {
-                 document.querySelector(`.inner ul li a[href="#${id}"]`).classList.remove('active');
-             }
-         })
-     }, false);
-
-    const main = parseInt(getComputedStyle(document.body).getPropertyValue('--article-width'), 10);
-    const toc = parseInt(getComputedStyle(document.body).getPropertyValue('--toc-width'), 10);
-    const gap = parseInt(getComputedStyle(document.body).getPropertyValue('--gap'), 10);
-
-    function checkTocPosition() {
-        const width = document.body.scrollWidth;
-
-        if (width - main - (toc * 2) - (gap * 4) > 0) {
-            document.getElementById("toc-container").classList.add("wide");
-        } else {
-            document.getElementById("toc-container").classList.remove("wide");
-        }
-    }
-
-    function getOffsetTop(element) {
-        if (!element.getClientRects().length) {
-            return 0;
-        }
-        let rect = element.getBoundingClientRect();
-        let win = element.ownerDocument.defaultView;
-        return rect.top + win.pageYOffset;   
-    }
-</script>
-
-  <div class="post-content"><blockquote>
+        <section class="body">
+          <blockquote>
 <p>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary</p></blockquote>
 <p>之前在 Twitter 上听 <a href="https://twitter.com/intent/user?screen_name=munificentbob">Robert Nystrom</a> 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。</p>
 <p>在大一时曾读过部分 SICP，对 Scheme 有一点点认知。但对于其很多高级特性还不是很熟悉，尤其是 continuation 和 macro。于是在动写解释器前，打算先熟悉一下 Scheme 的特性。</p>
-<h1 id="s-expression">S-Expression<a hidden class="anchor" aria-hidden="true" href="#s-expression">#</a></h1>
+<h1 id="s-expression">S-Expression</h1>
 <p>1960年，John McCarthy 在函数式编程的开山之作 <a href="http://www-formal.stanford.edu/jmc/recursive.pdf">Recursive Functions of Symbolic Expressions and Their Computation by Machine</a> 中提出了 LSIP 语言，这也是 Scheme 的前身。LISP 语言最初也是为了支持人工智能系统 Advice Taker 而创造的(可惜 Advice Taker 代表的符号主义 AI 研究方法在当前的 AI 浪潮中似乎不见了身影)，其目的在于提供一种操作 expression 的功能以使得 Advice Taker 能在其上推理。</p>
 <p>在 LISP System 中，有 S-Expressions 和 S-Functions(对应 Scheme 中的过程/procedure) 两个概念。S-Expressions 即是 Symbolic Expression，和数学意义上的 expression (表达式)意义相同。S-expressions 本身仅仅是一种数据结构，没有任何求值的含义。
 S-Expression 的定义如下：</p>
-<p><img loading="lazy" src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png"></p>
+<p><img src="img/image-20230330203730153.png" alt=""></p>
 <p>(以及list的定义如下)</p>
-<p><img loading="lazy" src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png"></p>
+<p><img src="img/image-20230330203737659.png" alt=""></p>
 <p>在 S-Expression 之上，我们又可以定义对其进行操作的 S-function (S-function事实上为 partial function，因为有可能无限循环)</p>
 <blockquote>
 <p>atom. atom[x] has the value of T or F according to whether x is an atomic symbol.</p>
@@ -318,8 +98,8 @@ S-Expression 的定义如下：</p>
 <p>Thus <code>ff[((A · B) · C)] = A</code></p></blockquote>
 <p>向上面的式子叫做 M-expressions (meta-expressions)。(注意到 M-expression 之上就有求值的语义了)</p>
 <p>有趣的是，我们可以通过 S-Expressions 来表示 S-Functions，同理可以把任意一个 M-expression 用 S-Expression 表达：</p>
-<p><img loading="lazy" src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png">
-<img loading="lazy" src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png"></p>
+<p><img src="img/image-20230330203747802.png" alt="">
+<img src="img/image-20230330203752623.png" alt=""></p>
 <p>(这样就有平时用的 Scheme 的感觉了，，)</p>
 <p>然而单是这个转换本身没有什么作用，我们需要有一个函数 eval 来对转换后的 S-Expression 进行求值，其结果相当于对应的 M-Expression 的求值结果。我们在写 LSIP 程序时其实就是在写 S-Expression，但表示的却是 M-Expression。解释器运行程序就相当于把你写好的 S-Expression 丢给 eval 函数并返回结果。
 S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过在 Scheme 中这些东西都是小写。而第一条转换规则中的 Atom QUOTE 可以简写为&rsquo;。
@@ -327,10 +107,10 @@ S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过�
 <blockquote>
 <p>Fun Facts:
 <a href="https://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)">John McCarthy</a> 父亲为爱尔兰移民，母亲为立陶宛犹太人移民，二人都思想开放，加入了美国共产党(Communist Party USA)。John 出身生于1927年，少时通过阅读俄文译作 <em>100,000 Whys</em> (难道中文版的《十万个为什么》也来自苏联？)燃起了对科学的兴趣。John后来也精通俄语，与多苏联科学家相识。但当他在 1968 年正真去苏联旅行之后很快就失望了，转变为共和党支持者。</p></blockquote>
-<h1 id="continuation">Continuation<a hidden class="anchor" aria-hidden="true" href="#continuation">#</a></h1>
+<h1 id="continuation">Continuation</h1>
 <p>Scheme 于1970年代在 MIT AI Lab 被 <a href="https://en.wikipedia.org/wiki/Guy_L._Steele" title="Guy L. Steele">Guy L. Steele</a> 和 <a href="https://en.wikipedia.org/wiki/Gerald_Jay_Sussman" title="Gerald Jay Sussman">Gerald Jay Sussman</a>发明(又是AI？)。与父亲 LISP 不同, Scheme 实现了尾递归优化，并引入了宏和 first class <a href="https://en.wikipedia.org/wiki/Continuation" title="Continuation">continuations</a>，本节主要介绍 continuation，下一节介绍宏(Macro)。</p>
 <p>上一节说了 M-Expression 有求值语义，eval 函数也能求值，但并未说明到底怎样求值。具体来说，eval 接收到一个 S-Expression 后，对 S-Expression 的所有子Expression(接收到的 S-Expression 应为一个list，子 Expression 指的是 list 中的各个子项)逐个调用eval函数。第一个子 Expression 应为一个过程，剩余的 expression 为这个过程的参数，然后eval会调用apply将参数作用到过程上并返回结果。对于 Scheme 语言中定义的基本过程，apply 会直接计算并返回结果，对于复合过程，apply 会将函数形参替换为实际值，再调用 eval 对函数体求值并返回。</p>
-<p><img loading="lazy" src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png"></p>
+<p><img src="img/image-20230330203801257.png" alt=""></p>
 <p>可以看到，对一个 S-Expression 求值的过程可以看作一次次的对 eval 的调用。而每个 eval 调用结束之后都有下面还要进行的求值，这个后面还要进行的求值就叫做当前求值的 Continuation(延续)。</p>
 <p>Scheme 中的 Continuation 是一个很抽象的概念，在其它编程语言中往往缺少对于概念。但在C语言中，我们可以通过机器状态来理解 Continuation。在C语言中，假如要调用一个函数 f，会在栈上 push f 的帧，f调用结束之后会将返回值 push 到栈上，再接着做后续计算。如果再将返回值 push 到栈上的一瞬间，我们对整个进程做一个快照，这个快照说明了在 f 返回后应该要做的计算，它其实就是 f 的 Continuation。在C语言中，我们可以通过<code>int setjmp(jmp_buf env)</code>来捕获在调用setjmp时的 Continuation 并保存在 env 中，而在未来调用<code>void longjmp(jmp_buf env, int val)</code> 会继续进行 setjmp 时保存的 Continuation，并把 val 作为 setjmp 的返回值。看起来就像进行了一次“时空穿越”。</p>
 <p>C语言中 setjmp 和 longjmp 的实现很好理解——setjmp 保存当前的 pc 指针以及寄存器的状态，longjmp时复原就行——当然这样也就引出了一个问题：c语言中的 setjmp 并不能真正保存 Continuation，因为 setjmp 不可能将栈上的值也保存了。但 Scheme 中的 Continuation 却是真正的 Continuation</p>
@@ -463,7 +243,7 @@ S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过�
 </span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">new-eng</span>)
 </span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">set! </span><span style="color:#e06c75">eng</span> <span style="color:#e06c75">new-eng</span>)
 </span></span><span style="display:flex;"><span>    <span style="color:#98c379">&#34;expired&#34;</span>))
-</span></span></code></pre></div><h1 id="macro">Macro<a hidden class="anchor" aria-hidden="true" href="#macro">#</a></h1>
+</span></span></code></pre></div><h1 id="macro">Macro</h1>
 <p>C语言的程序需要经过预编译进行宏展开之后才生成真正待编译的程序，同理 Scheme 程序也要经过 syntax expander 展开之后得到真正待解释的 S-Expression。但相比C语言单纯做字符串替换的宏，Scheme 宏有以下两个特点：</p>
 <ol>
 <li>
@@ -486,233 +266,60 @@ S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过�
 </span></span><span style="display:flex;"><span>(<span style="color:#c678dd">cond </span>(<span style="color:#61afef;font-weight:bold">e0</span> <span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#e06c75">e3</span>) (<span style="color:#c678dd">else </span><span style="color:#e06c75">e4</span> <span style="color:#e06c75">e5</span> <span style="color:#e06c75">e6</span>))
 </span></span><span style="display:flex;"><span><span style="color:#c678dd">=&gt; </span>(<span style="color:#c678dd">if </span><span style="color:#e06c75">e0</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#e06c75">e3</span>) (<span style="color:#c678dd">cond </span><span style="color:#e06c75">e4</span> <span style="color:#e06c75">e5</span> <span style="color:#e06c75">e6</span>))
 </span></span><span style="display:flex;"><span><span style="color:#c678dd">=&gt; </span>(<span style="color:#c678dd">if </span><span style="color:#e06c75">e0</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#e06c75">e3</span>) (<span style="color:#c678dd">if </span><span style="color:#e06c75">e4</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e5</span> <span style="color:#e06c75">e6</span>)))
-</span></span></code></pre></div><h1 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h1>
+</span></span></code></pre></div><h1 id="summary">Summary</h1>
 <p>本文简单梳理了一下 Scheme 中我不太了解的几个特性——当然也仅仅是了解了一下，且背后牵扯到的PL/逻辑学理论甚至是精巧的实现都是没有本文涉及的。</p>
 <p>如果后面能够实现 continuation 以及 pattern match，也可谓是壮举了。</p>
+        </section>
+        <div class="post-tags">
+          
+          
+          <nav class="nav tags">
+            <ul class="tags">
+              
+              <li><a href="/tags/scheme">Scheme</a></li>
+              
+              <li><a href="/tags/pl">PL</a></li>
+              
+              <li><a href="/tags/knowledge">Knowledge</a></li>
+              
+            </ul>
+          </nav>
+          
+          
+        </div>
+      </div>
 
+      
+      
+      <div class="toc">
+        <strong>Table of contents:</strong>
+        <nav id="TableOfContents"></nav>
+      </div>
+      
+    </div>
+
+    </article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
+   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
+</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
+   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
+</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
+   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
+</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
+   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
+</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
+   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
+</svg></a><a class="border"></a></div>
+  <div class="footer-info">
+    2025  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
   </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-      <li><a href="https://rzyn2020.github.io/tags/scheme/">Scheme</a></li>
-      <li><a href="https://rzyn2020.github.io/tags/pl/">PL</a></li>
-      <li><a href="https://rzyn2020.github.io/tags/knowledge/">Knowledge</a></li>
-    </ul>
-<nav class="paginav">
-  <a class="prev" href="https://rzyn2020.github.io/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">
-    <span class="title">« Prev</span>
-    <br>
-    <span>打破壁垒：代理技术在家庭网络中的应用</span>
-  </a>
-  <a class="next" href="https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/">
-    <span class="title">Next »</span>
-    <br>
-    <span>Autoboxing and IntegerCache in Java</span>
-  </a>
-</nav>
-
-
-<ul class="share-buttons">
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on x"
-            href="https://x.com/intent/tweet/?text=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f&amp;hashtags=Scheme%2cPL%2cKnowledge">
-            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
-                <path
-                    d="M512 62.554 L 512 449.446 C 512 483.97 483.97 512 449.446 512 L 62.554 512 C 28.03 512 0 483.97 0 449.446 L 0 62.554 C 0 28.03 28.029 0 62.554 0 L 449.446 0 C 483.971 0 512 28.03 512 62.554 Z M 269.951 190.75 L 182.567 75.216 L 56 75.216 L 207.216 272.95 L 63.9 436.783 L 125.266 436.783 L 235.9 310.383 L 332.567 436.783 L 456 436.783 L 298.367 228.367 L 432.367 75.216 L 371.033 75.216 Z M 127.633 110 L 164.101 110 L 383.481 400.065 L 349.5 400.065 Z" />
-            </svg>
-        </a>
-    </li>
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on linkedin"
-            href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f&amp;title=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro&amp;summary=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro&amp;source=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f">
-            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
-                <path
-                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
-            </svg>
-        </a>
-    </li>
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on reddit"
-            href="https://reddit.com/submit?url=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f&title=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro">
-            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
-                <path
-                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
-            </svg>
-        </a>
-    </li>
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on facebook"
-            href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f">
-            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
-                <path
-                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
-            </svg>
-        </a>
-    </li>
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on whatsapp"
-            href="https://api.whatsapp.com/send?text=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro%20-%20https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f">
-            <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
-                <path
-                    d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
-            </svg>
-        </a>
-    </li>
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on telegram"
-            href="https://telegram.me/share/url?text=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro&amp;url=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f">
-            <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
-                <path
-                    d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
-            </svg>
-        </a>
-    </li>
-    <li>
-        <a target="_blank" rel="noopener noreferrer" aria-label="share Scheme 拾遗：S-Expression，Continuation 以及 Macro on ycombinator"
-            href="https://news.ycombinator.com/submitlink?t=Scheme%20%e6%8b%be%e9%81%97%ef%bc%9aS-Expression%ef%bc%8cContinuation%20%e4%bb%a5%e5%8f%8a%20Macro&u=https%3a%2f%2frzyn2020.github.io%2fposts%2fscheme%25E6%258B%25BE%25E9%2581%2597%2f">
-            <svg version="1.1" xml:space="preserve" width="30px" height="30px" viewBox="0 0 512 512" fill="currentColor"
-                xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape">
-                <path
-                    d="M449.446 0C483.971 0 512 28.03 512 62.554L512 449.446C512 483.97 483.97 512 449.446 512L62.554 512C28.03 512 0 483.97 0 449.446L0 62.554C0 28.03 28.029 0 62.554 0L449.446 0ZM183.8767 87.9921H121.8427L230.6673 292.4508V424.0079H281.3328V292.4508L390.1575 87.9921H328.1233L256 238.2489z" />
-            </svg>
-        </a>
-    </li>
-</ul>
-
-  </footer><script src="https://giscus.app/client.js"
-        data-repo="RZYN2020/RZYN2020.github.io"
-        data-repo-id="R_kgDONMpsCg"
-        data-category="Announcements"
-        data-category-id="DIC_kwDONMpsCs4CkUS9"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="preferred_color_scheme"
-        data-lang="zh-CN"
-        crossorigin="anonymous"
-        async>
-</script>
-</article>
-    </main>
-    
-<footer class="footer">
-        <span>&copy; 2025 <a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a></span> · 
-
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
 </footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
 
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
-        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
-        menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
-        });
-    });
 
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
-        } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
-        }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
-        } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
-        }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
-
-        function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
-</script>
-</body>
-
+</div>
+    </body>
 </html>
