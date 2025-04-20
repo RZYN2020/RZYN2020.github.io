@@ -1,6 +1,3 @@
 [submodule "themes/archie"]
 	path = themes/archie
 	url = https://github.com/RZYN2020/archie.git
-# [submodule "themes/PaperMod"]
-# 	path = themes/PaperMod
-# 	url = https://github.com/RZYN2020/hugo-PaperMod
