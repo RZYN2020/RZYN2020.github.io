@@ -5,8 +5,5 @@ title: 'Alignment in Action'
 tags: 
 - null
 categories: null
-comment : true
-hidden: false
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---

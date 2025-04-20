@@ -6,11 +6,7 @@ tags:
 - DeepLearning
 - Summary
 categories: AI
-comment : true
-hidden: false
-math: true
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---
 
 <!--more-->

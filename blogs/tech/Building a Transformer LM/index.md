@@ -6,10 +6,7 @@ tags:
 - LLM
 - Code
 categories: AI
-comment : true
-hidden: false
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---
 
 Once upon a time, there was a mountain.

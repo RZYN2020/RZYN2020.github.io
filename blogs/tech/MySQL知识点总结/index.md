@@ -9,15 +9,14 @@ tags:
 categories: 
 - Backend
 - System
-comment : true
-hidden: false
-showToc: true # show contents
-TocOpen: true # open contents automantica
+toc: true
 ---
 
 
 
 在后端实习面试中，有 数据库，Java，网络，OS 四大考点，其中又以数据库考察最为频繁。数据库问题中，除了少部分范式相关理论，基本为 [MySQL](https://db-engines.com/en/ranking) 问题。因此，在这里摘录相关知识点，做一个总结，既是为秋招做准备，也是总结找实习过程中的所学知识。
+
+<!--more-->
 
 [b 站视频解析](https://www.bilibili.com/video/BV1mg411s7Ej/?spm_id_from=333.337.search-card.all.click&vd_source=226da368954a7c68d6b7e4bbdc91b2cd)
 

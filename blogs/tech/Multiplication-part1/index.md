@@ -5,13 +5,8 @@ tags:
 comment: true
 date: '2022-03-20T20:41:38'
 draft: false
-featured_image: "img/image-20220320173825660.png"
-hidden: false
-params:
-  math: true
 title: Multiplication
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true # show contents
 ---
 
 > 凡治众如治寡，分数是也；斗众如斗寡，形名是也。

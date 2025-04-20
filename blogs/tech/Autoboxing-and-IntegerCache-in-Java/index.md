@@ -9,8 +9,7 @@ tags:
 - Interview
 - Knowledge
 title: Autoboxing and IntegerCache in Java
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---
 
 > When you are on the dancefloor, there is nothing to do but dance.

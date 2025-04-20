@@ -1,6 +1,6 @@
 baseURL: https://rzyn2020.github.io/
 title: Ekstasis's Blog
-theme: [PaperMod]
+theme: [archie]
 ignoreLogs: ['warning-goldmark-raw-html']
 
 markup:
@@ -24,80 +24,43 @@ markup:
           - - $$
             - $$
           inline:
-          - - $
+          - - $ 
             - $
+        enable: true
 menu:
   main:
-    - identifier: archives
-      name: Archives
-      url: /archives/
-      weight: 10
-    - identifier: categories
-      name: Categories
+    - name: All Posts
+      url: /posts/
+      weight: 1
+    - name: Categories
       url: /categories/
-      weight: 20
-    - identifier: tags
-      name: Tags
+      weight: 2
+    - name: Tags
       url: /tags/
-      weight: 30
-    - identifier: algorithm
-      name: Algorithm
+      weight: 3
+    - name: Algorithm
       url: https://rzyn2020.github.io/algorithm/
-      weight: 40
-    - identifier: search
-      name: Search
-      url: /search/
-      weight: 40
+      weight: 4
       
-# config for serch
-outputs:
-  home:
-    - HTML
-    - RSS
-    - JSON # necessary for search
 
 taxonomies:
   category: categories
   tag: tags
+
 params:
+  mode: "auto"
   math: true
-  homeInfoParams:
-    Title: 你好！
-    Content: 目前我会这里发表一些技术相关文章...
-
-  assets:
-    favicon: "images/yinyang.webp"
-
-  socialIcons: # optional
-    - name: "github"
+  social: # optional
+    - name: "Github"
       url: "https://github.com/RZYN2020"
-    - name: "email"
+    - name: "Email"
       url: "mailto:zhaoyzzz@outlook.com"    
-    - name: "resume"
+    - name: "Resume"
       url: "https://rzyn2020.github.io/resume/resume.html"
-    - name: "neodb"
+    - name: "Neodb"
       url: "https://neodb.social/users/Ekstasis"
-    - name: "mal"
+    - name: "Mal"
       url: "https://myanimelist.net/animelist/yuki960"
-
-
-  fuseOpts:
-    isCaseSensitive: false
-    shouldSort: true
-    location: 0
-    distance: 1000
-    threshold: 0.4
-    minMatchCharLength: 0
-    # limit: 10 # refer: https://www.fusejs.io/api/methods.html#search
-    keys: ["title", "permalink", "summary", "content"]
-
-  ShowShareButtons: true
-  ShowToc: true
-  ShowReadingTime: true
-  ShowBreadCrumbs: true
-  ShowPostNavLinks: true
-  ShowCodeCopyButtons: true
-  comments: true
 
 module:
   mounts:

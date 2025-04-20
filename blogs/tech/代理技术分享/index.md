@@ -7,10 +7,7 @@ tags:
 - Network
 - Proxy
 categories: System
-comment : true
-hidden: false
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---
 
 <!--more-->

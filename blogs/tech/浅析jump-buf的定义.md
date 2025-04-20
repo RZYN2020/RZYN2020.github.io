@@ -3,11 +3,10 @@ categories: System
 tags:
 - C
 - Knowledge
-comment: true
 date: '2021-11-14T09:23:52'
 draft: false
-hidden: false
 title: 浅析jmp_buf的定义
+toc: true
 ---
 
 <!--more-->

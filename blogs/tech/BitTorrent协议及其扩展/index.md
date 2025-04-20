@@ -6,10 +6,7 @@ tags:
 - BitTorrent
 - Knowledge
 categories: System
-comment : true
-hidden: false
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---
 
 “I call architecture frozen music...” - Goethe

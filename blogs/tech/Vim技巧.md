@@ -5,10 +5,7 @@ title: 'Vim技巧'
 tags: 
 - null
 categories: null
-comment : true
-hidden: false
-showToc: true # show contents
-TocOpen: true # open contents automanticalld
+toc: trues
 ---
 
 

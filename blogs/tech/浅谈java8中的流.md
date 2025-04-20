@@ -7,10 +7,8 @@ tags:
 comment: true
 date: '2021-08-18T20:31:48'
 draft: false
-hidden: false
 title: 浅谈java8中的流
-showToc: true # show contents
-TocOpen: true # open contents automantically
+toc: true
 ---
 
 
