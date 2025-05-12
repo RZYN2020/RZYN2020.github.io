@@ -5,7 +5,8 @@ title: '深度学习基础知识总结'
 tags:
 - DeepLearning
 - Summary
-categories: AI
+categories: 
+- AI
 toc: true
 ---
 

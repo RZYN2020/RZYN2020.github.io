@@ -22,11 +22,6 @@ jobs:
         with:
           hugo-version: 'latest'
 
-      - name: Get Theme
-        run: git submodule update --init --recursive
-      - name: Update theme to Latest commit
-        run: git submodule update --remote --merge
-
       - name: Build
         run: |
           hugo --gc 

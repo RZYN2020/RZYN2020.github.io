@@ -1,5 +1,6 @@
 ---
-categories: Algorithm
+categories: 
+- Algorithm
 tags:
 - Book
 comment: true

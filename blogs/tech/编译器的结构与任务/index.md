@@ -2,7 +2,8 @@
 comment: true
 date: '2023-03-06T11:52:38'
 draft: false
-categories: System
+categories: 
+- System
 tags:
 - Compiler
 - Knowledge

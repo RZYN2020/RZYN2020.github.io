@@ -5,7 +5,8 @@ title: 'Building a Transformer LM'
 tags: 
 - LLM
 - Code
-categories: AI
+categories: 
+- AI
 toc: true
 ---
 
@@ -346,7 +347,7 @@ class PointwiseFeedForward(nn.Module):
 
 模型剩下的组件还包括，RMSNorm，Residual Connection，以及 Dropout。
 
-RMSNorm 和 Residual Connection 都可以避免梯度消失和梯度保证，保证函数的 [Lipschitz 连续](https://www.bilibili.com/video/BV1B64y157DC/?share_source=copy_web&vd_source=70a8bfe51ff36d2bca97cf3df1c52fed)性质。
+RMSNorm 和 Residual Connection 都可以避免梯度消失和梯度爆炸，保证函数的 [Lipschitz 连续](https://www.bilibili.com/video/BV1B64y157DC/?share_source=copy_web&vd_source=70a8bfe51ff36d2bca97cf3df1c52fed)性质。
 
 而 Dropout 属于一种正则化方法，通过随机将某些参数置为 0，来避免模型过分依赖某些参数，从而保证了其泛化性。
 

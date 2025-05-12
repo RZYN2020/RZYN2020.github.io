@@ -1,5 +1,6 @@
 ---
-categories: Backend
+categories: 
+- Backend
 tags:
 - Java
 - Stream

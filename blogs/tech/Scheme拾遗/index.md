@@ -1,5 +1,6 @@
 ---
-categories: System
+categories: 
+- System
 tags:
 - Scheme
 - PL
