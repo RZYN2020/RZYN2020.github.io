@@ -56,7 +56,7 @@ params:
   title: "Ekstasis's Blog"
   description: "Ekstasis's Blog"
   images: 
-    - "./images/yinyang.webp"
+    - "/img/yinyang.webp"
   author:
     name: "Ekstasis"
     email: "zhaoyzzz@outlook.com"
@@ -75,7 +75,7 @@ params:
     title:
       # URL of the LOGO
       # LOGO 的 URL
-      logo: "./images/yinyang.webp"
+      logo: "/img/yinyang.webp"
       # title name
       # 标题名称
       name: "Ekstasis's Blog"
