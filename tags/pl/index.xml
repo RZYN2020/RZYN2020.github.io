@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>PL on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/pl/</link>
-    <description>Recent content in PL on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Thu, 30 Mar 2023 20:36:48 +0000</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/pl/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
-      <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
-      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>PL - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/pl/</link>
+        <description>PL - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 30 Mar 2023 20:36:48 &#43;0000</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/pl/" rel="self" type="application/rss+xml" /><item>
+    <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
+    <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
+    <pubDate>Thu, 30 Mar 2023 20:36:48 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
+    <description><![CDATA[<blockquote>
+<p>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary</p>
+</blockquote>]]></description>
+</item>
+</channel>
 </rss>

@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Stream on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/stream/</link>
-    <description>Recent content in Stream on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Wed, 18 Aug 2021 20:31:48 +0000</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/stream/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>浅谈java8中的流</title>
-      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
-      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Stream - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/stream/</link>
+        <description>Stream - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Wed, 18 Aug 2021 20:31:48 &#43;0000</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/stream/" rel="self" type="application/rss+xml" /><item>
+    <title>浅谈java8中的流</title>
+    <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+    <pubDate>Wed, 18 Aug 2021 20:31:48 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+    <description><![CDATA[<blockquote>
+<p>万物皆流，无物常驻</p>
+</blockquote>]]></description>
+</item>
+</channel>
 </rss>

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html><head lang="en">
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Scheme 拾遗：S-Expression，Continuation 以及 Macro - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="
-Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary" />
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="Scheme 拾遗：S-Expression，Continuation 以及 Macro">
   <meta property="og:description" content="Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
@@ -17,232 +16,329 @@ Programming languages should be designed not by piling feature on top of feature
     <meta property="article:tag" content="Scheme">
     <meta property="article:tag" content="PL">
     <meta property="article:tag" content="Knowledge">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
   <meta name="twitter:title" content="Scheme 拾遗：S-Expression，Continuation 以及 Macro">
   <meta name="twitter:description" content="Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/" /><link rel="prev" href="https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/" /><link rel="next" href="https://rzyn2020.github.io/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Scheme 拾遗：S-Expression，Continuation 以及 Macro",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/scheme%E6%8B%BE%E9%81%97\/"
+        },"genre": "posts","keywords": "Scheme, PL, Knowledge","wordcount":  3438 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/scheme%E6%8B%BE%E9%81%97\/","datePublished": "2023-03-30T20:36:48+00:00","dateModified": "2023-03-30T20:36:48+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
-	
-
-	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
-		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
-  	
-   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['$', '$']]                  
-    },
-    loader:{
-      load: ['ui/safe']
-    },
-  };
-</script>
-  	
-
-	
-</head>
-<body>
-        <div class="content"><header>
-	<div class="main">
-		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
-	</div>
-	<nav>
-		
-		<a href="/posts/">All Posts</a>
-		
-		<a href="/categories/">Categories</a>
-		
-		<a href="/tags/">Tags</a>
-		
-		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
-		
-		
-	</nav>
-</header>
-
-<main>
-  <article>
-    <div class="post-container">
-      
-      <div class="post-content">
-        <div class="title">
-          <h1 class="title">Scheme 拾遗：S-Expression，Continuation 以及 Macro</h1>
-          <div class="meta">Posted on Mar 30, 2023</div>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
-        
-        <section class="body">
-          <blockquote>
-<p>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary</p></blockquote>
-<p>之前在 Twitter 上听 <a href="https://twitter.com/intent/user?screen_name=munificentbob">Robert Nystrom</a> 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。</p>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Scheme 拾遗：S-Expression，Continuation 以及 Macro</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/system/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>System</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-30">2023-03-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3438 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary</p>
+</blockquote>
+<p>之前在 Twitter 上听 <a href="https://twitter.com/intent/user?screen_name=munificentbob" target="_blank" rel="noopener noreffer ">Robert Nystrom</a> 的一个演说时，有观众问他“如何看待 ChatGPT，Copilot 对于编程的影响”。Robert 回道：他认为编程的乐趣在于“make something”，而 Copilot 这类工具却很有可能把 programmer 变成代码审核员，从而丧失了“make something”的乐趣。可是就算在前 ChatGPT 时代，我又真正体会到过“make something”的乐趣吗？之前我的编程实践总是一些课程作业，这些作业的 idea 或是框架总是由他人提出，目的也往往是通过 OJ。这样的编程实践给人带来的“make something”之感自然就大打折扣了。于是在可能发生的“AI 革命”的前夜，我决定自己动手写一个兼容 R7RS 的 Scheme 解释器，真正“make something”。</p>
 <p>在大一时曾读过部分 SICP，对 Scheme 有一点点认知。但对于其很多高级特性还不是很熟悉，尤其是 continuation 和 macro。于是在动写解释器前，打算先熟悉一下 Scheme 的特性。</p>
 <h1 id="s-expression">S-Expression</h1>
-<p>1960年，John McCarthy 在函数式编程的开山之作 <a href="http://www-formal.stanford.edu/jmc/recursive.pdf">Recursive Functions of Symbolic Expressions and Their Computation by Machine</a> 中提出了 LSIP 语言，这也是 Scheme 的前身。LISP 语言最初也是为了支持人工智能系统 Advice Taker 而创造的(可惜 Advice Taker 代表的符号主义 AI 研究方法在当前的 AI 浪潮中似乎不见了身影)，其目的在于提供一种操作 expression 的功能以使得 Advice Taker 能在其上推理。</p>
+<p>1960年，John McCarthy 在函数式编程的开山之作 <a href="http://www-formal.stanford.edu/jmc/recursive.pdf" target="_blank" rel="noopener noreffer ">Recursive Functions of Symbolic Expressions and Their Computation by Machine</a> 中提出了 LSIP 语言，这也是 Scheme 的前身。LISP 语言最初也是为了支持人工智能系统 Advice Taker 而创造的(可惜 Advice Taker 代表的符号主义 AI 研究方法在当前的 AI 浪潮中似乎不见了身影)，其目的在于提供一种操作 expression 的功能以使得 Advice Taker 能在其上推理。</p>
 <p>在 LISP System 中，有 S-Expressions 和 S-Functions(对应 Scheme 中的过程/procedure) 两个概念。S-Expressions 即是 Symbolic Expression，和数学意义上的 expression (表达式)意义相同。S-expressions 本身仅仅是一种数据结构，没有任何求值的含义。
 S-Expression 的定义如下：</p>
-<p><img src="img/image-20230330203730153.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png"
+        data-srcset="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png 1.5x, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png 2x"
+        data-sizes="auto"
+        alt="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png"
+        title="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203730153.png" width="461" height="186" /></p>
 <p>(以及list的定义如下)</p>
-<p><img src="img/image-20230330203737659.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png"
+        data-srcset="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png 1.5x, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png 2x"
+        data-sizes="auto"
+        alt="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png"
+        title="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203737659.png" width="766" height="247" /></p>
 <p>在 S-Expression 之上，我们又可以定义对其进行操作的 S-function (S-function事实上为 partial function，因为有可能无限循环)</p>
 <blockquote>
 <p>atom. atom[x] has the value of T or F according to whether x is an atomic symbol.</p>
 <p><code>atom [X] = T atom [(X · A)] = F</code></p>
 <p>car. car[x] is defined if and only if x is not atomic. car [(e1 · e2)] = e1. Thus car [X] is undefined.</p>
-<p><code>car [(X · A)] = X car [((X · A) · Y )] = (X · A)</code></p></blockquote>
+<p><code>car [(X · A)] = X car [((X · A) · Y )] = (X · A)</code></p>
+</blockquote>
 <p>当然S-function也可以递归：</p>
 <blockquote>
 <p>ff[x]. The value of ff[x] is the first atomic symbol of the S-Expression x with the 	parentheses ignored.</p>
-<p>Thus <code>ff[((A · B) · C)] = A</code></p></blockquote>
+<p>Thus <code>ff[((A · B) · C)] = A</code></p>
+</blockquote>
 <p>向上面的式子叫做 M-expressions (meta-expressions)。(注意到 M-expression 之上就有求值的语义了)</p>
 <p>有趣的是，我们可以通过 S-Expressions 来表示 S-Functions，同理可以把任意一个 M-expression 用 S-Expression 表达：</p>
-<p><img src="img/image-20230330203747802.png" alt="">
-<img src="img/image-20230330203752623.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png"
+        data-srcset="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png 1.5x, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png 2x"
+        data-sizes="auto"
+        alt="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png"
+        title="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203747802.png" width="862" height="281" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png"
+        data-srcset="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png 1.5x, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png 2x"
+        data-sizes="auto"
+        alt="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png"
+        title="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203752623.png" width="840" height="292" /></p>
 <p>(这样就有平时用的 Scheme 的感觉了，，)</p>
 <p>然而单是这个转换本身没有什么作用，我们需要有一个函数 eval 来对转换后的 S-Expression 进行求值，其结果相当于对应的 M-Expression 的求值结果。我们在写 LSIP 程序时其实就是在写 S-Expression，但表示的却是 M-Expression。解释器运行程序就相当于把你写好的 S-Expression 丢给 eval 函数并返回结果。
 S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过在 Scheme 中这些东西都是小写。而第一条转换规则中的 Atom QUOTE 可以简写为&rsquo;。
 除了 S-Expression，Scheme 还从 LISP 中继承了 GC,动态类型。高阶函数等特征。</p>
 <blockquote>
 <p>Fun Facts:
-<a href="https://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)">John McCarthy</a> 父亲为爱尔兰移民，母亲为立陶宛犹太人移民，二人都思想开放，加入了美国共产党(Communist Party USA)。John 出身生于1927年，少时通过阅读俄文译作 <em>100,000 Whys</em> (难道中文版的《十万个为什么》也来自苏联？)燃起了对科学的兴趣。John后来也精通俄语，与多苏联科学家相识。但当他在 1968 年正真去苏联旅行之后很快就失望了，转变为共和党支持者。</p></blockquote>
+<a href="https://en.wikipedia.org/wiki/John_McCarthy_%28computer_scientist%29" target="_blank" rel="noopener noreffer ">John McCarthy</a> 父亲为爱尔兰移民，母亲为立陶宛犹太人移民，二人都思想开放，加入了美国共产党(Communist Party USA)。John 出身生于1927年，少时通过阅读俄文译作 <em>100,000 Whys</em> (难道中文版的《十万个为什么》也来自苏联？)燃起了对科学的兴趣。John后来也精通俄语，与多苏联科学家相识。但当他在 1968 年正真去苏联旅行之后很快就失望了，转变为共和党支持者。</p>
+</blockquote>
 <h1 id="continuation">Continuation</h1>
-<p>Scheme 于1970年代在 MIT AI Lab 被 <a href="https://en.wikipedia.org/wiki/Guy_L._Steele" title="Guy L. Steele">Guy L. Steele</a> 和 <a href="https://en.wikipedia.org/wiki/Gerald_Jay_Sussman" title="Gerald Jay Sussman">Gerald Jay Sussman</a>发明(又是AI？)。与父亲 LISP 不同, Scheme 实现了尾递归优化，并引入了宏和 first class <a href="https://en.wikipedia.org/wiki/Continuation" title="Continuation">continuations</a>，本节主要介绍 continuation，下一节介绍宏(Macro)。</p>
+<p>Scheme 于1970年代在 MIT AI Lab 被 <a href="https://en.wikipedia.org/wiki/Guy_L._Steele" title="Guy L. Steele" target="_blank" rel="noopener noreffer ">Guy L. Steele</a> 和 <a href="https://en.wikipedia.org/wiki/Gerald_Jay_Sussman" title="Gerald Jay Sussman" target="_blank" rel="noopener noreffer ">Gerald Jay Sussman</a>发明(又是AI？)。与父亲 LISP 不同, Scheme 实现了尾递归优化，并引入了宏和 first class <a href="https://en.wikipedia.org/wiki/Continuation" title="Continuation" target="_blank" rel="noopener noreffer ">continuations</a>，本节主要介绍 continuation，下一节介绍宏(Macro)。</p>
 <p>上一节说了 M-Expression 有求值语义，eval 函数也能求值，但并未说明到底怎样求值。具体来说，eval 接收到一个 S-Expression 后，对 S-Expression 的所有子Expression(接收到的 S-Expression 应为一个list，子 Expression 指的是 list 中的各个子项)逐个调用eval函数。第一个子 Expression 应为一个过程，剩余的 expression 为这个过程的参数，然后eval会调用apply将参数作用到过程上并返回结果。对于 Scheme 语言中定义的基本过程，apply 会直接计算并返回结果，对于复合过程，apply 会将函数形参替换为实际值，再调用 eval 对函数体求值并返回。</p>
-<p><img src="img/image-20230330203801257.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png"
+        data-srcset="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png 1.5x, /posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png 2x"
+        data-sizes="auto"
+        alt="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png"
+        title="/posts/scheme%E6%8B%BE%E9%81%97/img/image-20230330203801257.png" width="225" height="225" /></p>
 <p>可以看到，对一个 S-Expression 求值的过程可以看作一次次的对 eval 的调用。而每个 eval 调用结束之后都有下面还要进行的求值，这个后面还要进行的求值就叫做当前求值的 Continuation(延续)。</p>
 <p>Scheme 中的 Continuation 是一个很抽象的概念，在其它编程语言中往往缺少对于概念。但在C语言中，我们可以通过机器状态来理解 Continuation。在C语言中，假如要调用一个函数 f，会在栈上 push f 的帧，f调用结束之后会将返回值 push 到栈上，再接着做后续计算。如果再将返回值 push 到栈上的一瞬间，我们对整个进程做一个快照，这个快照说明了在 f 返回后应该要做的计算，它其实就是 f 的 Continuation。在C语言中，我们可以通过<code>int setjmp(jmp_buf env)</code>来捕获在调用setjmp时的 Continuation 并保存在 env 中，而在未来调用<code>void longjmp(jmp_buf env, int val)</code> 会继续进行 setjmp 时保存的 Continuation，并把 val 作为 setjmp 的返回值。看起来就像进行了一次“时空穿越”。</p>
 <p>C语言中 setjmp 和 longjmp 的实现很好理解——setjmp 保存当前的 pc 指针以及寄存器的状态，longjmp时复原就行——当然这样也就引出了一个问题：c语言中的 setjmp 并不能真正保存 Continuation，因为 setjmp 不可能将栈上的值也保存了。但 Scheme 中的 Continuation 却是真正的 Continuation</p>
 <p>Scheme 是通过 call/cc 这一过程起到和C语言中 setjmp 类似却更完备的功能的。call/cc 接收一个一元 lambda 函数，对其求值时相当于将当前的 Continuation传 入该一元 lambda 函数后对该函数体求值。如果一元 lambda 函数正常返回，则 call/cc 过程的返回值就是一元 lambda 函数的返回值。如过在任何地方调用了 Continuation(Continuation 也是一个一元过程)，当前的所要进行的计算就会变成 Continuation 所记录的计算，就好像 call/cc 过程刚刚返回一样，而此时 call/cc 的返回值为调用 Continuation 时传入的参数：</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#e5c07b">call/cc </span> 
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">k</span>)  
-</span></span><span style="display:flex;"><span>    (<span style="color:#e5c07b">* </span><span style="color:#d19a66">5</span> <span style="color:#d19a66">4</span>))) <span style="color:#c678dd">=&gt; </span><span style="color:#d19a66">20</span>  
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(call/cc  
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">k</span>)  
+</span></span><span style="display:flex;"><span>    (* <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">4</span>))) <span style="color:#66d9ef">=&gt; </span><span style="color:#ae81ff">20</span>  
 </span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>(<span style="color:#e5c07b">call/cc </span> 
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">k</span>)  
-</span></span><span style="display:flex;"><span>    (<span style="color:#e5c07b">* </span><span style="color:#d19a66">5</span> (<span style="color:#61afef;font-weight:bold">k</span> <span style="color:#d19a66">4</span>)))) <span style="color:#c678dd">=&gt; </span><span style="color:#d19a66">4</span>  
+</span></span><span style="display:flex;"><span>(call/cc  
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">k</span>)  
+</span></span><span style="display:flex;"><span>    (* <span style="color:#ae81ff">5</span> (<span style="color:#a6e22e">k</span> <span style="color:#ae81ff">4</span>)))) <span style="color:#66d9ef">=&gt; </span><span style="color:#ae81ff">4</span>  
 </span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>(<span style="color:#e5c07b">+ </span><span style="color:#d19a66">2</span>  
-</span></span><span style="display:flex;"><span>   (<span style="color:#e5c07b">call/cc </span> 
-</span></span><span style="display:flex;"><span>     (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">k</span>)  
-</span></span><span style="display:flex;"><span>       (<span style="color:#e5c07b">* </span><span style="color:#d19a66">5</span> (<span style="color:#61afef;font-weight:bold">k</span> <span style="color:#d19a66">4</span>))))) <span style="color:#c678dd">=&gt; </span><span style="color:#d19a66">6</span>
+</span></span><span style="display:flex;"><span>(+ <span style="color:#ae81ff">2</span>  
+</span></span><span style="display:flex;"><span>   (call/cc  
+</span></span><span style="display:flex;"><span>     (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">k</span>)  
+</span></span><span style="display:flex;"><span>       (* <span style="color:#ae81ff">5</span> (<span style="color:#a6e22e">k</span> <span style="color:#ae81ff">4</span>))))) <span style="color:#66d9ef">=&gt; </span><span style="color:#ae81ff">6</span>
 </span></span></code></pre></div><p>借助 call/cc，我们可以实现协程(coroutine)：</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">lwp-list</span> <span style="color:#56b6c2">&#39;</span>())
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">lwp</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">thunk</span>)
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">set! </span><span style="color:#e06c75">lwp-list</span> (<span style="color:#e5c07b">append </span><span style="color:#e06c75">lwp-list</span> (<span style="color:#e5c07b">list </span><span style="color:#e06c75">thunk</span>)))))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>lwp-list <span style="color:#f92672">&#39;</span>())
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>lwp
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">thunk</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">set! </span>lwp-list (append lwp-list (list thunk)))))
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">start</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">let </span>((<span style="color:#61afef;font-weight:bold">p</span> (<span style="color:#e5c07b">car </span><span style="color:#e06c75">lwp-list</span>)))
-</span></span><span style="display:flex;"><span>      (<span style="color:#c678dd">set! </span><span style="color:#e06c75">lwp-list</span> (<span style="color:#e5c07b">cdr </span><span style="color:#e06c75">lwp-list</span>))
-</span></span><span style="display:flex;"><span>      (<span style="color:#61afef;font-weight:bold">p</span>))))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">pause</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>    (<span style="color:#61afef;font-weight:bold">call/cc</span>
-</span></span><span style="display:flex;"><span>      (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">k</span>)
-</span></span><span style="display:flex;"><span>        (<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#61afef;font-weight:bold">k</span> <span style="color:#e06c75">#f</span>)))
-</span></span><span style="display:flex;"><span>        (<span style="color:#61afef;font-weight:bold">start</span>)))))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">quit</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">if </span>(<span style="color:#e5c07b">null? </span><span style="color:#e06c75">lwp-list</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">#f</span>
-</span></span><span style="display:flex;"><span>        (<span style="color:#61afef;font-weight:bold">start</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>start
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">let </span>((<span style="color:#a6e22e">p</span> (car lwp-list)))
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">set! </span>lwp-list (cdr lwp-list))
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">p</span>))))
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#c678dd">let </span><span style="color:#e06c75">f</span> () (<span style="color:#61afef;font-weight:bold">pause</span>) (<span style="color:#e5c07b">display </span><span style="color:#98c379">&#34;h&#34;</span>) (<span style="color:#61afef;font-weight:bold">f</span>))))
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#61afef;font-weight:bold">quit</span>)))
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#c678dd">let </span><span style="color:#e06c75">f</span> () (<span style="color:#61afef;font-weight:bold">pause</span>) (<span style="color:#e5c07b">display </span><span style="color:#98c379">&#34;e&#34;</span>) (<span style="color:#61afef;font-weight:bold">f</span>))))
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#c678dd">let </span><span style="color:#e06c75">f</span> () (<span style="color:#61afef;font-weight:bold">pause</span>) (<span style="color:#e5c07b">display </span><span style="color:#98c379">&#34;y&#34;</span>) (<span style="color:#61afef;font-weight:bold">f</span>))))
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#c678dd">let </span><span style="color:#e06c75">f</span> () (<span style="color:#61afef;font-weight:bold">pause</span>) (<span style="color:#e5c07b">display </span><span style="color:#98c379">&#34;!&#34;</span>) (<span style="color:#61afef;font-weight:bold">f</span>))))
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">lwp</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#c678dd">let </span><span style="color:#e06c75">f</span> () (<span style="color:#61afef;font-weight:bold">pause</span>) (<span style="color:#61afef;font-weight:bold">newline</span>) (<span style="color:#61afef;font-weight:bold">f</span>))))
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">start</span>)
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>pause
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">call/cc</span>
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">k</span>)
+</span></span><span style="display:flex;"><span>        (<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#a6e22e">k</span> <span style="color:#66d9ef">#f</span>)))
+</span></span><span style="display:flex;"><span>        (<span style="color:#a6e22e">start</span>)))))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">=&gt; </span><span style="color:#e06c75">hey!</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#e06c75">hey!</span>
-</span></span><span style="display:flex;"><span>   <span style="color:#e06c75">hey!</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>quit
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">if </span>(null? lwp-list)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">#f</span>
+</span></span><span style="display:flex;"><span>        (<span style="color:#a6e22e">start</span>))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#66d9ef">let </span>f () (<span style="color:#a6e22e">pause</span>) (display <span style="color:#e6db74">&#34;h&#34;</span>) (<span style="color:#a6e22e">f</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#a6e22e">quit</span>)))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#66d9ef">let </span>f () (<span style="color:#a6e22e">pause</span>) (display <span style="color:#e6db74">&#34;e&#34;</span>) (<span style="color:#a6e22e">f</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#66d9ef">let </span>f () (<span style="color:#a6e22e">pause</span>) (display <span style="color:#e6db74">&#34;y&#34;</span>) (<span style="color:#a6e22e">f</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#66d9ef">let </span>f () (<span style="color:#a6e22e">pause</span>) (display <span style="color:#e6db74">&#34;!&#34;</span>) (<span style="color:#a6e22e">f</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">lwp</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#66d9ef">let </span>f () (<span style="color:#a6e22e">pause</span>) (<span style="color:#a6e22e">newline</span>) (<span style="color:#a6e22e">f</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">start</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">=&gt; </span>hey!
+</span></span><span style="display:flex;"><span>   hey!
+</span></span><span style="display:flex;"><span>   hey!
 </span></span></code></pre></div><p>如果利用 Macro，在每次调用 lambda 函数时插入“中断”指令，我们也可以模拟线程(由于没有迭代，每个 lambda 函数体的执行都是O(1)的时间复杂度，因此每次进入函数体时中断也能达到类似“定时中断”的效果)：</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">clock</span> <span style="color:#d19a66">0</span>)
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">handler</span> <span style="color:#e06c75">#f</span>)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>clock <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>handler <span style="color:#66d9ef">#f</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">start-timer</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">ticks</span> <span style="color:#e06c75">new-handler</span>)
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">set! </span><span style="color:#e06c75">handler</span> <span style="color:#e06c75">new-handler</span>)
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">set! </span><span style="color:#e06c75">clock</span> <span style="color:#e06c75">ticks</span>)))
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>start-timer
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">ticks</span> new-handler)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">set! </span>handler new-handler)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">set! </span>clock ticks)))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">stop-timer</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">let </span>((<span style="color:#61afef;font-weight:bold">time-left</span> <span style="color:#e06c75">clock</span>))
-</span></span><span style="display:flex;"><span>      (<span style="color:#c678dd">set! </span><span style="color:#e06c75">clock</span> <span style="color:#d19a66">0</span>)
-</span></span><span style="display:flex;"><span>      <span style="color:#e06c75">time-left</span>)))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">decrement-timer</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>    (<span style="color:#61afef;font-weight:bold">when</span> (<span style="color:#e5c07b">&gt; </span><span style="color:#e06c75">clock</span> <span style="color:#d19a66">0</span>)
-</span></span><span style="display:flex;"><span>      (<span style="color:#c678dd">set! </span><span style="color:#e06c75">clock</span> (<span style="color:#e5c07b">- </span><span style="color:#e06c75">clock</span> <span style="color:#d19a66">1</span>))
-</span></span><span style="display:flex;"><span>      (<span style="color:#61afef;font-weight:bold">when</span> (<span style="color:#e5c07b">= </span><span style="color:#e06c75">clock</span> <span style="color:#d19a66">0</span>) (<span style="color:#61afef;font-weight:bold">handler</span>)))))
-</span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define-syntax </span><span style="color:#e06c75">timed-lambda</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">syntax-rules </span>()
-</span></span><span style="display:flex;"><span>    ((<span style="color:#61afef;font-weight:bold">_</span> <span style="color:#e06c75">formals</span> <span style="color:#e06c75">exp1</span> <span style="color:#e06c75">exp2</span> <span style="color:#56b6c2">...</span>)
-</span></span><span style="display:flex;"><span>     (<span style="color:#c678dd">lambda </span><span style="color:#e06c75">formals</span> (<span style="color:#61afef;font-weight:bold">decrement-timer</span>) <span style="color:#e06c75">exp1</span> <span style="color:#e06c75">exp2</span> <span style="color:#56b6c2">...</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>stop-timer
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">let </span>((<span style="color:#a6e22e">time-left</span> clock))
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">set! </span>clock <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>      time-left)))
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>  
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">make-engine</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">let </span>((<span style="color:#61afef;font-weight:bold">do-complete</span> <span style="color:#e06c75">#f</span>) (<span style="color:#61afef;font-weight:bold">do-expire</span> <span style="color:#e06c75">#f</span>))
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">define </span><span style="color:#e06c75">timer-handler</span>
-</span></span><span style="display:flex;"><span>      (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>        (<span style="color:#61afef;font-weight:bold">start-timer</span> (<span style="color:#e5c07b">call/cc </span><span style="color:#e06c75">do-expire</span>) <span style="color:#e06c75">timer-handler</span>)))
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">define </span><span style="color:#e06c75">new-engine</span>
-</span></span><span style="display:flex;"><span>      (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">resume</span>)
-</span></span><span style="display:flex;"><span>        (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">ticks</span> <span style="color:#e06c75">complete</span> <span style="color:#e06c75">expire</span>)
-</span></span><span style="display:flex;"><span>          ((<span style="color:#61afef;font-weight:bold">call/cc</span>
-</span></span><span style="display:flex;"><span>            (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">escape</span>)
-</span></span><span style="display:flex;"><span>              (<span style="color:#c678dd">set! </span><span style="color:#e06c75">do-complete</span>
-</span></span><span style="display:flex;"><span>                   (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">ticks</span> <span style="color:#e06c75">value</span>)
-</span></span><span style="display:flex;"><span>                     (<span style="color:#61afef;font-weight:bold">escape</span> (<span style="color:#c678dd">lambda </span>() (<span style="color:#61afef;font-weight:bold">complete</span> <span style="color:#e06c75">ticks</span> <span style="color:#e06c75">value</span>)))))
-</span></span><span style="display:flex;"><span>              (<span style="color:#c678dd">set! </span><span style="color:#e06c75">do-expire</span>
-</span></span><span style="display:flex;"><span>                   (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">resume</span>)
-</span></span><span style="display:flex;"><span>                     (<span style="color:#61afef;font-weight:bold">escape</span> (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>                               (<span style="color:#61afef;font-weight:bold">expire</span> (<span style="color:#61afef;font-weight:bold">new-engine</span> <span style="color:#e06c75">resume</span>))))))
-</span></span><span style="display:flex;"><span>              (<span style="color:#61afef;font-weight:bold">resume</span> <span style="color:#e06c75">ticks</span>)))))))
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">proc</span>)
-</span></span><span style="display:flex;"><span>      (<span style="color:#61afef;font-weight:bold">new-engine</span>
-</span></span><span style="display:flex;"><span>       (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">ticks</span>)
-</span></span><span style="display:flex;"><span>         (<span style="color:#61afef;font-weight:bold">start-timer</span> <span style="color:#e06c75">ticks</span> <span style="color:#e06c75">timer-handler</span>)
-</span></span><span style="display:flex;"><span>         (<span style="color:#c678dd">let </span>((<span style="color:#61afef;font-weight:bold">value</span> (<span style="color:#61afef;font-weight:bold">proc</span>)))
-</span></span><span style="display:flex;"><span>           (<span style="color:#c678dd">let </span>((<span style="color:#61afef;font-weight:bold">ticks</span> (<span style="color:#61afef;font-weight:bold">stop-timer</span>)))
-</span></span><span style="display:flex;"><span>             (<span style="color:#61afef;font-weight:bold">do-complete</span> <span style="color:#e06c75">ticks</span> <span style="color:#e06c75">value</span>))))))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>decrement-timer
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>    (<span style="color:#a6e22e">when</span> (&gt; clock <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">set! </span>clock (- clock <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">when</span> (= clock <span style="color:#ae81ff">0</span>) (<span style="color:#a6e22e">handler</span>)))))
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define-syntax </span>timed-lambda
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">syntax-rules </span>()
+</span></span><span style="display:flex;"><span>    ((<span style="color:#a6e22e">_</span> formals exp1 exp2 <span style="color:#f92672">...</span>)
+</span></span><span style="display:flex;"><span>     (<span style="color:#66d9ef">lambda </span>formals (<span style="color:#a6e22e">decrement-timer</span>) exp1 exp2 <span style="color:#f92672">...</span>))))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>make-engine
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">let </span>((<span style="color:#a6e22e">do-complete</span> <span style="color:#66d9ef">#f</span>) (<span style="color:#a6e22e">do-expire</span> <span style="color:#66d9ef">#f</span>))
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">define </span>timer-handler
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>        (<span style="color:#a6e22e">start-timer</span> (call/cc do-expire) timer-handler)))
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">define </span>new-engine
+</span></span><span style="display:flex;"><span>      (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">resume</span>)
+</span></span><span style="display:flex;"><span>        (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">ticks</span> complete expire)
+</span></span><span style="display:flex;"><span>          ((<span style="color:#a6e22e">call/cc</span>
+</span></span><span style="display:flex;"><span>            (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">escape</span>)
+</span></span><span style="display:flex;"><span>              (<span style="color:#66d9ef">set! </span>do-complete
+</span></span><span style="display:flex;"><span>                   (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">ticks</span> value)
+</span></span><span style="display:flex;"><span>                     (<span style="color:#a6e22e">escape</span> (<span style="color:#66d9ef">lambda </span>() (<span style="color:#a6e22e">complete</span> ticks value)))))
+</span></span><span style="display:flex;"><span>              (<span style="color:#66d9ef">set! </span>do-expire
+</span></span><span style="display:flex;"><span>                   (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">resume</span>)
+</span></span><span style="display:flex;"><span>                     (<span style="color:#a6e22e">escape</span> (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>                               (<span style="color:#a6e22e">expire</span> (<span style="color:#a6e22e">new-engine</span> resume))))))
+</span></span><span style="display:flex;"><span>              (<span style="color:#a6e22e">resume</span> ticks)))))))
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">proc</span>)
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">new-engine</span>
+</span></span><span style="display:flex;"><span>       (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">ticks</span>)
+</span></span><span style="display:flex;"><span>         (<span style="color:#a6e22e">start-timer</span> ticks timer-handler)
+</span></span><span style="display:flex;"><span>         (<span style="color:#66d9ef">let </span>((<span style="color:#a6e22e">value</span> (<span style="color:#a6e22e">proc</span>)))
+</span></span><span style="display:flex;"><span>           (<span style="color:#66d9ef">let </span>((<span style="color:#a6e22e">ticks</span> (<span style="color:#a6e22e">stop-timer</span>)))
+</span></span><span style="display:flex;"><span>             (<span style="color:#a6e22e">do-complete</span> ticks value))))))))
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">fibonacci</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#61afef;font-weight:bold">timed-lambda</span> (<span style="color:#61afef;font-weight:bold">n</span>)
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">if </span>(<span style="color:#e5c07b">&lt; </span><span style="color:#e06c75">n</span> <span style="color:#d19a66">2</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">n</span>
-</span></span><span style="display:flex;"><span>        (<span style="color:#e5c07b">+ </span>(<span style="color:#61afef;font-weight:bold">fibonacci</span> (<span style="color:#e5c07b">- </span><span style="color:#e06c75">n</span> <span style="color:#d19a66">1</span>))
-</span></span><span style="display:flex;"><span>           (<span style="color:#61afef;font-weight:bold">fibonacci</span> (<span style="color:#e5c07b">- </span><span style="color:#e06c75">n</span> <span style="color:#d19a66">2</span>))))))
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>fibonacci
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">timed-lambda</span> (<span style="color:#a6e22e">n</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">if </span>(&lt; n <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>        n
+</span></span><span style="display:flex;"><span>        (+ (<span style="color:#a6e22e">fibonacci</span> (- n <span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span>           (<span style="color:#a6e22e">fibonacci</span> (- n <span style="color:#ae81ff">2</span>))))))
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">define </span><span style="color:#e06c75">eng</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#61afef;font-weight:bold">make-engine</span>
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">lambda </span>()
-</span></span><span style="display:flex;"><span>      (<span style="color:#61afef;font-weight:bold">fibonacci</span> <span style="color:#d19a66">10</span>))))
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>eng
+</span></span><span style="display:flex;"><span>  (<span style="color:#a6e22e">make-engine</span>
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">lambda </span>()
+</span></span><span style="display:flex;"><span>      (<span style="color:#a6e22e">fibonacci</span> <span style="color:#ae81ff">10</span>))))
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#61afef;font-weight:bold">eng</span> <span style="color:#d19a66">1</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#e06c75">list</span>
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">lambda </span>(<span style="color:#61afef;font-weight:bold">new-eng</span>)
-</span></span><span style="display:flex;"><span>    (<span style="color:#c678dd">set! </span><span style="color:#e06c75">eng</span> <span style="color:#e06c75">new-eng</span>)
-</span></span><span style="display:flex;"><span>    <span style="color:#98c379">&#34;expired&#34;</span>))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">eng</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  list
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">new-eng</span>)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">set! </span>eng new-eng)
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;expired&#34;</span>))
 </span></span></code></pre></div><h1 id="macro">Macro</h1>
 <p>C语言的程序需要经过预编译进行宏展开之后才生成真正待编译的程序，同理 Scheme 程序也要经过 syntax expander 展开之后得到真正待解释的 S-Expression。但相比C语言单纯做字符串替换的宏，Scheme 宏有以下两个特点：</p>
 <ol>
@@ -254,72 +350,56 @@ S-Expression 这种程序的表示方式自然也被 Scheme 所继承，不过�
 </li>
 </ol>
 <p>具体而言，Scheme 通过 define-syntax 等方法将定义一系列 transformer，并指定一个 keyword，之后只要遇到该 keyword，就会尝试 pattern match 并作变换，例子如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#c678dd">define-syntax cond </span> 
-</span></span><span style="display:flex;"><span>  (<span style="color:#c678dd">syntax-rules </span>(<span style="color:#61afef;font-weight:bold">else</span>)  
-</span></span><span style="display:flex;"><span>    ((<span style="color:#61afef;font-weight:bold">_</span> (<span style="color:#c678dd">else </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#56b6c2">...</span>)) (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#56b6c2">...</span>))  
-</span></span><span style="display:flex;"><span>    ((<span style="color:#61afef;font-weight:bold">_</span> (<span style="color:#61afef;font-weight:bold">e0</span> <span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#56b6c2">...</span>)) (<span style="color:#c678dd">if </span><span style="color:#e06c75">e0</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#56b6c2">...</span>)))  
-</span></span><span style="display:flex;"><span>    ((<span style="color:#61afef;font-weight:bold">_</span> (<span style="color:#61afef;font-weight:bold">e0</span> <span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#56b6c2">...</span>) <span style="color:#e06c75">c1</span> <span style="color:#e06c75">c2</span> <span style="color:#56b6c2">...</span>)  
-</span></span><span style="display:flex;"><span>     (<span style="color:#c678dd">if </span><span style="color:#e06c75">e0</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#56b6c2">...</span>) (<span style="color:#c678dd">cond </span><span style="color:#e06c75">c1</span> <span style="color:#e06c75">c2</span> <span style="color:#56b6c2">...</span>)))))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#66d9ef">define-syntax cond </span> 
+</span></span><span style="display:flex;"><span>  (<span style="color:#66d9ef">syntax-rules </span>(<span style="color:#a6e22e">else</span>)  
+</span></span><span style="display:flex;"><span>    ((<span style="color:#a6e22e">_</span> (<span style="color:#66d9ef">else </span>e1 e2 <span style="color:#f92672">...</span>)) (<span style="color:#66d9ef">begin </span>e1 e2 <span style="color:#f92672">...</span>))  
+</span></span><span style="display:flex;"><span>    ((<span style="color:#a6e22e">_</span> (<span style="color:#a6e22e">e0</span> e1 e2 <span style="color:#f92672">...</span>)) (<span style="color:#66d9ef">if </span>e0 (<span style="color:#66d9ef">begin </span>e1 e2 <span style="color:#f92672">...</span>)))  
+</span></span><span style="display:flex;"><span>    ((<span style="color:#a6e22e">_</span> (<span style="color:#a6e22e">e0</span> e1 e2 <span style="color:#f92672">...</span>) c1 c2 <span style="color:#f92672">...</span>)  
+</span></span><span style="display:flex;"><span>     (<span style="color:#66d9ef">if </span>e0 (<span style="color:#66d9ef">begin </span>e1 e2 <span style="color:#f92672">...</span>) (<span style="color:#66d9ef">cond </span>c1 c2 <span style="color:#f92672">...</span>)))))
 </span></span></code></pre></div><p>上述例子中，cond 为 keyword，else 为 literal，表示程序中本来就有的 identifieer，不会在后续pattern match 中被认为是 pattern variable。当遇到一个 keyword 时，就会调用上述宏定义的 transformer，并一个 pattern 一个 pattern 试着匹配，如果匹配成功则进行变换。
 如</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>(<span style="color:#c678dd">cond </span>(<span style="color:#61afef;font-weight:bold">e0</span> <span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#e06c75">e3</span>) (<span style="color:#c678dd">else </span><span style="color:#e06c75">e4</span> <span style="color:#e06c75">e5</span> <span style="color:#e06c75">e6</span>))
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">=&gt; </span>(<span style="color:#c678dd">if </span><span style="color:#e06c75">e0</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#e06c75">e3</span>) (<span style="color:#c678dd">cond </span><span style="color:#e06c75">e4</span> <span style="color:#e06c75">e5</span> <span style="color:#e06c75">e6</span>))
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">=&gt; </span>(<span style="color:#c678dd">if </span><span style="color:#e06c75">e0</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e1</span> <span style="color:#e06c75">e2</span> <span style="color:#e06c75">e3</span>) (<span style="color:#c678dd">if </span><span style="color:#e06c75">e4</span> (<span style="color:#c678dd">begin </span><span style="color:#e06c75">e5</span> <span style="color:#e06c75">e6</span>)))
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">cond </span>(<span style="color:#a6e22e">e0</span> e1 e2 e3) (<span style="color:#66d9ef">else </span>e4 e5 e6))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">=&gt; </span>(<span style="color:#66d9ef">if </span>e0 (<span style="color:#66d9ef">begin </span>e1 e2 e3) (<span style="color:#66d9ef">cond </span>e4 e5 e6))
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">=&gt; </span>(<span style="color:#66d9ef">if </span>e0 (<span style="color:#66d9ef">begin </span>e1 e2 e3) (<span style="color:#66d9ef">if </span>e4 (<span style="color:#66d9ef">begin </span>e5 e6)))
 </span></span></code></pre></div><h1 id="summary">Summary</h1>
 <p>本文简单梳理了一下 Scheme 中我不太了解的几个特性——当然也仅仅是了解了一下，且背后牵扯到的PL/逻辑学理论甚至是精巧的实现都是没有本文涉及的。</p>
-<p>如果后面能够实现 continuation 以及 pattern match，也可谓是壮举了。</p>
-        </section>
-        <div class="post-tags">
-          
-          
-          <nav class="nav tags">
-            <ul class="tags">
-              
-              <li><a href="/tags/scheme">Scheme</a></li>
-              
-              <li><a href="/tags/pl">PL</a></li>
-              
-              <li><a href="/tags/knowledge">Knowledge</a></li>
-              
-            </ul>
-          </nav>
-          
-          
+<p>如果后面能够实现 continuation 以及 pattern match，也可谓是壮举了。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-03-30</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/scheme%E6%8B%BE%E9%81%97/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/" data-title="Scheme 拾遗：S-Expression，Continuation 以及 Macro" data-hashtags="Scheme,PL,Knowledge"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/" data-hashtag="Scheme"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/" data-title="Scheme 拾遗：S-Expression，Continuation 以及 Macro"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/" data-title="Scheme 拾遗：S-Expression，Continuation 以及 Macro"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/" data-title="Scheme 拾遗：S-Expression，Continuation 以及 Macro"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
         </div>
-      </div>
-
-      
-      
-      <div class="toc">
-        <strong>Table of contents:</strong>
-        <nav id="TableOfContents"></nav>
-      </div>
-      
     </div>
 
-    </article>
-</main>
-<footer>
-  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a></div>
-  <div class="footer-info">
-    2025  <a
-      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
-  </div>
-</footer>
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/scheme/">Scheme</a>,&nbsp;<a href="/tags/pl/">PL</a>,&nbsp;<a href="/tags/knowledge/">Knowledge</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
 
-
-
+    <div class="post-nav"><a href="/posts/autoboxing-and-integercache-in-java/" class="prev" rel="prev" title="Autoboxing and IntegerCache in Java"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Autoboxing and IntegerCache in Java</a>
+            <a href="/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="next" rel="next" title="打破壁垒：代理技术在家庭网络中的应用">打破壁垒：代理技术在家庭网络中的应用<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-    </body>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

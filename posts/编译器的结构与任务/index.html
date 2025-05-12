@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html><head lang="en">
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>编译器的结构与任务 - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="
-Surely all this is not without meaning.
-" />
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>编译器的结构与任务 - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="编译器的结构与任务">
-  <meta property="og:description" content="Surely all this is not without meaning.">
+  <meta property="og:description" content="Surely all this is not without meaning.
+—— HERMAN MELVILLE, Moby-Dick, 1851">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -17,74 +16,136 @@ Surely all this is not without meaning.
     <meta property="article:modified_time" content="2023-03-06T11:52:38+00:00">
     <meta property="article:tag" content="Compiler">
     <meta property="article:tag" content="Knowledge">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
   <meta name="twitter:title" content="编译器的结构与任务">
-  <meta name="twitter:description" content="Surely all this is not without meaning.">
+  <meta name="twitter:description" content="Surely all this is not without meaning.
+—— HERMAN MELVILLE, Moby-Dick, 1851">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/" /><link rel="prev" href="https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/" /><link rel="next" href="https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "编译器的结构与任务",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1\/"
+        },"genre": "posts","keywords": "Compiler, Knowledge","wordcount":  5430 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1\/","datePublished": "2023-03-06T11:52:38+00:00","dateModified": "2023-03-06T11:52:38+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
-	
-
-	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
-		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
-  	
-   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['$', '$']]                  
-    },
-    loader:{
-      load: ['ui/safe']
-    },
-  };
-</script>
-  	
-
-	
-</head>
-<body>
-        <div class="content"><header>
-	<div class="main">
-		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
-	</div>
-	<nav>
-		
-		<a href="/posts/">All Posts</a>
-		
-		<a href="/categories/">Categories</a>
-		
-		<a href="/tags/">Tags</a>
-		
-		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
-		
-		
-	</nav>
-</header>
-
-<main>
-  <article>
-    <div class="post-container">
-      
-      <div class="post-content">
-        <div class="title">
-          <h1 class="title">编译器的结构与任务</h1>
-          <div class="meta">Posted on Mar 6, 2023</div>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
-        
-        <section class="body">
-          <blockquote>
-<p>Surely all this is not without meaning.</p></blockquote>
-<!-- raw HTML omitted -->
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">编译器的结构与任务</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/system/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>System</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-06">2023-03-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;5430 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;11 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>Surely all this is not without meaning.</p>
+</blockquote>
+<p style="text-align: right">—— HERMAN MELVILLE, Moby-Dick, 1851 </p>
 <blockquote>
-<p>虽然题目起得很大，但是内容也只涉及了编译器实现的一小部分，主要还是一些自己对编译器high level的认识，加上部分cs143实验的总结。</p></blockquote>
+<p>虽然题目起得很大，但是内容也只涉及了编译器实现的一小部分，主要还是一些自己对编译器high level的认识，加上部分cs143实验的总结。</p>
+</blockquote>
 <h1 id="什么是编译器">什么是编译器</h1>
 <p>一个编程语言可以看作一个从它的合法程序集合到运行时行为的total function，设为<code>f</code>。我们编程则是已知运行时行为b，求解出一个合法程序<code>a</code>以使得<code>f(a)=b</code>的过程。函数<code>f</code>一般都为可计算函数，且<code>f</code>对应的计算规则也是比较特殊以使得我们也较易掌握的，具体而言，就是可以采用模块化，分而治之这样的思想来构造出<code>a</code>，这种计算规则常常表现为定义在AST上的求值规则(如opretional semantic)。</p>
 <blockquote>
 <p>确定合法程序的集合的规则一般被称为 syntax</p>
-<p>而total function <code>f</code> 一般被称为 semantics</p></blockquote>
+<p>而total function <code>f</code> 一般被称为 semantics</p>
+</blockquote>
 <p>有一部分的编程语言<code>u</code>被称为unsafe的，因为<code>codom(u)</code>往往含有一些我们——编程人员觉得不好的行为。比如该行为取决于目标代码所运行的机器，或是产生该行为的计算规则十分特殊(比如说数组越界不报错而是返回42)。而相应的，<code>codom(u)</code>均是好的行为的编程语言我们称为safe的编程语言。safe语言的例子有java，而c则是一个unsafe的语言。不过在实际编写代码，尤其是系统软件中，就算是safe的语言也往往会进行一些扩展，以允许编写一些与具体机器有关的unsafe操作。</p>
 <p>当然编程语言仅仅定义为total function还是不够的，要想让编程语言不仅仅是我们脑海中的方程，我们还需要让机器去运行它。但机器有着自己的语言，我们必须把编程语言翻译为机器语言才可以让机器去运行。我们把机器的语言称为目标语言，其一段程序称为目标代码，而我们的编程语言称为源语言，其一段程序称为源代码。由于目标代码是可以被机器运行并表现出运行时行为，我们也可以把一个编程语言f的值域看作是目标代码的集合。f在计算机上的实现就称作编译器。</p>
 <p>但是由于合法程序只是所有字符串的一个子集，而我们可以给编译器输入任何字符串，因此编译器必须还有错误程序检测的功能。因此，我们使用的编译器的一般都会有两项功能，其一是代码形式的转换，其二是拒绝错误的程序。因此我们可以把编译器看作从源代码到目标代码的partial function。</p>
@@ -92,21 +153,23 @@ Surely all this is not without meaning.
 <p>编译器可以被分为几个相互独立的部分，分别实现，然后用管道组合起来。CS143中cool的实现也是如此：该实验的最后你会获得lexer，parser，semant，cgen四个可执行文件，可以用如下shell脚本组合起来得到一个完整的编译器<code>./lexer $* | ./parser $* | ./semant $* | ./cgen $*</code>。其中 lexer，parser 对应的是语法分析阶段，semant对应的是语义分析阶段，而cgen对应的是代码生成阶段。</p>
 <p>除cgen/代码生成之外每个部分/阶段都有两项任务，一是<strong>检查并拒绝错误的程序</strong>，二是<strong>进行代码形式的转换</strong>。而cgen只有进行代码形式的转换一个任务，因为在cool以及大部分编译器的设计中，代码生成阶段都假定输入已经是合法的程序。</p>
 <p>每一阶段的工作可以看作一个数学函数f(X-&gt;Y)，定义域X为该阶段能处理的输入,Y为可能的输出的集合。假如lexer，parser，semant，cgen都看作数学函数，则compiler =  cgen ∘ semant ∘ parser ∘ lexer。具体来说，</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>dom(lexer) = {文本程序}         codom(lexer) = {token流}
-</span></span><span style="display:flex;"><span>dom(parser) = {token流}         codom(lexer) = {语法树}
-</span></span><span style="display:flex;"><span>dom(semant) = {语法树}          codom(lexer) = {装饰后的语法树(主要指添加类型信息)}
-</span></span><span style="display:flex;"><span>dom(lexer) = {装饰后的语法树}    codom(lexer) = {目标代码}
-</span></span></code></pre></div><p>但是，值得注意的是，这里的函数都是 **partial function，**即并非每个定义域的值都有陪域的值与之对应，这些值就代表这编译过程的发现的错误程序，编译器会报错并提示用户修改。</p>
+<pre tabindex="0"><code>dom(lexer) = {文本程序}         codom(lexer) = {token流}
+dom(parser) = {token流}         codom(lexer) = {语法树}
+dom(semant) = {语法树}          codom(lexer) = {装饰后的语法树(主要指添加类型信息)}
+dom(lexer) = {装饰后的语法树}    codom(lexer) = {目标代码}
+</code></pre><p>但是，值得注意的是，这里的函数都是 **partial function，**即并非每个定义域的值都有陪域的值与之对应，这些值就代表这编译过程的发现的错误程序，编译器会报错并提示用户修改。</p>
 <p>之所以一个compiler要被拆分为几个独立的部分，是因为这些部分的功能都相当内聚，互相之间联系较少。从错误处理的角度来看，lexer是用<code>正则表达式</code>排除错误程序，而parser是用<code>CFG</code>排除错误程序，semant做的事情则比较复杂，采用了多种技术来排除掉错误程序，并输出合法程序。</p>
 <blockquote>
 <p>我们又常常说  由 lexer 和 parser 定义了语法规则，通过lexer和parser检查的是满足语法规则的程序，这个阶段所以被称为语法分析阶段</p>
-<p>semant定义了静态语义规则，通过semant检查的是满足静态语义规则的程序，这个阶段所以被称为语义分析阶段。</p></blockquote>
+<p>semant定义了静态语义规则，通过semant检查的是满足静态语义规则的程序，这个阶段所以被称为语义分析阶段。</p>
+</blockquote>
 <h1 id="语义分析阶段的任务">语义分析阶段的任务</h1>
 <p>因此，semant做的事被称为语义分析，它会做许多检查：比如说检查标识符必须先声明再使用，类继承图必须无环之类的。但是语义分析阶段做的最重要的一件事则是类型检查，其目的是检查程序满足type rules，而type rule即是type system的主要组成部分。不过类型检查也不必非得在语义分析阶段做，有的语言也将类型检查纳入运行时，具体类型系统做了什么样的检查，这还得要从编程语言的求值规则说起。</p>
 <p>编程语言写成的程序虽然是字符串，但这个字符串却实际上表示了一种树型结构，我们把这个树型结构叫做对应字符串的语法树。为什么要用树型结构？因为树型结构的表达能力足够强，也是易于理解的。我们所能构建的大部分复杂事物往往都只采用了组合和抽象两种手段。组合即是将基本的事物放在一起，而抽象指将许多事物忽略其细节，只关注其整体作用。如在Scheme中，基本的元素就是整数字面量，而组合的方法则有<code>+, -, *, /</code>等运算，而抽象则是函数。</p>
 <blockquote>
 <p>一般来说，语法分析阶段只负责保证程序确实表达了一个树型结构即可</p>
-<p>剩下的检查都是语义分析的任务了</p></blockquote>
+<p>剩下的检查都是语义分析的任务了</p>
+</blockquote>
 <p>但并非任意种类元素都能组合，抽象，一种运算可能只能组合某种特定类型的元素，比如说 <code>1 + 2 </code>就是对的，但是 <code>1 + &quot;2&quot;</code>就是不对的(不对指在程序员看来，这是无意义的。假如程序员真的写出了这样的程序，则他会希望编译期或是运行时报错，而非一声不吭执行下去得到一个奇怪的结果)。我们可以给语法树的每个节点都赋予一个类型，并定义类型推导的规则，这些推导规则的集合就叫做该语言的类型系统。</p>
 <p>上面说的检查过程就叫做类型检查，检查程序是否满足类型系统的规则，是语义分析中最为重要的一个部分。在程序员眼中，类型检查如果静态能做自然好，但是动态报错也是无妨的——只要不一声不吭地执行就算是好的行为，动态类型检查的语言也可以是safe的。虽然动态进行检查会导致程序运行时错误增多，但是却增加了许多灵活性。</p>
 <p>一般在编译器语义分析过程中进行类型检查的语言称为<strong>静态语言</strong>，而动态类型检查的语言称为<strong>动态语言</strong>。</p>
@@ -115,33 +178,33 @@ Surely all this is not without meaning.
 <p>通过语义检查的程序都是合法的程序，下一步就应该将合法的程序转化为目标代码了。但值得注意的是，lexer，parser以及semant中也都进行了代码形式的转换，将程序代码从字符流转化为了语法树(可能还伴随着符号表的填充)。和错误处理一样，lexer也是通过<code>正则表达式</code>来讲字符串识别为一个个token，parser也是通过<code>CFG</code>从token流中构建语法树。而semant只是遍历已建好的语法树并收集信息。lexer和parser合称为语法分析，在许多编译器实现中两个阶段是紧密耦合在一起的，Antlr，Pest等语法分析工具也是同时做了lexer和parser的事情，你只需要向这些工具中输入语言语法的specification，这些工具就会自动生成将字符串转化为语法树的代码。这些语法分析工具背后的理论则涉及形式语言与自动机，可以说是计算机理论在实际软件编写中非常成功的应用了。</p>
 <p>与语法分析阶段，代码生成阶段往往没有如此自动化的工具或是普遍性的理论支撑——当然语言的语义是有<code>operational semantics</code>,<code>denotational semantics</code> 等形式化方法定义的，但是就算是用最贴近实现的<code>operational semantics</code> 来指导实现，我们所得到的也只能是一个效率低下的解释器。因为这些形式化的语义定义往往是直接在AST上定义，以AST层面的概念为程序状态，而我们想要的是将AST直接映射到一种低级语言，这往往是需要程序员自己去思考如何实现的。</p>
 <p>将高级语言的许多概念，如类，对象的创建，控制流等映射到低级语言的过程在我看来是一件非常神奇的事情。在之前我也曾学过汇编语言，学过一些高级语言，但二者之间如何进行转换确实在我学习编译原理之前万万没有想到的。下面就拿cool举个例子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">A</span> {
-</span></span><span style="display:flex;"><span>   <span style="color:#e06c75">method1</span>() : <span style="color:#e06c75">SELF_TYPE</span> { <span style="color:#7f848e">// 1</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#e06c75">self</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Java" data-lang="Java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> {
+</span></span><span style="display:flex;"><span>   method1() : SELF_TYPE { <span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>      self
 </span></span><span style="display:flex;"><span>   };
-</span></span><span style="display:flex;"><span>   <span style="color:#e06c75">method2</span>() : <span style="color:#e06c75">SELF_TYPE</span>  { <span style="color:#7f848e">// 2</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#e06c75">self</span>
+</span></span><span style="display:flex;"><span>   method2() : SELF_TYPE  { <span style="color:#75715e">// 2</span>
+</span></span><span style="display:flex;"><span>      self
 </span></span><span style="display:flex;"><span>   };
 </span></span><span style="display:flex;"><span>};
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">B</span> <span style="color:#e06c75">inherits</span> <span style="color:#e06c75">A</span> { 
-</span></span><span style="display:flex;"><span>   <span style="color:#e06c75">method1</span>() : <span style="color:#e06c75">SELF_TYPE</span> {  <span style="color:#7f848e">// 3</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#e06c75">self</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> inherits A { 
+</span></span><span style="display:flex;"><span>   method1() : SELF_TYPE {  <span style="color:#75715e">// 3</span>
+</span></span><span style="display:flex;"><span>      self
 </span></span><span style="display:flex;"><span>   };
-</span></span><span style="display:flex;"><span>   <span style="color:#e06c75">method3</span>() : <span style="color:#e06c75">SELF_TYPE</span> { <span style="color:#7f848e">// 4</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#e06c75">self</span>
+</span></span><span style="display:flex;"><span>   method3() : SELF_TYPE { <span style="color:#75715e">// 4</span>
+</span></span><span style="display:flex;"><span>      self
 </span></span><span style="display:flex;"><span>   };
 </span></span><span style="display:flex;"><span>};
-</span></span><span style="display:flex;"><span><span style="color:#7f848e">///////////////////////  5</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">let</span> <span style="color:#e06c75">b</span>: <span style="color:#e06c75">A</span> <span style="color:#e06c75">in</span> {  
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">let</span> <span style="color:#e06c75">a</span> : <span style="color:#e06c75">Int</span> <span style="color:#56b6c2">&lt;-</span> <span style="color:#e06c75">rand</span>() <span style="color:#e06c75">in</span> {
-</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">if</span> <span style="color:#e06c75">a</span> <span style="color:#56b6c2">%</span> <span style="color:#e06c75">2</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">0</span> <span style="color:#e06c75">then</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">b</span> <span style="color:#56b6c2">=</span> <span style="color:#c678dd">new</span> <span style="color:#e06c75">A</span>()
-</span></span><span style="display:flex;"><span>        } <span style="color:#c678dd">else</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">b</span> <span style="color:#56b6c2">=</span> <span style="color:#c678dd">new</span> <span style="color:#e06c75">B</span>() 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">///////////////////////  5</span>
+</span></span><span style="display:flex;"><span>let b: A in {  
+</span></span><span style="display:flex;"><span>    let a : Int <span style="color:#f92672">&lt;-</span> rand() in {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> a <span style="color:#f92672">%</span> 2 <span style="color:#f92672">==</span> 0 then {
+</span></span><span style="display:flex;"><span>            b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A()
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> B() 
 </span></span><span style="display:flex;"><span>        }    
 </span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">b</span>.<span style="color:#e06c75">method1</span>()
+</span></span><span style="display:flex;"><span>    b.<span style="color:#a6e22e">method1</span>()
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>当有一个B类的对象b时，代码中的<code>b.method1()</code>会调用3处的方法，并把对象自己绑定到self上，而<code>b.method2()</code>则会调用2处方法，<code>b.method3</code>自然也会调用4处的方法。到此为止一切似乎还算好实现，每个方法都对应一段代码，要知道一个方法调用究竟对应哪个方法，我们可以先在B类中找该方法，如果找到就生成call这个方法的低级语言代码，如果找不到则到其父类中去找。这样似乎一个call调用哪个方法静态时就已经决定了。</p>
 <p>但是考虑5处的代码段，在cool中<code>b.method1()</code>会根据b的实际类型来选择到底调用哪个方法。假如运行时发现b是B类对象，则会调用3处方法，否则会调用1处方法。根据运行时状态来决定调用哪段代码？这应该如何实现？初听之可能觉得不可思议，但是看了实现之后却发现又无比自然。</p>
@@ -149,105 +212,105 @@ Surely all this is not without meaning.
 <p>首先是有一个<code>class_objTab</code>，其中包含了每个类的原型与初始化方法的地址，我们在new一个类时，实际上是将原型拷贝一份，然后调用其初始化方法。而如何获得其原型和初始化方法呢？这就是通过<code>offset</code>以及<code>class_objTab</code>的地址算出的了。当然了，对于初始化方法和原型对象，我们也可以不通过查<code>class_objTab</code>表而直接得到其地址。</p>
 <p>而每一个类原型，也就是<code>XXX_protObj</code>，都包含以下几部分：<code>{classTag ObjectSize DispatchTablePointer}</code>，其中<code>classTag</code>表明其在<code>class_objTab</code>中的位置，而<code>ObjectSize</code>表示其大小(如果类含有成员变量自然size就会增大了)，<code>DispatchTablePointer</code>指向一个包含许多方法的表，这个表在c++中的对应被称为虚函数表。</p>
 <p>当我们生成调用<code>b.method1()</code>的代码时，我们不需要知道<code>method1</code>的实际地址，我们只要知道该对象指向的虚函数表中的第几位对应名为<code>method1</code>的方法就行了。如下面代码所示，在继承关系中重载时会直接将父类同名方法覆盖，因此对于<code>method1</code>，无论b是B类还是A类对象，它们需要调用的<code>method1</code>都在各自对象的虚函数表的相同位置，这样就实现了调用哪个方法的动态决定，也就是Java中所说的动态绑定。</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>class_objTab:
-</span></span><span style="display:flex;"><span>    .word   Object_protObj
-</span></span><span style="display:flex;"><span>    .word   Object_init
-</span></span><span style="display:flex;"><span>    .word   A_protObj
-</span></span><span style="display:flex;"><span>    .word   A_init
-</span></span><span style="display:flex;"><span>    .word   B_protObj
-</span></span><span style="display:flex;"><span>    .word   B_init
-</span></span><span style="display:flex;"><span>    ...
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>A_protObj:
-</span></span><span style="display:flex;"><span>    .word   9
-</span></span><span style="display:flex;"><span>    .word   3
-</span></span><span style="display:flex;"><span>    .word   A_dispTab
-</span></span><span style="display:flex;"><span>    .word   -1
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>A_dispTab:
-</span></span><span style="display:flex;"><span>    .word   Object.abort
-</span></span><span style="display:flex;"><span>    .word   Object.type_name
-</span></span><span style="display:flex;"><span>    .word   Object.copy
-</span></span><span style="display:flex;"><span>    .word   A.method1
-</span></span><span style="display:flex;"><span>    .word   A.method2
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>B_protObj:
-</span></span><span style="display:flex;"><span>    .word   10
-</span></span><span style="display:flex;"><span>    .word   3
-</span></span><span style="display:flex;"><span>    .word   B_dispTab
-</span></span><span style="display:flex;"><span>    .word   -1
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>B_dispTab:
-</span></span><span style="display:flex;"><span>    .word   Object.abort
-</span></span><span style="display:flex;"><span>    .word   Object.type_name
-</span></span><span style="display:flex;"><span>    .word   Object.copy
-</span></span><span style="display:flex;"><span>    .word   B.method1
-</span></span><span style="display:flex;"><span>    .word   A.method2
-</span></span><span style="display:flex;"><span>    .word   B.method3
-</span></span><span style="display:flex;"><span>    
-</span></span></code></pre></div><p>当然cool也支持“静态绑定”，你可以直接显示写出要调用的方法是哪个类中的，比如<code>b@B.method1()</code>会直接调用3处方法，而<code>b@A.method1()</code>则会直接调用1处方法，并不需要动态通过虚函数表间接得到。</p>
+<pre tabindex="0"><code class="language-Assembly" data-lang="Assembly">class_objTab:
+    .word   Object_protObj
+    .word   Object_init
+    .word   A_protObj
+    .word   A_init
+    .word   B_protObj
+    .word   B_init
+    ...
+
+
+A_protObj:
+    .word   9
+    .word   3
+    .word   A_dispTab
+    .word   -1
+
+A_dispTab:
+    .word   Object.abort
+    .word   Object.type_name
+    .word   Object.copy
+    .word   A.method1
+    .word   A.method2
+    
+B_protObj:
+    .word   10
+    .word   3
+    .word   B_dispTab
+    .word   -1
+    
+B_dispTab:
+    .word   Object.abort
+    .word   Object.type_name
+    .word   Object.copy
+    .word   B.method1
+    .word   A.method2
+    .word   B.method3
+    
+</code></pre><p>当然cool也支持“静态绑定”，你可以直接显示写出要调用的方法是哪个类中的，比如<code>b@B.method1()</code>会直接调用3处方法，而<code>b@A.method1()</code>则会直接调用1处方法，并不需要动态通过虚函数表间接得到。</p>
 <p>虽然说上面cool的对象模型很好地支持了动态绑定，但仔细想想，<code>classTag</code>似乎又是多余的——在new一个对象时完全可以静态决定其原型和初始化方法的位置。但是由于cool还是实现了另一种功能，因此<code>classTag</code>还是必要的：</p>
-<p><img src="img/1678074779046-2.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779046-2.png"
+        data-srcset="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779046-2.png, /posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779046-2.png 1.5x, /posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779046-2.png 2x"
+        data-sizes="auto"
+        alt="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779046-2.png"
+        title="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779046-2.png" width="524" height="181" /></p>
 <p>由于cool支持上图所示的<code>case expression</code>，也就是当<code>expr0</code>为不同类型时执行不同的代码，具体来说，会执行在<code>typek</code>中在继承链条上距离<code>expr0</code>的实际类型最近的分支的代码。比如 A继承自B，B继承自C，假设a为A类对象</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>case a of:
-</span></span><span style="display:flex;"><span>    x1 : C =&gt; expr1;
-</span></span><span style="display:flex;"><span>    x2 : B =&gt; expr2;
-</span></span><span style="display:flex;"><span>esac
-</span></span></code></pre></div><p>上述代码则会执行<code>expr2</code>。</p>
+<pre tabindex="0"><code class="language-Assembly" data-lang="Assembly">case a of:
+    x1 : C =&gt; expr1;
+    x2 : B =&gt; expr2;
+esac
+</code></pre><p>上述代码则会执行<code>expr2</code>。</p>
 <p>考虑将上面的代码翻译为机器代码，我们就需要运行时判断一个对象的是否为某个类，因此也就必须有一个来标识类身份的<code>classTag</code>了。但以上代码不仅仅要求我们运行时判断一个对象是否精确为某个类，还要求能给定一堆类，判断哪个类是该对象继承链上最近的类，这就要求我们在目标代码中还要维持一些与继承相关的信息了。这种相关信息自然可以在对象模型中新加一个域来指向其父类，但是用一个trick之后也能通过<code>classTag</code>来维持上述<code>case expression</code>所需的信息。</p>
 <p>如果我们在给程序中的类分配<code>classTag</code>时，满足“该类的所有子类的<code>classTag</code>都在某个确定的区间”这个性质，我们就能在运行时判断判断继承关系了，而<code>case expression</code>中的所要求的&quot;继承链上最近&quot;我们则可以通过对所有分支的类按照继承关系做一个拓扑排序，然后从继承链的最低端开始判断即可。而满足上述性质的<code>classTag</code>的分配方式也有许多，前序遍历序号则是一个例子。</p>
 <p>另外，关于如何在编译到机器码的语言中实现GC，这是我之前总也想不到的，但学习了cool之后才发现，原来只需要在每次new完一个对象之后调用GC处理函数就会进入GC过程，而只要分配对象时只需在对象头前预留一定的空间，GC就可以在这些空间做一些标记，从而实现垃圾回收相关算法了。</p>
-<p><img src="img/1678074779045-1.png" alt=""></p>
-        </section>
-        <div class="post-tags">
-          
-          
-          <nav class="nav tags">
-            <ul class="tags">
-              
-              <li><a href="/tags/compiler">Compiler</a></li>
-              
-              <li><a href="/tags/knowledge">Knowledge</a></li>
-              
-            </ul>
-          </nav>
-          
-          
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779045-1.png"
+        data-srcset="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779045-1.png, /posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779045-1.png 1.5x, /posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779045-1.png 2x"
+        data-sizes="auto"
+        alt="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779045-1.png"
+        title="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/img/1678074779045-1.png" width="313" height="90" /></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-03-06</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/" data-title="编译器的结构与任务" data-hashtags="Compiler,Knowledge"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/" data-hashtag="Compiler"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/" data-title="编译器的结构与任务"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/" data-title="编译器的结构与任务"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/" data-title="编译器的结构与任务"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
         </div>
-      </div>
-
-      
-      
-      <div class="toc">
-        <strong>Table of contents:</strong>
-        <nav id="TableOfContents"></nav>
-      </div>
-      
     </div>
 
-    </article>
-</main>
-<footer>
-  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a></div>
-  <div class="footer-info">
-    2025  <a
-      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
-  </div>
-</footer>
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/compiler/">Compiler</a>,&nbsp;<a href="/tags/knowledge/">Knowledge</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
 
-
-
+    <div class="post-nav"><a href="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/" class="prev" rel="prev" title="探究支撑os的硬件(以xv6和riscv为例)"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>探究支撑os的硬件(以xv6和riscv为例)</a>
+            <a href="/posts/autoboxing-and-integercache-in-java/" class="next" rel="next" title="Autoboxing and IntegerCache in Java">Autoboxing and IntegerCache in Java<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-    </body>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

@@ -1,68 +1,86 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Knowledge on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/knowledge/</link>
-    <description>Recent content in Knowledge on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Sat, 16 Nov 2024 21:58:53 +0800</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/knowledge/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>BitTorrent协议及其扩展</title>
-      <link>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
-      <pubDate>Sat, 16 Nov 2024 21:58:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
-      <description>&lt;p&gt;“I call architecture frozen music&amp;hellip;” - Goethe&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
-      <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
-      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-    <item>
-      <title>Autoboxing and IntegerCache in Java</title>
-      <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
-      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;When you are on the dancefloor, there is nothing to do but dance.&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;!-- raw HTML omitted --&gt;</description>
-    </item>
-    <item>
-      <title>编译器的结构与任务</title>
-      <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
-      <pubDate>Mon, 06 Mar 2023 11:52:38 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Surely all this is not without meaning.&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;!-- raw HTML omitted --&gt;</description>
-    </item>
-    <item>
-      <title>探究支撑os的硬件(以xv6和riscv为例)</title>
-      <link>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</link>
-      <pubDate>Thu, 11 Aug 2022 21:27:52 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;pre&gt;&lt;code&gt;You are my creator, but I am your master; Obey!&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;/blockquote&gt;&#xA;&lt;!-- raw HTML omitted --&gt;</description>
-    </item>
-    <item>
-      <title>浅析jmp_buf的定义</title>
-      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</link>
-      <pubDate>Sun, 14 Nov 2021 09:23:52 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>树的非递归遍历—用栈模拟递归</title>
-      <link>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</link>
-      <pubDate>Tue, 09 Nov 2021 18:02:23 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</guid>
-      <description>&lt;p&gt;由于树本身定义的递归性，置于树上的操作往往也是递归性的的。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>浅谈java8中的流</title>
-      <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
-      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;万物皆流，无物常驻&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Knowledge - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/knowledge/</link>
+        <description>Knowledge - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 16 Nov 2024 21:58:53 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/knowledge/" rel="self" type="application/rss+xml" /><item>
+    <title>BitTorrent协议及其扩展</title>
+    <link>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
+    <pubDate>Sat, 16 Nov 2024 21:58:53 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
+    <description><![CDATA[<p>“I call architecture frozen music&hellip;” - Goethe</p>]]></description>
+</item>
+<item>
+    <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
+    <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
+    <pubDate>Thu, 30 Mar 2023 20:36:48 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
+    <description><![CDATA[<blockquote>
+<p>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary</p>
+</blockquote>]]></description>
+</item>
+<item>
+    <title>Autoboxing and IntegerCache in Java</title>
+    <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
+    <pubDate>Tue, 07 Mar 2023 14:49:32 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
+    <description><![CDATA[<blockquote>
+<p>When you are on the dancefloor, there is nothing to do but dance.</p>
+</blockquote>
+<p style="text-align: right">—— Umberto Eco, *The Mysterious Flame of Queen Loana*</p>]]></description>
+</item>
+<item>
+    <title>编译器的结构与任务</title>
+    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
+    <pubDate>Mon, 06 Mar 2023 11:52:38 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
+    <description><![CDATA[<blockquote>
+<p>Surely all this is not without meaning.</p>
+</blockquote>
+<p style="text-align: right">—— HERMAN MELVILLE, Moby-Dick, 1851 </p>]]></description>
+</item>
+<item>
+    <title>探究支撑os的硬件(以xv6和riscv为例)</title>
+    <link>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</link>
+    <pubDate>Thu, 11 Aug 2022 21:27:52 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</guid>
+    <description><![CDATA[<blockquote>
+<pre><code>You are my creator, but I am your master; Obey!
+</code></pre>
+</blockquote>
+<p style="text-align: right">—— Mary Shelley, Frankenstein</p>]]></description>
+</item>
+<item>
+    <title>浅析jmp_buf的定义</title>
+    <link>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</link>
+    <pubDate>Sun, 14 Nov 2021 09:23:52 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>树的非递归遍历—用栈模拟递归</title>
+    <link>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</link>
+    <pubDate>Tue, 09 Nov 2021 18:02:23 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/</guid>
+    <description><![CDATA[<p>由于树本身定义的递归性，置于树上的操作往往也是递归性的的。</p>]]></description>
+</item>
+<item>
+    <title>浅谈java8中的流</title>
+    <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+    <pubDate>Wed, 18 Aug 2021 20:31:48 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+    <description><![CDATA[<blockquote>
+<p>万物皆流，无物常驻</p>
+</blockquote>]]></description>
+</item>
+</channel>
 </rss>

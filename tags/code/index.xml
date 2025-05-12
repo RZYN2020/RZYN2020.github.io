@@ -1,19 +1,25 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Code on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/code/</link>
-    <description>Recent content in Code on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Sun, 06 Apr 2025 09:58:31 +0800</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/code/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Building a Transformer LM</title>
-      <link>https://rzyn2020.github.io/posts/building-a-transformer-lm/</link>
-      <pubDate>Sun, 06 Apr 2025 09:58:31 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
-      <description>&lt;p&gt;Once upon a time, there was a mountain.&lt;/p&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Code - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/code/</link>
+        <description>Code - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 10 May 2025 17:47:01 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/code/" rel="self" type="application/rss+xml" /><item>
+    <title>Optimize the Performance of a LM</title>
+    <link>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</link>
+    <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</guid>
+    <description><![CDATA[<h2 id="intro">Intro</h2>
+<p>在 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。</p>]]></description>
+</item>
+<item>
+    <title>Building a Transformer LM</title>
+    <link>https://rzyn2020.github.io/posts/building-a-transformer-lm/</link>
+    <pubDate>Sun, 06 Apr 2025 09:58:31 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
+    <description><![CDATA[<p>Once upon a time, there was a mountain.</p>]]></description>
+</item>
+</channel>
 </rss>

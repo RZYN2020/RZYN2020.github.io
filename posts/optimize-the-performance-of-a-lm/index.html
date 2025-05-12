@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Optimize the Performance of a LM - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/">
+  <meta property="og:site_name" content="Ekstasis&#39;s Blog">
+  <meta property="og:title" content="Optimize the Performance of a LM">
+  <meta property="og:description" content="Intro 在 Building a Transformer LM 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-05-10T17:47:01+08:00">
+    <meta property="article:modified_time" content="2025-05-10T17:47:01+08:00">
+    <meta property="article:tag" content="LLM">
+    <meta property="article:tag" content="Code">
+    <meta property="article:tag" content="Performance">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
+  <meta name="twitter:title" content="Optimize the Performance of a LM">
+  <meta name="twitter:description" content="Intro 在 Building a Transformer LM 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" /><link rel="prev" href="https://rzyn2020.github.io/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Optimize the Performance of a LM",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/optimize-the-performance-of-a-lm\/"
+        },"genre": "posts","keywords": "LLM, Code, Performance","wordcount":  6036 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/optimize-the-performance-of-a-lm\/","datePublished": "2025-05-10T17:47:01+08:00","dateModified": "2025-05-10T17:47:01+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Optimize the Performance of a LM</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-05-10">2025-05-10</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;6036 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;13 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#pytorch-internel">Pytorch internel</a></li>
+    <li><a href="#benchmarking-and-profiling">Benchmarking and profiling</a>
+      <ul>
+        <li><a href="#simple-benchmark">Simple Benchmark</a></li>
+        <li><a href="#profile-essence">Profile Essence</a></li>
+      </ul>
+    </li>
+    <li><a href="#single-gpu-optimize">Single GPU Optimize</a>
+      <ul>
+        <li><a href="#mixed-precision">Mixed precision</a></li>
+        <li><a href="#fused-kernel">Fused Kernel</a></li>
+      </ul>
+    </li>
+    <li><a href="#distributed-data-parallel-training">Distributed data parallel training</a>
+      <ul>
+        <li><a href="#data-parallelism">Data Parallelism</a></li>
+        <li><a href="#model--pipeline-parallelism">Model &amp; Pipeline Parallelism</a></li>
+      </ul>
+    </li>
+    <li><a href="#scaling">Scaling</a></li>
+    <li><a href="#inference-and-serving">Inference and Serving</a></li>
+    <li><a href="#llm-api-and-sse">LLM API and SSE</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="intro">Intro</h2>
+<p>在 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。</p>
+<p>主要参考资料：</p>
+<ol>
+<li><a href="https://stanford-cs336.github.io/spring2024/" target="_blank" rel="noopener noreffer ">https://stanford-cs336.github.io/spring2024/</a></li>
+<li><a href="https://dlsyscourse.org/" target="_blank" rel="noopener noreffer ">https://dlsyscourse.org/</a></li>
+<li><a href="https://hao-ai-lab.github.io/cse234-w25/" target="_blank" rel="noopener noreffer ">https://hao-ai-lab.github.io/cse234-w25/</a></li>
+<li><a href="https://www.cs.cmu.edu/~15418/" target="_blank" rel="noopener noreffer ">https://www.cs.cmu.edu/~15418/</a></li>
+</ol>
+<h2 id="pytorch-internel">Pytorch internel</h2>
+<p>在实现语言模型时，我们使用到的 Pytorch API 主要有三类：</p>
+<ol>
+<li>基本的 Tensor 和 Module API</li>
+<li>优化器 <code>optimizer.step()</code></li>
+<li>自动微分 <code>loss.backward()</code></li>
+</ol>
+<p>语言模型由神经网络表示，神经网络的输入和输出都是高维向量，也就是 <code>Tensor</code>. Tensor 在内存中即是平坦的一维数组，但可以通过 shape 和 strides 两个 tuple 将其表示为高维向量。其中 shape 是表示每个维度的大小，strides 表示每个维度相邻两个元素的距离。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NDArray</span>: <span style="color:#75715e"># Tensor Implementation</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">_init</span>(self, other):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_shape <span style="color:#f92672">=</span> other<span style="color:#f92672">.</span>_shape
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_strides <span style="color:#f92672">=</span> other<span style="color:#f92672">.</span>_strides
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_offset <span style="color:#f92672">=</span> other<span style="color:#f92672">.</span>_offset
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_device <span style="color:#f92672">=</span> other<span style="color:#f92672">.</span>_device
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_handle <span style="color:#f92672">=</span> other<span style="color:#f92672">.</span>_handle
+</span></span></code></pre></div><p>通过 shape-strides 表示法，许多操作，如 transpose，reshape 都可以不必操作底层元素而直接改变这两个 tuple 就可以完成。但是对于某些操作就必须要先转化为 compat 数组才能进行。</p>
+<p>有了 Tensor 之后，我们就可以实现神经网络的各种 building block 了，如 Linear 层：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Linear</span>(Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(
+</span></span><span style="display:flex;"><span>        self, in_features, out_features, bias<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, device<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>, dtype<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;float32&#34;</span>
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>in_features <span style="color:#f92672">=</span> in_features
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>out_features <span style="color:#f92672">=</span> out_features
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>weight <span style="color:#f92672">=</span> Parameter(
+</span></span><span style="display:flex;"><span>            init<span style="color:#f92672">.</span>kaiming_uniform(in_features, out_features, device<span style="color:#f92672">=</span>device, dtype<span style="color:#f92672">=</span>dtype))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> bias:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>bias <span style="color:#f92672">=</span> Parameter(
+</span></span><span style="display:flex;"><span>                init<span style="color:#f92672">.</span>kaiming_uniform(out_features, <span style="color:#ae81ff">1</span>, device<span style="color:#f92672">=</span>device, dtype<span style="color:#f92672">=</span>dtype)
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span>reshape((<span style="color:#ae81ff">1</span>, out_features)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, X: Tensor) <span style="color:#f92672">-&gt;</span> Tensor:
+</span></span><span style="display:flex;"><span>        Z <span style="color:#f92672">=</span> X <span style="color:#f92672">@</span> self<span style="color:#f92672">.</span>weight
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>bias <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            Z <span style="color:#f92672">=</span> Z <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>bias<span style="color:#f92672">.</span>broadcast_to(Z<span style="color:#f92672">.</span>shape)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Z
+</span></span></code></pre></div><p>同时，为了方便地从父模型得到子模型的参数，我们可以使用一些 python 的反射特性，遍历得到所有类型为 Parameter 的 field。</p>
+<p>有了各种 building block，我们就可以构建语言模型了，同时也很容易就能实现前向传播。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TransformerLM</span>(nn<span style="color:#f92672">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(
+</span></span><span style="display:flex;"><span>        self,
+</span></span><span style="display:flex;"><span>        vocab_size: int,
+</span></span><span style="display:flex;"><span>        context_length: int,
+</span></span><span style="display:flex;"><span>        d_model: int,
+</span></span><span style="display:flex;"><span>        num_layers: int,
+</span></span><span style="display:flex;"><span>        num_heads: int,
+</span></span><span style="display:flex;"><span>        d_ff: int,
+</span></span><span style="display:flex;"><span>        attn_pdrop: float,
+</span></span><span style="display:flex;"><span>        residual_pdrop: float,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">**</span>kwargs
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span>__init__()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>embed <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Embedding(vocab_size, d_model)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>pos_embed <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Parameter(torch<span style="color:#f92672">.</span>zeros(context_length, d_model))
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>drop <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Dropout(residual_pdrop)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>layers <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(<span style="color:#f92672">*</span>[TransformerBlock(d_model, num_heads, d_ff, attn_pdrop, residual_pdrop) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(num_layers)])
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>ln_f <span style="color:#f92672">=</span> RMSNorm(d_model)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>head <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(d_model, vocab_size, bias<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>context_length <span style="color:#f92672">=</span> context_length
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>embed(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> x <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>pos_embed[:x<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">1</span>), :]
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>drop(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>layers(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>ln_f(x)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>head(x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x
+</span></span></code></pre></div><p>但在神经网络训练中，我们还需要反向传播，计算各个参数相对于 loss 的梯度。</p>
+<p>最简单的，我们可以通过数值微分方法得到梯度，但这样计算复杂度太高，因此我们考虑采取符号微分。考虑到神经网络计算可以表示为计算图，其中每一个节点都是一个中间值，我们可以利用链式法则来自动求得 loss 相对于某个参数的微分（实际实现时要牢记微分的定义，以免被复杂的 Tensor 运算搞晕）。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/optimize-the-performance-of-a-lm/assets/image-20250510223944309.png"
+        data-srcset="/posts/optimize-the-performance-of-a-lm/assets/image-20250510223944309.png, /posts/optimize-the-performance-of-a-lm/assets/image-20250510223944309.png 1.5x, /posts/optimize-the-performance-of-a-lm/assets/image-20250510223944309.png 2x"
+        data-sizes="auto"
+        alt="/posts/optimize-the-performance-of-a-lm/assets/image-20250510223944309.png"
+        title="image-20250510223944309" width="502" height="198" /></p>
+<p>根据利用链式法则求导时固定微分的是分子还是分母，我们可以分别实现前向自动微分或者后向自动微分。但显然后向自动微分固定分子，有更多的可复用性。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/optimize-the-performance-of-a-lm/assets/image-20250510224703756.png"
+        data-srcset="/posts/optimize-the-performance-of-a-lm/assets/image-20250510224703756.png, /posts/optimize-the-performance-of-a-lm/assets/image-20250510224703756.png 1.5x, /posts/optimize-the-performance-of-a-lm/assets/image-20250510224703756.png 2x"
+        data-sizes="auto"
+        alt="/posts/optimize-the-performance-of-a-lm/assets/image-20250510224703756.png"
+        title="image-20250510224703756" width="768" height="278" /></p>
+<p>我们可以在定义神经网络时实际构建计算图，同时也实际构建反向传播的计算图。这样，我们就可以先对计算图进行编译优化，再运行/训练神经网络了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250510224940492.png"
+        data-srcset="./assets/image-20250510224940492.png, ./assets/image-20250510224940492.png 1.5x, ./assets/image-20250510224940492.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250510224940492.png"
+        title="image-20250510224940492" /></p>
+<p>Tensorflow 原生地支持先定义计算图，再运行。在 Pytorch 中，我们可以通过给函数添加 @torch.compile 装饰器，将命令式代码也转化为计算图，然后进行编译优化。</p>
+<p>总之，通过一次正向传播和一次反向传播得到每个参数的梯度后，我们就可以使用优化器遍历所有参数，通过一定的优化规则更新参数了。</p>
+<p>因为神经网络中大量的矩阵运算，我们可以使用 GPU 来加速运算。CPU 中大量计算单元都用于实现流水线，超线程，动态多发射，乱序执行，以及 Speculation 和复杂的缓存机制。而 GPU 没有这么多复杂功能，却有大量简单的执行单元，我们通过 data-parallel model 来使用 GPU 的大量计算单元编程。这个 workload 与简单大量的 Tensor 运算十分相合。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250510230109829.png"
+        data-srcset="./assets/image-20250510230109829.png, ./assets/image-20250510230109829.png 1.5x, ./assets/image-20250510230109829.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250510230109829.png"
+        title="image-20250510230109829" /></p>
+<p><a href="https://youtu.be/9-DiGrnz8l8?si=Lcxt3g11DfiuxxiG" target="_blank" rel="noopener noreffer ">不同厂家的GPU都着相似但不同的编程模型</a>，幸好，Pytorch 会帮我们处理这一切。我们只需要在创建 Tensor 传入 device 参数就可以了。</p>
+<h2 id="benchmarking-and-profiling">Benchmarking and profiling</h2>
+<p>我们在学习原理时往往不注意性能考量，但在各种资源有限的实践中性能却是非常重要的。就像凯恩斯说的，“站在长尺度下，我们都会死”，时间和计算资源约束在实践中往往起到决定性的作用。因此，性能优化也就成了一种必须。</p>
+<p>但是 “Premature optimization really the root of all evil”，我们不能想当然的去任意优化，只有在 benchmark 和 profile 后，我们才知道自己的实现性能究竟如何，bottleneck 又在哪里，这样才能去针对性优化。而在当前的硬件中，计算和内存是两种最主要的资源，因此计算耗时和内存占用是我们主要 profile 的对象。</p>
+<p>在性能优化中，我们继续使用之前训练的模型，具体参数如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{   
+</span></span><span style="display:flex;"><span>  	<span style="color:#f92672">&#34;vocab_size&#34;</span>: <span style="color:#ae81ff">10000</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;context_length&#34;</span>: <span style="color:#ae81ff">256</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;d_model&#34;</span>: <span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;num_layers&#34;</span>: <span style="color:#ae81ff">4</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;num_heads&#34;</span>: <span style="color:#ae81ff">16</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;d_ff&#34;</span>: <span style="color:#ae81ff">2048</span>,    
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="simple-benchmark">Simple Benchmark</h3>
+<p>首先，我们需要知道我们的实现跑的有多快。我们需要分别考虑前向和后向传播的 workload，前者代表推理，后者代表训练。在 benchmark 开始前，我们需要一些 warm-up steps，以使得系统达到稳定状态（如填充 cache，部分语言的 JIT 编译，GC 达到稳定状态等）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_benchmark</span>(model: nn<span style="color:#f92672">.</span>Module, input_data: torch<span style="color:#f92672">.</span>Tensor, device: torch<span style="color:#f92672">.</span>device,
+</span></span><span style="display:flex;"><span>                  warmup_steps: int, timed_steps: int, pass_type: str):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># --- Warm-up Phase ---</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Running warm-up steps...&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> context:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(warmup_steps):
+</span></span><span style="display:flex;"><span>            outputs <span style="color:#f92672">=</span> model(input_data)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> pass_type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;forward_backward&#39;</span>:
+</span></span><span style="display:flex;"><span>                loss <span style="color:#f92672">=</span> outputs<span style="color:#f92672">.</span>sum() <span style="color:#75715e"># Dummy loss</span>
+</span></span><span style="display:flex;"><span>                optimizer<span style="color:#f92672">.</span>zero_grad(set_to_none<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>) <span style="color:#75715e"># More efficient</span>
+</span></span><span style="display:flex;"><span>                loss<span style="color:#f92672">.</span>backward()
+</span></span><span style="display:flex;"><span>                optimizer<span style="color:#f92672">.</span>step()
+</span></span><span style="display:flex;"><span>            synchronize(device) <span style="color:#75715e"># Synchronize after each warm-up step, beacuse cuda is calld asycnly</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># --- Timing Phase ---</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Running </span><span style="color:#e6db74">{</span>timed_steps<span style="color:#e6db74">}</span><span style="color:#e6db74"> timed steps...&#34;</span>)
+</span></span><span style="display:flex;"><span>    total_elapsed_time <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> context:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(timed_steps):
+</span></span><span style="display:flex;"><span>            synchronize(device) <span style="color:#75715e"># Ensure previous work is done (esp. CUDA async)</span>
+</span></span><span style="display:flex;"><span>            start_time <span style="color:#f92672">=</span> timeit<span style="color:#f92672">.</span>default_timer()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            outputs <span style="color:#f92672">=</span> model(input_data)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> pass_type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;forward_backward&#39;</span>:
+</span></span><span style="display:flex;"><span>                loss <span style="color:#f92672">=</span> outputs<span style="color:#f92672">.</span>sum() <span style="color:#75715e"># Dummy loss</span>
+</span></span><span style="display:flex;"><span>                optimizer<span style="color:#f92672">.</span>zero_grad(set_to_none<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>                loss<span style="color:#f92672">.</span>backward()
+</span></span><span style="display:flex;"><span>                optimizer<span style="color:#f92672">.</span>step()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            synchronize(device) <span style="color:#75715e"># Ensure operation completes before stopping timer</span>
+</span></span><span style="display:flex;"><span>            end_time <span style="color:#f92672">=</span> timeit<span style="color:#f92672">.</span>default_timer()
+</span></span><span style="display:flex;"><span>            total_elapsed_time <span style="color:#f92672">+=</span> (end_time <span style="color:#f92672">-</span> start_time)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    avg_time_per_step <span style="color:#f92672">=</span> total_elapsed_time <span style="color:#f92672">/</span> timed_steps
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;--- Benchmark Complete ---&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> avg_time_per_step
+</span></span></code></pre></div><p>随机生成长度为 context-length 的向量，在我的 M4 芯片上经过 5 step 的 warm up 后再 banchmark 20 step 的反向传播，得到结果如下。</p>
+<pre tabindex="0"><code>--- Benchmark Results ---
+Device: mps
+Pass Type: forward_backward
+Batch Size: 16
+Average time per step: 0.482039 seconds
+Steps per second: 2.07
+
+--- Benchmark Results ---
+Device: mps
+Pass Type: forward
+Batch Size: 16
+Average time per step: 0.156253 seconds
+Steps per second: 6.40
+</code></pre><p>根据上面的基准测试结果，可以得出：</p>
+<p>在 batch size 为 16 的情况下，模型的推理吞吐量为 6.40 steps/s * 16 tokens/step = 102.4 tokens/s。但单步解码（非批处理）的速度仍然限制在 6.4 tokens/s。</p>
+<p>对于 2GB 的训练数据：</p>
+<ul>
+<li>估计总 Token 数：2048 MB * 250,000 tokens/MB = 512,000,000 tokens</li>
+<li>有效训练样本数：512,000,000 tokens / 1024 tokens/sample ≈ 500,000 samples</li>
+<li>每个 Epoch 所需步数：500,000 samples / 16 samples/step ≈ 31,250 steps</li>
+<li>单个 Epoch 训练时间：31,250 steps * 0.482039 seconds/step ≈ 15,064 秒（约 4.18 小时）</li>
+</ul>
+<p>相比之前在 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 中仅通过 GPU 理论吞吐率进行的粗略估算，这次基于实际基准测试的时间预估显然更为准确。不过结果表明，使用 M4 芯片进行训练的效率确实不太理想。</p>
+<h3 id="profile-essence">Profile Essence</h3>
+<p>其次，我们要知道我们的实现为什么跑这么快，这样才能针对性优化。但是 benchmark 并没有告诉我程序具体每一部分执行的时间。而这就需要 profiler 出场了。</p>
+<p>profile 的基本原理为在程序中加入一些探针，收集运行时的信息，就像中医里的针灸一样。探针既可以编译时静态添加，也可以使用 <a href="https://blog.openresty.com.cn/cn/dynamic-tracing/" target="_blank" rel="noopener noreffer ">DTrace 等工具在运行时动态添加</a>。而在 Python 这样的虚拟机语言中，解释器本身就提供了一套 profiler 实现，也就是 cProfile。我们可以是利用 Python 解释器提供的事件钩子（hooks）。通过 <code>sys.setprofile()</code> 函数，可以注册一个回调函数，这个回调函数会在特定的事件发生时被解释器调用。<code>call</code>，<code>return</code> 字节码指令的执行都可以是我们关心的事件。</p>
+<p>但 cProfile 并不能很好的适配 pytorch。pytorch 提供了 torch.profiler，它会追踪 GPU执行，CPU执行以及内存分配等多种事件，并把整合起来。具体使用，如下面代码所示。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_profile</span>(model: nn<span style="color:#f92672">.</span>Module, input_data: torch<span style="color:#f92672">.</span>Tensor, device: torch<span style="color:#f92672">.</span>device,
+</span></span><span style="display:flex;"><span>                profile_steps: int, pass_type: str, profile_memory: bool, with_stack: bool,
+</span></span><span style="display:flex;"><span>                output_dir: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;.&#34;</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Define the step function to be profiled</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">profile_step</span>():
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    profile_step()
+</span></span><span style="display:flex;"><span>    synchronize(device)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Starting profiler context...&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> profile_memory <span style="color:#f92672">and</span> device<span style="color:#f92672">.</span>type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;cuda&#39;</span>:
+</span></span><span style="display:flex;"><span>        torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>memory<span style="color:#f92672">.</span>_record_memory_history(max_entries<span style="color:#f92672">=</span><span style="color:#ae81ff">10000</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> profile(activities<span style="color:#f92672">=</span>activities,
+</span></span><span style="display:flex;"><span>                 record_shapes<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>                 profile_memory<span style="color:#f92672">=</span>profile_memory,
+</span></span><span style="display:flex;"><span>                 with_stack<span style="color:#f92672">=</span>with_stack,
+</span></span><span style="display:flex;"><span>                 schedule<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>schedule(wait<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, warmup<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, active<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, repeat<span style="color:#f92672">=</span>profile_steps),
+</span></span><span style="display:flex;"><span>                 experimental_config<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>_C<span style="color:#f92672">.</span>_profiler<span style="color:#f92672">.</span>_ExperimentalConfig(verbose<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)) <span style="color:#66d9ef">as</span> prof: <span style="color:#75715e"># with_stack MUST be True for export_stacks</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(profile_steps):
+</span></span><span style="display:flex;"><span>            profile_step()
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Need to sync *inside* the step for CUDA kernel timings in profiler results</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># but *outside* the record_functions if you want to profile the sync itself.</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Syncing after the main work is usually best for seeing kernel times.</span>
+</span></span><span style="display:flex;"><span>            synchronize(device)
+</span></span><span style="display:flex;"><span>            prof<span style="color:#f92672">.</span>step() <span style="color:#75715e"># Signal the profiler that one step is done</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;--- Profiling Complete ---&#34;</span>)
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">...</span>
+</span></span></code></pre></div><p>在通过 profile 收集了 rawdata 之后，我们就可以展现为人类可理解的信息。如，基于事件的时间线视图 Chrome Trace，或者基于调用栈样本的聚合视图 Flame Graph。前者让我看的程序按时间顺序都做了什么，都耗时多少，后者告诉我们每个函数都运行了多少时间。</p>
+<p>我们以 CPU profile 为例，可以看到大部分时间都在 Transformer Block 中。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511175327876.png"
+        data-srcset="./assets/image-20250511175327876.png, ./assets/image-20250511175327876.png 1.5x, ./assets/image-20250511175327876.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511175327876.png"
+        title="image-20250511175327876" /></p>
+<p>先看 forward pass，很明显，多头注意力计算占据了绝大部分时间，而其中最耗时的则是 softmax 和 Dropout 操作。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511201755413.png"
+        data-srcset="./assets/image-20250511201755413.png, ./assets/image-20250511201755413.png 1.5x, ./assets/image-20250511201755413.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511201755413.png"
+        title="image-20250511201755413" /></p>
+<p>另外反向传播耗时略大于正向传播，但无明显瓶颈。</p>
+<p>从火焰图中我们也可以验证这一点。因为在 pytorch 实现中，反向传播也通过计算图实现，也会调用 forward 方法，因此火焰图中的每个计算都是结合了正反向传播的，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511202326457.png"
+        data-srcset="./assets/image-20250511202326457.png, ./assets/image-20250511202326457.png 1.5x, ./assets/image-20250511202326457.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511202326457.png"
+        title="image-20250511202326457" /></p>
+<p>Chrome Trace 考虑了时序信息，更适合分析响应时间，暂停时间等问题。而火焰图考虑程序计算整体，更适合提升吞吐量，找到性能瓶颈。在神经网络中，显然吞吐量是更重要的，因为火焰图也就更为清楚了。从下面放大的火焰图中我们可以看出，最耗时的操作为：</p>
+<ol>
+<li>Dropout</li>
+<li>Softmax</li>
+<li>Matrix mal</li>
+<li>Linear</li>
+<li>Mask</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511202514429.png"
+        data-srcset="./assets/image-20250511202514429.png, ./assets/image-20250511202514429.png 1.5x, ./assets/image-20250511202514429.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511202514429.png"
+        title="image-20250511202514429" /></p>
+<p>但是这并没有结束，当我们查看 mps 火焰图时，就会发现在 GPU 上 Softmax 操作反而占据了绝大部分时间。由此可见不同的设备上，瓶颈也是不同的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511203141948.png"
+        data-srcset="./assets/image-20250511203141948.png, ./assets/image-20250511203141948.png 1.5x, ./assets/image-20250511203141948.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511203141948.png"
+        title="image-20250511203141948" /></p>
+<p>另外我们也可以对内存进行 profile（M系列芯片GPU和CPU共用内存），可以发现，与想象中的不同，参数只占据了很少一部分内存，绝大部分内存都用来存放激活值，剩下的少部分则主要为优化器状态（AdamW）。之所以内存时间图成山峰状是因为随着正向转播，激活的值越来越多。而反向传播后不需要的激活值会被及时释放。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511203841457.png"
+        data-srcset="./assets/image-20250511203841457.png, ./assets/image-20250511203841457.png 1.5x, ./assets/image-20250511203841457.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511203841457.png"
+        title="image-20250511203841457" /></p>
+<h2 id="single-gpu-optimize">Single GPU Optimize</h2>
+<p>既然通过 profile 知道了具体运行情况，我们就可以做进一步优化了！</p>
+<h3 id="mixed-precision">Mixed precision</h3>
+<p>首先如何降低考虑峰值 2GB 的可怕的显存占用。考虑到我们在当前的实现中全程使用 32 位浮点数，这是一笔不小的内存开销，可以考虑在准确率运行范围内降低精度。再考虑到一些 GPU 还针对低精度浮点数做了许多优化，我们就更可以获得速度上的提升了！NVIDIA A100 的规格表显示，其 FP32 的最大吞吐量为 19.5 TFLOP/秒，而其 FP16（半精度浮点数）或 BF16（脑浮点格式 bfloat16）的最大吞吐量则显著更高，达到了 312 TFLOP/秒。</p>
+<p>然而，简单地将我们的模型转换为较低精度的格式可能会导致模型准确率下降。例如，在实践中，许多梯度值往往过小，无法用 FP16 表示，因此在使用 FP16 精度进行简单训练时这些梯度值会变成零。为了解决这个问题，在使用 FP16 进行训练时，通常会采用损失缩放（loss scaling）技术——即将损失值乘以一个缩放因子，从而增大梯度的大小，以防止它们下溢归零。</p>
+<p>在实际使用中，我们使用 pytorch 的 autocast context manager 就可以，如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>       <span style="color:#66d9ef">with</span> autocast(device_type<span style="color:#f92672">=</span>device<span style="color:#f92672">.</span>type, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float16, enabled<span style="color:#f92672">=</span>(device<span style="color:#f92672">.</span>type <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;cuda&#39;</span>)):
+</span></span><span style="display:flex;"><span>            outputs <span style="color:#f92672">=</span> model(dummy_data)
+</span></span><span style="display:flex;"><span>            loss <span style="color:#f92672">=</span> criterion(outputs, dummy_labels)
+</span></span></code></pre></div><h3 id="fused-kernel">Fused Kernel</h3>
+<p>因为 Softmax 是我们的瓶颈之一，我们可以先考虑优化 Softmax。目前的 Softmax 实现如下。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">softmax</span>(x, dim):
+</span></span><span style="display:flex;"><span>    max_vals <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(x, dim<span style="color:#f92672">=</span>dim, keepdim<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)<span style="color:#f92672">.</span>values
+</span></span><span style="display:flex;"><span>    shifted_x <span style="color:#f92672">=</span> x <span style="color:#f92672">-</span> max_vals
+</span></span><span style="display:flex;"><span>    x_exp <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>exp(shifted_x)
+</span></span><span style="display:flex;"><span>    x_exp_sum <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>sum(x_exp, dim<span style="color:#f92672">=</span>dim, keepdim<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x_exp <span style="color:#f92672">/</span> x_exp_sum
+</span></span></code></pre></div><p>考虑到在 Python 间传值效率较低，多个计算步骤融合 (fuse) 到了一个单一的 GPU Kernel（内核程序）中执行。</p>
+<p>如同写一般程序，我们可以用汇编，可以用 c，也可以用 Python。写 kernel（针对CUDA） 我们也有 SASS，CUDA，Triton 几种选项。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250511215038876.png"
+        data-srcset="./assets/image-20250511215038876.png, ./assets/image-20250511215038876.png 1.5x, ./assets/image-20250511215038876.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250511215038876.png"
+        title="image-20250511215038876" /></p>
+<p>但是 Trtion 是时间投入有限时性价比最高的一种。如同 Cython 一样，Triton 语言是利用了 Python 的装饰器机制，潜入了 Python 语言之中，可以很容易地整合进一般 Python 程序。下面是使用 Triton 写的 fused softmax kernel。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@triton.jit</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">softmax_kernel</span>(
+</span></span><span style="display:flex;"><span>    output_ptr,
+</span></span><span style="display:flex;"><span>    input_ptr,  
+</span></span><span style="display:flex;"><span>    input_row_stride,  
+</span></span><span style="display:flex;"><span>    output_row_stride, 
+</span></span><span style="display:flex;"><span>    n_cols,           
+</span></span><span style="display:flex;"><span>    BLOCK_SIZE_N: tl<span style="color:#f92672">.</span>constexpr,
+</span></span><span style="display:flex;"><span>):
+</span></span><span style="display:flex;"><span>    row_idx <span style="color:#f92672">=</span> tl<span style="color:#f92672">.</span>program_id(axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    row_start_ptr_input <span style="color:#f92672">=</span> input_ptr <span style="color:#f92672">+</span> (row_idx <span style="color:#f92672">*</span> input_row_stride)
+</span></span><span style="display:flex;"><span>    row_start_ptr_output <span style="color:#f92672">=</span> output_ptr <span style="color:#f92672">+</span> (row_idx <span style="color:#f92672">*</span> output_row_stride)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    col_offsets <span style="color:#f92672">=</span> tl<span style="color:#f92672">.</span>arange(<span style="color:#ae81ff">0</span>, BLOCK_SIZE_N)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    input_mask <span style="color:#f92672">=</span> col_offsets <span style="color:#f92672">&lt;</span> n_cols
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    row_data <span style="color:#f92672">=</span> tl<span style="color:#f92672">.</span>load(row_start_ptr_input <span style="color:#f92672">+</span> col_offsets, mask<span style="color:#f92672">=</span>input_mask, other<span style="color:#f92672">=-</span>float(<span style="color:#e6db74">&#39;inf&#39;</span>))
+</span></span><span style="display:flex;"><span>    row_max <span style="color:#f92672">=</span> tl<span style="color:#f92672">.</span>max(row_data, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    numerator <span style="color:#f92672">=</span> row_data <span style="color:#f92672">-</span> row_max
+</span></span><span style="display:flex;"><span>    numerator <span style="color:#f92672">=</span> tl<span style="color:#f92672">.</span>exp(numerator)
+</span></span><span style="display:flex;"><span>    denominator <span style="color:#f92672">=</span> tl<span style="color:#f92672">.</span>sum(numerator, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    softmax_output <span style="color:#f92672">=</span> numerator <span style="color:#f92672">/</span> denominator
+</span></span><span style="display:flex;"><span>    tl<span style="color:#f92672">.</span>store(row_start_ptr_output <span style="color:#f92672">+</span> col_offsets, softmax_output, mask<span style="color:#f92672">=</span>input_mask)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># --- Wrapper function to launch the kernel ---</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">softmax</span>(x: torch<span style="color:#f92672">.</span>Tensor):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> x<span style="color:#f92672">.</span>is_cuda:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;输入张量必须在 CUDA 设备上。正在移至 CUDA...&#34;</span>)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>to(<span style="color:#e6db74">&#39;cuda&#39;</span>)
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>contiguous()
+</span></span><span style="display:flex;"><span>    n_rows, n_cols <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>shape
+</span></span><span style="display:flex;"><span>    output <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>empty_like(x)
+</span></span><span style="display:flex;"><span>    BLOCK_SIZE_N <span style="color:#f92672">=</span> triton<span style="color:#f92672">.</span>next_power_of_2(n_cols)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> BLOCK_SIZE_N <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">16384</span> <span style="color:#f92672">and</span> n_cols <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">16384</span> : 
+</span></span><span style="display:flex;"><span>        BLOCK_SIZE_N <span style="color:#f92672">=</span> triton<span style="color:#f92672">.</span>next_power_of_2(n_cols) <span style="color:#66d9ef">if</span> n_cols <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">elif</span> n_cols <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> output
+</span></span><span style="display:flex;"><span>    grid <span style="color:#f92672">=</span> (n_rows,) 
+</span></span><span style="display:flex;"><span>    softmax_kernel[grid](
+</span></span><span style="display:flex;"><span>        output,
+</span></span><span style="display:flex;"><span>        x,
+</span></span><span style="display:flex;"><span>        x<span style="color:#f92672">.</span>stride(<span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>        output<span style="color:#f92672">.</span>stride(<span style="color:#ae81ff">0</span>),
+</span></span><span style="display:flex;"><span>        n_cols,
+</span></span><span style="display:flex;"><span>        BLOCK_SIZE_N<span style="color:#f92672">=</span>BLOCK_SIZE_N,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> output
+</span></span></code></pre></div><p>除了简单的 Fused Kernel，我们还有更深入的优化手段。考虑到 Attention 中的注意力矩阵占据了绝大部分内存，而且 Softmax 的速度瓶颈也是由于这个庞大的注意力矩阵造成的。当 Cache 无法完全容纳注意力矩阵时，我们可以采用 Tiling 方法将其分块计算，以最大化地复用 Cache。同时，可以采用 Online Softmax 算法来替代传统 Softmax，避免读取整行数据的开销。</p>
+<p>除此之外，还有从数据、计算、内存等多个角度出发的优化方法，在此不再赘述。</p>
+<h2 id="distributed-data-parallel-training">Distributed data parallel training</h2>
+<p>性能是程序实际运行中的某种度量，但因为系统和目标的复杂性，优化手段并没有一个统一的抽象的分类体系。只有一些经验性的思路和具体的 toolbox。</p>
+<p>在性能优化中，常见的思路有：</p>
+<ol>
+<li>减少不必要的工作（如编译优化中的冗余消除，近似计算，Lazy Evaluation）</li>
+<li>提高原子操作的效率（如采用硬件优化，采用高效的算法）</li>
+<li>并行化（任务分解，流水线，异步编程）</li>
+<li>减少资源访问延迟（Cache，批处理，数据局部性）</li>
+<li>有效管理和利用资源（线程池，负载均衡，资源调度）</li>
+<li>识别关键路径和瓶颈（fast path，slow path）</li>
+<li>明智权衡（如同样是性能的吞吐量和延迟间的权衡，性能和其他质量属性间的权衡）</li>
+<li>测量，分析，迭代</li>
+</ol>
+<p>而在摩尔定律终结之后，并行化成为了提升性能最显著的方法之一。对于计算依赖较小的计算密集型程序，性能几乎可以随硬件数量线性提升。下面，我们将研究如何在深度学习中运用并行化方法来优化性能。</p>
+<h3 id="data-parallelism">Data Parallelism</h3>
+<p>就如同一般并行化方法中的函数并行和数据并行一样，神经网络也可以依靠这种思路并行化。首先就是数据并行，最直观的想法就是将一个 batch 分成多分，分别在各个 CPU 上前向，后向传播并计算梯度，之后再聚合梯度并更新参数。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512154107610.png"
+        data-srcset="./assets/image-20250512154107610.png, ./assets/image-20250512154107610.png 1.5x, ./assets/image-20250512154107610.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512154107610.png"
+        title="image-20250512154107610" /></p>
+<p>在聚合梯度时，我们也有多种选择：</p>
+<ol>
+<li>Parameter Server：使用一个参数服务器集中管理所有参数
+<ol>
+<li>但是参数服务器就会变成瓶颈</li>
+</ol>
+</li>
+<li><a href="https://www.cs.cmu.edu/~15418/lectures/24-parallel_deep_learning_data_parallel.pdf" target="_blank" rel="noopener noreffer ">AllReduce</a>：让各个设备之间自行同步梯度，根据交流的拓扑，又可分为 Ring AllReduce, Tree AllReduce, Butterfly AllReduce 等。</li>
+</ol>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512154724277.png"
+        data-srcset="./assets/image-20250512154724277.png, ./assets/image-20250512154724277.png 1.5x, ./assets/image-20250512154724277.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512154724277.png"
+        title="image-20250512154724277" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512154901510.png"
+        data-srcset="./assets/image-20250512154901510.png, ./assets/image-20250512154901510.png 1.5x, ./assets/image-20250512154901510.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512154901510.png"
+        title="image-20250512154901510" /></p>
+<p>我们一般都采用 Ring AllReduce，因为其在延迟，负载均衡和扩拓展性上都比较好。</p>
+<p>此外，因为在 Data Parallelism 中，每个 GPU 都保存了一份完整的模型，所以难以训练超过 GPU 显存的模型。因此，Deepspeed 创造了 ZeRO 框架来优化显存占用，将优化器状态，梯度和参数分散在各个 GPU 上。当然 ZeRO 也不可避免地增加了通信开销。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512160114072.png"
+        data-srcset="./assets/image-20250512160114072.png, ./assets/image-20250512160114072.png 1.5x, ./assets/image-20250512160114072.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512160114072.png"
+        title="image-20250512160114072" /></p>
+<h3 id="model--pipeline-parallelism">Model &amp; Pipeline Parallelism</h3>
+<p>对应函数并行的是 Model &amp; Pipeline Parallelism。这种方法将模型看作一个函数，将其拆分为多个子图并分散到不同的 GPU 上。每个子图可以看作一个子函数，甚至单个矩阵乘法操作也可以分散到多个 GPU 上进行计算。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512160559735.png"
+        data-srcset="./assets/image-20250512160559735.png, ./assets/image-20250512160559735.png 1.5x, ./assets/image-20250512160559735.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512160559735.png"
+        title="image-20250512160559735" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512160713063.png"
+        data-srcset="./assets/image-20250512160713063.png, ./assets/image-20250512160713063.png 1.5x, ./assets/image-20250512160713063.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512160713063.png"
+        title="image-20250512160713063" /></p>
+<p>函数并行一方面可以和数据并行结合，训练更大的模型。但更为重要的是可以通过拆分函数引入流水线，进一步提高吞吐率。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512161103457.png"
+        data-srcset="./assets/image-20250512161103457.png, ./assets/image-20250512161103457.png 1.5x, ./assets/image-20250512161103457.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512161103457.png"
+        title="image-20250512161103457" /></p>
+<h2 id="scaling">Scaling</h2>
+<p>Scaling Law 主要用来回答这样的问题：在算力有限的情况下，我们应该如何权衡模型大小和训练数据量，以达到最低的 loss，可以数学表示为下面的公式。其核心思想是以小见大。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512165210408.png"
+        data-srcset="./assets/image-20250512165210408.png, ./assets/image-20250512165210408.png 1.5x, ./assets/image-20250512165210408.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512165210408.png"
+        title="image-20250512165210408" /></p>
+<p>Scaling Law 的一个灵感来自于传统 ML 中的  Data Scaling Law。 Data Scaling Law 是通过训练数据量估计高斯分布模型的loss，<code>log(Error) = − log(n) + 2 log(σ)</code> 。但语言模型却没有这样简明的数学公式可以推导出来。所以我们只能按照物理学的方法，收集实验数据并提出假设。</p>
+<p>DeepMind 在其名为 &ldquo;Chinchilla&rdquo; 的模型研究提出了我们常说的 Scaling Law：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250512165309776.png"
+        data-srcset="./assets/image-20250512165309776.png, ./assets/image-20250512165309776.png 1.5x, ./assets/image-20250512165309776.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250512165309776.png"
+        title="image-20250512165309776" /></p>
+<p>总而言之就是，模型参数量和训练数据应该同步缩放，以达到最低 loss。</p>
+<h2 id="inference-and-serving">Inference and Serving</h2>
+<p>在涉及到模型的推理和部署服务时，我们需要在延迟、吞吐量和准确率之间取得平衡。以下是一些常见的优化方法：</p>
+<ol>
+<li>
+<p>模型压缩</p>
+<ul>
+<li>量化：降低数值精度，减少内存和计算开销</li>
+<li>剪枝：移除不重要的网络连接</li>
+<li>知识蒸馏：将大模型知识迁移到小模型</li>
+</ul>
+</li>
+<li>
+<p>注意力机制优化</p>
+<ul>
+<li>PagedAttention：借鉴操作系统分页机制，实现 KV Cache 的动态内存管理</li>
+<li>支持非连续显存分配，解决长序列推理时的显存碎片问题</li>
+</ul>
+</li>
+<li>
+<p>推理阶段优化</p>
+<ul>
+<li>Chunked Prefill：将长输入分块处理，降低显存压力</li>
+<li>计算解码分离：将计算密集的预填充和内存密集的解码分配到不同硬件</li>
+<li>Speculative Decoding：使用小模型预测，大模型验证，减少约 30% 解码步骤</li>
+</ul>
+</li>
+<li>
+<p>批处理策略</p>
+<ul>
+<li>Continuous Batching：通过动态调度实现​​细粒度请求管理，如每个解码步骤（生成1个token）重新评估批次组成，新请求可立即加入，完成请求及时退出</li>
+<li>Adaptive Batching：根据序列长度动态调整批次大小</li>
+<li>Delayed Batching：引入固定延迟窗口以积累更多请求，提升整体吞吐量</li>
+</ul>
+</li>
+</ol>
+<h2 id="llm-api-and-sse">LLM API and SSE</h2>
+<p>我们在调用 LLM API 时，常常会使用 SSE（Server-Sent Events）协议，该协议支持服务器向客户端单向推送数据，非常适合大模型这样的流式文本输出。一个简单的 client-server 例子如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">eventSource</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">EventSource</span>(<span style="color:#e6db74">&#39;/api/stream&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">eventSource</span>.<span style="color:#a6e22e">onmessage</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">event</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">data</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">event</span>.<span style="color:#a6e22e">data</span>);
+</span></span><span style="display:flex;"><span>    document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#39;output&#39;</span>).<span style="color:#a6e22e">innerHTML</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">token</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">eventSource</span>.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;end&#39;</span>, () =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">eventSource</span>.<span style="color:#a6e22e">close</span>();
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><pre tabindex="0"><code>event: message
+data: {&#34;token&#34;: &#34;春&#34;, &#34;finished&#34;: false}
+
+event: end
+data: {&#34;finished&#34;: true}
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> fastapi <span style="color:#f92672">import</span> Request
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> openai
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> asyncio
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@app.get</span>(<span style="color:#e6db74">&#34;/api/stream&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">stream_response</span>(request: Request):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">event_generator</span>():
+</span></span><span style="display:flex;"><span>        response <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> openai<span style="color:#f92672">.</span>ChatCompletion<span style="color:#f92672">.</span>acreate(
+</span></span><span style="display:flex;"><span>            model<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gpt-4&#34;</span>,
+</span></span><span style="display:flex;"><span>            messages<span style="color:#f92672">=</span>[{<span style="color:#e6db74">&#34;role&#34;</span>: <span style="color:#e6db74">&#34;user&#34;</span>, <span style="color:#e6db74">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;写一个递归的快速排序函数&#34;</span>}],
+</span></span><span style="display:flex;"><span>            stream<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">for</span> chunk <span style="color:#f92672">in</span> response:
+</span></span><span style="display:flex;"><span>            token <span style="color:#f92672">=</span> chunk<span style="color:#f92672">.</span>choices[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>delta<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;content&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">yield</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;data: </span><span style="color:#ae81ff">{{</span><span style="color:#e6db74">&#34;token&#34;: &#34;</span><span style="color:#e6db74">{</span>token<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">}}\n\n</span><span style="color:#e6db74">&#39;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">yield</span> <span style="color:#e6db74">&#34;event: end</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">data: </span><span style="color:#e6db74">{}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> EventResponse(event_generator())
+</span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-05-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/optimize-the-performance-of-a-lm/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" data-title="Optimize the Performance of a LM" data-hashtags="LLM,Code,Performance"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" data-hashtag="LLM"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" data-title="Optimize the Performance of a LM"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" data-title="Optimize the Performance of a LM"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" data-title="Optimize the Performance of a LM"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/llm/">LLM</a>,&nbsp;<a href="/tags/code/">Code</a>,&nbsp;<a href="/tags/performance/">Performance</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/" class="prev" rel="prev" title="数字直觉"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>数字直觉</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

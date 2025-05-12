@@ -1,159 +1,88 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Tags on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/</link>
-    <description>Recent content in Tags on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Sat, 19 Apr 2025 17:02:20 +0800</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>CheatSheet</title>
-      <link>https://rzyn2020.github.io/tags/cheatsheet/</link>
-      <pubDate>Sat, 19 Apr 2025 17:02:20 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/cheatsheet/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Code</title>
-      <link>https://rzyn2020.github.io/tags/code/</link>
-      <pubDate>Sun, 06 Apr 2025 09:58:31 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/code/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>LLM</title>
-      <link>https://rzyn2020.github.io/tags/llm/</link>
-      <pubDate>Sun, 06 Apr 2025 09:58:31 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/llm/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Database</title>
-      <link>https://rzyn2020.github.io/tags/database/</link>
-      <pubDate>Wed, 12 Mar 2025 11:12:50 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/database/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Interview</title>
-      <link>https://rzyn2020.github.io/tags/interview/</link>
-      <pubDate>Wed, 12 Mar 2025 11:12:50 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/interview/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Summary</title>
-      <link>https://rzyn2020.github.io/tags/summary/</link>
-      <pubDate>Wed, 12 Mar 2025 11:12:50 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/summary/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>DeepLearning</title>
-      <link>https://rzyn2020.github.io/tags/deeplearning/</link>
-      <pubDate>Mon, 13 Jan 2025 19:29:29 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/deeplearning/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Book</title>
-      <link>https://rzyn2020.github.io/tags/book/</link>
-      <pubDate>Sat, 23 Nov 2024 11:31:25 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/book/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>BitTorrent</title>
-      <link>https://rzyn2020.github.io/tags/bittorrent/</link>
-      <pubDate>Sat, 16 Nov 2024 21:58:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/bittorrent/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Knowledge</title>
-      <link>https://rzyn2020.github.io/tags/knowledge/</link>
-      <pubDate>Sat, 16 Nov 2024 21:58:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/knowledge/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Compiler</title>
-      <link>https://rzyn2020.github.io/tags/compiler/</link>
-      <pubDate>Sat, 09 Nov 2024 15:51:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/compiler/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Reflection</title>
-      <link>https://rzyn2020.github.io/tags/reflection/</link>
-      <pubDate>Sat, 09 Nov 2024 15:51:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/reflection/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Network</title>
-      <link>https://rzyn2020.github.io/tags/network/</link>
-      <pubDate>Wed, 06 Nov 2024 23:22:36 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/network/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Proxy</title>
-      <link>https://rzyn2020.github.io/tags/proxy/</link>
-      <pubDate>Wed, 06 Nov 2024 23:22:36 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/proxy/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Share</title>
-      <link>https://rzyn2020.github.io/tags/share/</link>
-      <pubDate>Wed, 06 Nov 2024 23:22:36 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/tags/share/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>PL</title>
-      <link>https://rzyn2020.github.io/tags/pl/</link>
-      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/tags/pl/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Scheme</title>
-      <link>https://rzyn2020.github.io/tags/scheme/</link>
-      <pubDate>Thu, 30 Mar 2023 20:36:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/tags/scheme/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Java</title>
-      <link>https://rzyn2020.github.io/tags/java/</link>
-      <pubDate>Tue, 07 Mar 2023 14:49:32 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/tags/java/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>OS</title>
-      <link>https://rzyn2020.github.io/tags/os/</link>
-      <pubDate>Thu, 11 Aug 2022 21:27:52 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/tags/os/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>C</title>
-      <link>https://rzyn2020.github.io/tags/c/</link>
-      <pubDate>Sun, 14 Nov 2021 09:23:52 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/tags/c/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Stream</title>
-      <link>https://rzyn2020.github.io/tags/stream/</link>
-      <pubDate>Wed, 18 Aug 2021 20:31:48 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/tags/stream/</guid>
-      <description></description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Tags - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/</link>
+        <description>Tags - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 10 May 2025 17:47:01 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Code</title>
+    <link>https://rzyn2020.github.io/tags/code/</link>
+    <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/code/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>LLM</title>
+    <link>https://rzyn2020.github.io/tags/llm/</link>
+    <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/llm/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Performance</title>
+    <link>https://rzyn2020.github.io/tags/performance/</link>
+    <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/performance/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>CheatSheet</title>
+    <link>https://rzyn2020.github.io/tags/cheatsheet/</link>
+    <pubDate>Sat, 19 Apr 2025 17:02:20 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/cheatsheet/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Database</title>
+    <link>https://rzyn2020.github.io/tags/database/</link>
+    <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/database/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Interview</title>
+    <link>https://rzyn2020.github.io/tags/interview/</link>
+    <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/interview/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Summary</title>
+    <link>https://rzyn2020.github.io/tags/summary/</link>
+    <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/summary/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>DeepLearning</title>
+    <link>https://rzyn2020.github.io/tags/deeplearning/</link>
+    <pubDate>Mon, 13 Jan 2025 19:29:29 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/deeplearning/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Book</title>
+    <link>https://rzyn2020.github.io/tags/book/</link>
+    <pubDate>Sat, 23 Nov 2024 11:31:25 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/book/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>BitTorrent</title>
+    <link>https://rzyn2020.github.io/tags/bittorrent/</link>
+    <pubDate>Sat, 16 Nov 2024 21:58:53 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/bittorrent/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
 </rss>

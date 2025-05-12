@@ -1,26 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Book on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/book/</link>
-    <description>Recent content in Book on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Sat, 23 Nov 2024 11:31:25 +0800</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/book/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>吉登斯「社会学」笔记</title>
-      <link>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</link>
-      <pubDate>Sat, 23 Nov 2024 11:31:25 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;人们自己创造自己的历史，但是他们并不是随心所欲地创造，并不是在他们自己选定的条件下创造，而是在直接碰到的、既定的、从过去继承下来的条件下创造。&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-    <item>
-      <title>Multiplication</title>
-      <link>https://rzyn2020.github.io/posts/multiplication-part1/</link>
-      <pubDate>Sun, 20 Mar 2022 20:41:38 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/multiplication-part1/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;凡治众如治寡，分数是也；斗众如斗寡，形名是也。&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Book - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/book/</link>
+        <description>Book - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 23 Nov 2024 11:31:25 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/book/" rel="self" type="application/rss+xml" /><item>
+    <title>吉登斯「社会学」笔记</title>
+    <link>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</link>
+    <pubDate>Sat, 23 Nov 2024 11:31:25 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</guid>
+    <description><![CDATA[<blockquote>
+<p>人们自己创造自己的历史，但是他们并不是随心所欲地创造，并不是在他们自己选定的条件下创造，而是在直接碰到的、既定的、从过去继承下来的条件下创造。</p>
+</blockquote>]]></description>
+</item>
+<item>
+    <title>Multiplication</title>
+    <link>https://rzyn2020.github.io/posts/multiplication-part1/</link>
+    <pubDate>Sun, 20 Mar 2022 20:41:38 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/multiplication-part1/</guid>
+    <description><![CDATA[<blockquote>
+<p>凡治众如治寡，分数是也；斗众如斗寡，形名是也。</p>
+</blockquote>]]></description>
+</item>
+</channel>
 </rss>

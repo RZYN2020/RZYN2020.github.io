@@ -1,0 +1,207 @@
+# 树的非递归遍历—用栈模拟递归
+
+
+由于树本身定义的递归性，置于树上的操作往往也是递归性的的。
+
+<!--more-->
+
+在某些语言中，递归是自然的，最基本的语言要素(比如说scheme)，然而在另外一些语言中，递归却不是最基本的要素。
+
+
+图灵丘奇论题证明了图灵机和lambda演算的等价性，既然纯递归的lambda演算和给人毫无递归印象的图灵机的计算能力是相同的，那么一切递归方法自然都能用非递归方法模拟了。考虑到现实计算机中递归函数的调用就是通过栈实现的，因此我们可以在任何一门语言简单地利用栈来模拟递归。因此，对于树的任何递归操作都有与之对应的非递归方法了(尽管这种非递归方法任然是模拟递归的)。
+
+---
+
+树的定义以及构造方法如下(用节点Node来表示树，用树的表达式字符串来构造树):
+
+```java
+public class Node<Item> {
+  Item item;
+  Node left;
+  Node right;
+  Node(Item item, Node left, Node right) {
+    this.item = item;
+    this.left = left;
+    this.right = right;
+  }
+
+  /**
+   * @param tree 树的表达式
+   *             形如:"1(5(6(3,2),),5(5,3(1,)))"
+   *                 "1(1(1(1(1,),),),)"
+   * @return 树的头节点
+   */
+  public static Node makeTree(String tree) {
+    if (tree == "") return null;
+    if (tree.length() == 1) return new Node(Integer.valueOf(tree), null, null);
+    char[] t = tree.toCharArray();
+    int item = Integer.valueOf(tree.substring(0, 1));
+    int mid = 0;
+    int bra = 0;
+    for (int i = 2; i < t.length; i++) {
+      if (t[i] == '(') bra++;
+      else if (t[i] == ')') bra--;
+      else if (t[i] == ',') {
+        if (bra == 0) {
+          mid = i;
+          break;
+        }
+      }
+    }
+    Node left = makeTree(tree.substring(2, mid));
+    Node right = makeTree(tree.substring(mid + 1, tree.length() - 1));
+    return new Node(item, left, right);
+  }
+}
+
+```
+
+
+
+对于栈中每一个frame的模拟如下:
+
+```java
+  static class frameSim {
+
+    int retAddr;
+    Node t;
+
+    frameSim(int retAddr, Node t) {
+      this.retAddr = retAddr;
+      this.t = t;
+    }
+  }
+```
+
+前序，中序，后序的递归以及非递归遍历方法如下：
+
+其中用switch case语句模拟地址跳转。
+
+```java
+  public static void preOrder(Node t) {
+    if (t == null) {
+      return;
+    }
+    System.out.print(t.item);
+    preOrder(t.left);
+    preOrder(t.right);
+  }
+
+  public static void preOrderNonRec(Node t) {
+    Stack<frameSim> stack = new Stack<>();
+    frameSim current = new frameSim(-1, t);
+    int pc = 0;
+
+    while (true) {
+      switch (pc) {
+        case 0:
+          System.out.print(current.t.item);
+        case 1:
+          if (current.t.left != null) {
+            stack.push(current);
+            current = new frameSim(2, current.t.left);
+            pc = 0;
+            continue;
+          }
+        case 2:
+          if (current.t.right != null) {
+            stack.push(current);
+            current = new frameSim(3, current.t.right);
+            pc = 0;
+            continue;
+          }
+        case 3:
+      }
+      pc = current.retAddr;
+      if (pc == -1) break;
+      current = stack.pop();
+    }
+  }
+```
+
+```java
+  public static void inOrder(Node t) {
+    if (t == null) {
+      return;
+    }
+    inOrder(t.left);
+    System.out.print(t.item);
+    inOrder(t.right);
+  }
+
+  public static void inOrderNonRec(Node t) {
+    Stack<frameSim> stack = new Stack<>();
+    frameSim current = new frameSim(-1, t);
+    int pc = 0;
+
+    while (true) {
+      switch (pc) {
+        case 0:
+          if (current.t.left != null) {
+            stack.push(current);
+            current = new frameSim(1, current.t.left);
+            pc = 0;
+            continue;
+          }
+        case 1:
+          System.out.print(current.t.item);
+        case 2:
+          if (current.t.right != null) {
+            stack.push(current);
+            current = new frameSim(3, current.t.right);
+            pc = 0;
+            continue;
+          }
+        case 3:
+      }
+      pc = current.retAddr;
+      if (pc == -1) break;
+      current = stack.pop();
+    }
+  }
+```
+
+```java
+ public static void postOrder(Node t) {
+    if (t == null) {
+      return;
+    }
+    postOrder(t.left);
+    postOrder(t.right);
+    System.out.print(t.item);
+  }
+
+  public static void postOrderNonRec(Node t) {
+    Stack<frameSim> stack = new Stack<>();
+    frameSim current = new frameSim(-1, t);
+    int pc = 0;
+
+    while (true) {
+      switch (pc) {
+        case 0:
+          if (current.t.left != null) {
+            stack.push(current);
+            current = new frameSim(1, current.t.left);
+            pc = 0;
+            continue;
+          }
+        case 1:
+          if (current.t.right != null) {
+            stack.push(current);
+            current = new frameSim(2, current.t.right);
+            pc = 0;
+            continue;
+          }
+        case 2:
+          System.out.print(current.t.item);
+        case 3:
+      }
+      pc = current.retAddr;
+      if (pc == -1) break;
+      current = stack.pop();
+    }
+  }
+
+```
+
+

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html><head lang="en">
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>BitTorrent协议及其扩展 - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="“I call architecture frozen music&hellip;” - Goethe" />
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>BitTorrent协议及其扩展 - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="BitTorrent协议及其扩展">
   <meta property="og:description" content="“I call architecture frozen music…” - Goethe">
@@ -15,79 +15,156 @@
     <meta property="article:modified_time" content="2024-11-16T21:58:53+08:00">
     <meta property="article:tag" content="BitTorrent">
     <meta property="article:tag" content="Knowledge">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
   <meta name="twitter:title" content="BitTorrent协议及其扩展">
   <meta name="twitter:description" content="“I call architecture frozen music…” - Goethe">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/" /><link rel="prev" href="https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/" /><link rel="next" href="https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "BitTorrent协议及其扩展",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95\/"
+        },"genre": "posts","keywords": "BitTorrent, Knowledge","wordcount":  2585 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95\/","datePublished": "2024-11-16T21:58:53+08:00","dateModified": "2024-11-16T21:58:53+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
-	
-
-	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
-		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
-  	
-   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['$', '$']]                  
-    },
-    loader:{
-      load: ['ui/safe']
-    },
-  };
-</script>
-  	
-
-	
-</head>
-<body>
-        <div class="content"><header>
-	<div class="main">
-		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
-	</div>
-	<nav>
-		
-		<a href="/posts/">All Posts</a>
-		
-		<a href="/categories/">Categories</a>
-		
-		<a href="/tags/">Tags</a>
-		
-		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
-		
-		
-	</nav>
-</header>
-
-<main>
-  <article>
-    <div class="post-container">
-      
-      <div class="post-content">
-        <div class="title">
-          <h1 class="title">BitTorrent协议及其扩展</h1>
-          <div class="meta">Posted on Nov 16, 2024</div>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
-        
-        <section class="body">
-          <p>“I call architecture frozen music&hellip;” - Goethe</p>
-<p>BitTorrent 是一个 p2p 下载协议，官网网站见<a href="http://bittorrent.org/">这里</a>。官方网站内不仅含有标准规范，而且仿照PEP（Python Enhancement Protocol），有着自己的 BEP，用来对协议进行增强。</p>
-<p>不过官方标准规范较为难懂，这里有一份协议的非官方版本，更易于理解： <a href="https://wiki.theory.org/BitTorrentSpecification">Unofficial Specification</a></p>
-<p>这里也有一份简介： <a href="https://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf">https://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf</a></p>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">BitTorrent协议及其扩展</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/system/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>System</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-11-16">2024-11-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2585 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#sub-pieces">sub pieces</a></li>
+        <li><a href="#policys">policys</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#decentralized-tracker">Decentralized tracker</a></li>
+    <li><a href="#upnp">Upnp</a></li>
+    <li><a href="#ddns">DDNS</a></li>
+    <li><a href="#内网穿透">内网穿透</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>“I call architecture frozen music&hellip;” - Goethe</p>
+<p>BitTorrent 是一个 p2p 下载协议，官网网站见<a href="http://bittorrent.org/" target="_blank" rel="noopener noreffer ">这里</a>。官方网站内不仅含有标准规范，而且仿照PEP（Python Enhancement Protocol），有着自己的 BEP，用来对协议进行增强。</p>
+<p>不过官方标准规范较为难懂，这里有一份协议的非官方版本，更易于理解： <a href="https://wiki.theory.org/BitTorrentSpecification" target="_blank" rel="noopener noreffer ">Unofficial Specification</a></p>
+<p>这里也有一份简介： <a href="https://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf" target="_blank" rel="noopener noreffer ">https://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf</a></p>
 <h1 id="p2p-网络">p2p 网络</h1>
 <p>最严格的 p2p 网络定义为：</p>
 <blockquote>
-<p>A communications model in which each party has the same capabilities and either party can initiate a communication session</p></blockquote>
+<p>A communications model in which each party has the same capabilities and either party can initiate a communication session</p>
+</blockquote>
 <p>也就是网络中每个节点都起相同功能，且不会出现单点故障。与之相反，server-client  式的架构就被称为 集中式 网络。</p>
 <p>ARPNET 就是 p2p 式的；DNS system 可以算 p2p 和 集中式 的一个折中。</p>
 <blockquote>
-<p>假如 DNS 是集中式的，一个主机负责全世界的 IP 查询，则很容易碰上 单点故障 和 性能限制。因此，DNS 采取了分布式的架构——树形递归查询加上多级缓存。有许多起相同功能的本地 DNS 服务器，挂掉一个也不影响整个系统运作，未尝不可称之为某种程度上的 p2p。</p></blockquote>
+<p>假如 DNS 是集中式的，一个主机负责全世界的 IP 查询，则很容易碰上 单点故障 和 性能限制。因此，DNS 采取了分布式的架构——树形递归查询加上多级缓存。有许多起相同功能的本地 DNS 服务器，挂掉一个也不影响整个系统运作，未尝不可称之为某种程度上的 p2p。</p>
+</blockquote>
 <p>因此，一个宽松一点的 p2p 定义：</p>
 <blockquote>
-<p>“A distributed network architecture may be called a Peer-to-Peer (P-to-P, P2P,&hellip;) network, if the participants share a part of their own (hardware) resources (processing power, storage capacity, network link capacity, printers,&hellip;). These shared resources are necessary to provide the Service and content offered by the network (e.g. file sharing or shared workspaces for collaboration). They are accessible by other peers directly, without passing intermediary entities. The participants of such a network are thus resource (Service and content) providers as well as resource (Service and content) requestors (Servant-concept).”</p></blockquote>
+<p>“A distributed network architecture may be called a Peer-to-Peer (P-to-P, P2P,&hellip;) network, if the participants share a part of their own (hardware) resources (processing power, storage capacity, network link capacity, printers,&hellip;). These shared resources are necessary to provide the Service and content offered by the network (e.g. file sharing or shared workspaces for collaboration). They are accessible by other peers directly, without passing intermediary entities. The participants of such a network are thus resource (Service and content) providers as well as resource (Service and content) requestors (Servant-concept).”</p>
+</blockquote>
 <p>这样的定义下，虽然不能完全避免单点故障，但的确体现出来 p2p 的本质：</p>
 <ol>
 <li>每个参与者即是 服务提供者 又是 服务享受者</li>
@@ -103,9 +180,17 @@
 <p>BitTorrent 协议与在它之前的 p2p 协议相比，有一个特点：它会把每个文件都切分为许多小块（piece），一个用户可以同时向许多同伴（peer）请求同一个文件的不同部分。</p>
 <p>而它之前的 p2p 协议往往是一对一协议，一个下载好的人负责给一个没有下载好的人传送文件。但是因为一般网卡的上传带宽都远远小于下载带宽，因此这种模型下，文件传送的最大速率最大也只能等于peer的上传带宽。</p>
 <p>但是在 BitTorrent 下，对于一个非常火爆的已经有很多人下载好的文件，我们就可以同时向他们所有人请求文件块，充分利用自己的下载带宽了。这也是为什么 BitTorrent 一经推出就统治了 p2p 下载界。</p>
-<p><img src="./assets/image-20241116172850559.png" alt="image-20241116172850559"></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20241116172850559.png"
+        data-srcset="./assets/image-20241116172850559.png, ./assets/image-20241116172850559.png 1.5x, ./assets/image-20241116172850559.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20241116172850559.png"
+        title="image-20241116172850559" /></p>
 <blockquote>
-<p>比如上面的文件，有 169 人上传，只有 18 人下载，可想而知下载速度是非常快的</p></blockquote>
+<p>比如上面的文件，有 169 人上传，只有 18 人下载，可想而知下载速度是非常快的</p>
+</blockquote>
 <p>BitTorrent 的架构中含有如下实体：</p>
 <ul>
 <li>一个元信息文件： torrent file</li>
@@ -113,9 +198,16 @@
 <li>第一个参与者：seed</li>
 <li>其他参与者：leecher</li>
 </ul>
-<p><img src="./assets/BitTorrent-Architecture-1731757524496-3.png" alt="BitTorrent-Architecture"></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/BitTorrent-Architecture-1731757524496-3.png"
+        data-srcset="./assets/BitTorrent-Architecture-1731757524496-3.png, ./assets/BitTorrent-Architecture-1731757524496-3.png 1.5x, ./assets/BitTorrent-Architecture-1731757524496-3.png 2x"
+        data-sizes="auto"
+        alt="./assets/BitTorrent-Architecture-1731757524496-3.png"
+        title="BitTorrent-Architecture" /></p>
 <p>tracker 会记录哪些 peer 正在下载文件，并帮助他们互相认识。peer 通过 http 协议和 tracker 进行通信，以获取相关信息。</p>
-<p>世界上有许多公开的 tracker 服务器，比如这个列表里收录的：<a href="https://github.com/ngosang/trackerslist">trackerlist</a></p>
+<p>世界上有许多公开的 tracker 服务器，比如这个列表里收录的：<a href="https://github.com/ngosang/trackerslist" target="_blank" rel="noopener noreffer ">trackerlist</a></p>
 <p>在一开始，一个用户决定分发某个文件时，会先<strong>做种</strong>（seed）：他会使用本地的bt软件，把文件分为通常是 512 KB 或 256Kb 许多小块（piece），并计算每个小块的 SHA-1 哈希值 ，然后把所有的哈希值和相关元信息封装在一个 torrent 文件里，传给别人。同时他也在 tracker 处登记自己持有这个文件。（通常 torrent 文件里也包含推荐的 tracker）</p>
 <p>当某个用户要下载时，他会向 tracker 请求 peer 列表，然后向 peer 们请求不同的文件块，并用 torrent 文件里的哈希值验证数据是否出错。</p>
 <p>在这个流程中，有两个算法决定着 bt 网络的正常高效运转：</p>
@@ -139,86 +231,63 @@
 <li>endgame mode：当到最后一块时，向所有 peer 都请求该块的子块，以快速下载完文件。</li>
 </ol>
 <h1 id="resource-allocation">Resource Allocation</h1>
-<p>Resource Alllocation 算法用来决定和哪个 peer 进行合作。我们采用<a href="https://www.wikiwand.com/en/articles/Tit_for_tat">“tit-for-tat”</a> （以牙还牙）策略，以达到利益最大化。一般来说，你上传的越多，下载的也就越快。</p>
+<p>Resource Alllocation 算法用来决定和哪个 peer 进行合作。我们采用<a href="https://www.wikiwand.com/en/articles/Tit_for_tat" target="_blank" rel="noopener noreffer ">“tit-for-tat”</a> （以牙还牙）策略，以达到利益最大化。一般来说，你上传的越多，下载的也就越快。</p>
 <h1 id="enhancements">Enhancements</h1>
 <p>自从 BitTorrent 被发明以来，许多 BEP 提出了一些改进，下面介绍一些有趣的改进功能。</p>
 <h2 id="decentralized-tracker">Decentralized tracker</h2>
-<p><a href="https://www.youtube.com/watch?v=1wTucsUm64s&amp;ab_channel=Recessive">youtube视频简介</a></p>
+<p><a href="https://www.youtube.com/watch?v=1wTucsUm64s&amp;ab_channel=Recessive" target="_blank" rel="noopener noreffer ">youtube视频简介</a></p>
 <p>BitTorrent 中，由于 tracker 服务器的存在，所以不能达到 &ldquo;真p2p&rdquo;，因此就有了 去中心化tracker 拓展。它基于 DHT （Distributed hash table）在 peer 间存储 peerlist，以取代中心化 tracker。</p>
 <p>DHT 的基本思想为：将所有 node 连接成一个环，环上每个 node 都负责存储某一范围内的 key，且知道相邻 node 的地址。查询时沿着环就可以找到目标key了。当添加或删除新 node 时，都调整数据分布以使得环结构仍然成立。</p>
-<p><img src="./assets/AtNFZ.png" alt="Basic Lookup in DHT"></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/AtNFZ.png"
+        data-srcset="./assets/AtNFZ.png, ./assets/AtNFZ.png 1.5x, ./assets/AtNFZ.png 2x"
+        data-sizes="auto"
+        alt="./assets/AtNFZ.png"
+        title="Basic Lookup in DHT" /></p>
 <h2 id="upnp">Upnp</h2>
-<p><a href="https://www.downloadprivacy.com/how-to-torrent/port-forwarding">问题的起因</a>是这样的：我们的 bt客户端 大都运行在内网，可以通过路由器的 NAT机制 访问外网，可是外网设备就访问不到我们的 bt客户端 了，这就让其他 peer 没办法主动和我们建立连接。为了解决这个问题，我们可以在路由器上手动设置端口转发（当然前提是你的路由器就拥有公网 IP），或者使用 VPN。</p>
+<p><a href="https://www.downloadprivacy.com/how-to-torrent/port-forwarding" target="_blank" rel="noopener noreffer ">问题的起因</a>是这样的：我们的 bt客户端 大都运行在内网，可以通过路由器的 NAT机制 访问外网，可是外网设备就访问不到我们的 bt客户端 了，这就让其他 peer 没办法主动和我们建立连接。为了解决这个问题，我们可以在路由器上手动设置端口转发（当然前提是你的路由器就拥有公网 IP），或者使用 VPN。</p>
 <p>Upnp （Universal Plug and Play）是一个应用层协议，可以在路由器上开启，接受到客户端的请求后，进行自动端口转发。其原本目标是为了让设备之间无需手动配置就能相互连接，不过许多 bt客户端 也实现了 Upnp协议，可以和路由器协商进行自动端口转发。但目前 Upnp协议 存在安全漏洞，很容易成为黑客攻击的目标。</p>
 <h2 id="ddns">DDNS</h2>
 <p>DDNS 即 动态（dynamic）DNS服务。如果机器每次启动都是不同的 IP，那么就可以使用 DDNS 服务，在机器每次启动时都向 DDNS 服务器告知新 IP。这适用于当你的路由器被运营商分配动态公网 IP 时，也能对外界提供一个稳定的地址。</p>
 <h2 id="内网穿透">内网穿透</h2>
-<p>但当路由器本身就被运营商分配了局域网 IP 时，就只能通过内网穿透才能使我们的 bt客户端 暴露在公网中，接受其他 peer 的请求了。内网穿透即是通过外网中持有公网 IP 的服务器提供的中介服务，来暴露我们的客户端（相当于简化版 VPN）。</p>
-        </section>
-        <div class="post-tags">
-          
-          
-          <nav class="nav tags">
-            <ul class="tags">
-              
-              <li><a href="/tags/bittorrent">BitTorrent</a></li>
-              
-              <li><a href="/tags/knowledge">Knowledge</a></li>
-              
-            </ul>
-          </nav>
-          
-          
+<p>但当路由器本身就被运营商分配了局域网 IP 时，就只能通过内网穿透才能使我们的 bt客户端 暴露在公网中，接受其他 peer 的请求了。内网穿透即是通过外网中持有公网 IP 的服务器提供的中介服务，来暴露我们的客户端（相当于简化版 VPN）。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-11-16</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/" data-title="BitTorrent协议及其扩展" data-hashtags="BitTorrent,Knowledge"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/" data-hashtag="BitTorrent"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/" data-title="BitTorrent协议及其扩展"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/" data-title="BitTorrent协议及其扩展"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/" data-title="BitTorrent协议及其扩展"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
         </div>
-      </div>
-
-      
-      
-      <div class="toc">
-        <strong>Table of contents:</strong>
-        <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#sub-pieces">sub pieces</a></li>
-        <li><a href="#policys">policys</a></li>
-      </ul>
-    </li>
-  </ul>
-
-  <ul>
-    <li><a href="#decentralized-tracker">Decentralized tracker</a></li>
-    <li><a href="#upnp">Upnp</a></li>
-    <li><a href="#ddns">DDNS</a></li>
-    <li><a href="#内网穿透">内网穿透</a></li>
-  </ul>
-</nav>
-      </div>
-      
     </div>
 
-    </article>
-</main>
-<footer>
-  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a></div>
-  <div class="footer-info">
-    2025  <a
-      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
-  </div>
-</footer>
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/bittorrent/">BitTorrent</a>,&nbsp;<a href="/tags/knowledge/">Knowledge</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
 
-
-
+    <div class="post-nav"><a href="/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/" class="prev" rel="prev" title="编译器开发反思"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>编译器开发反思</a>
+            <a href="/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/" class="next" rel="next" title="吉登斯「社会学」笔记">吉登斯「社会学」笔记<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-    </body>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

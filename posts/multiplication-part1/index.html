@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html><head lang="en">
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Multiplication - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="
-凡治众如治寡，分数是也；斗众如斗寡，形名是也。" />
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://rzyn2020.github.io/posts/multiplication-part1/">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Multiplication - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/multiplication-part1/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="Multiplication">
   <meta property="og:description" content="凡治众如治寡，分数是也；斗众如斗寡，形名是也。">
@@ -15,141 +14,230 @@
     <meta property="article:published_time" content="2022-03-20T20:41:38+00:00">
     <meta property="article:modified_time" content="2022-03-20T20:41:38+00:00">
     <meta property="article:tag" content="Book">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
   <meta name="twitter:title" content="Multiplication">
   <meta name="twitter:description" content="凡治众如治寡，分数是也；斗众如斗寡，形名是也。">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/multiplication-part1/" /><link rel="prev" href="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" /><link rel="next" href="https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Multiplication",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/multiplication-part1\/"
+        },"genre": "posts","keywords": "Book","wordcount":  2230 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/multiplication-part1\/","datePublished": "2022-03-20T20:41:38+00:00","dateModified": "2022-03-20T20:41:38+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
-	
-
-	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
-		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
-  	
-   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['$', '$']]                  
-    },
-    loader:{
-      load: ['ui/safe']
-    },
-  };
-</script>
-  	
-
-	
-</head>
-<body>
-        <div class="content"><header>
-	<div class="main">
-		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
-	</div>
-	<nav>
-		
-		<a href="/posts/">All Posts</a>
-		
-		<a href="/categories/">Categories</a>
-		
-		<a href="/tags/">Tags</a>
-		
-		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
-		
-		
-	</nav>
-</header>
-
-<main>
-  <article>
-    <div class="post-container">
-      
-      <div class="post-content">
-        <div class="title">
-          <h1 class="title">Multiplication</h1>
-          <div class="meta">Posted on Mar 20, 2022</div>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
-        
-        <section class="body">
-          <blockquote>
-<p>凡治众如治寡，分数是也；斗众如斗寡，形名是也。</p></blockquote>
-<p>本篇博客内容大多都来自<a href="https://jeffe.cs.illinois.edu/">Jeff</a>的算法书籍，因书籍内容充实和有趣，读之后又怕忘记，因此摘抄复述自己感觉有趣内容，并适时加以扩展。</p>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Multiplication</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/algorithm/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Algorithm</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-03-20">2022-03-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2230 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>凡治众如治寡，分数是也；斗众如斗寡，形名是也。</p>
+</blockquote>
+<p>本篇博客内容大多都来自<a href="https://jeffe.cs.illinois.edu/" target="_blank" rel="noopener noreffer ">Jeff</a>的算法书籍，因书籍内容充实和有趣，读之后又怕忘记，因此摘抄复述自己感觉有趣内容，并适时加以扩展。</p>
 <h1 id="intro">Intro</h1>
 <p>在算术中，乘法是最基本的运算。数学往往只关心抽象的一般的东西，它只把数字看作数字本身，只把乘法看作为一种定义在数上的满足某种特定性质的运算，但是为了让数字能真正为我们所用，我们还必须定义数字实际上的表示方法，以及在一种表示方法下对数字进行运算的方法(比如乘法)——按照这种方法，任意给定两个数，我们都能得出其运算结果(乘积)。这样一种确定性的方法就可以称作一种算法。</p>
 <p>通俗意义上的算法即是指一系列明晰确定的指令(步骤)的序列，它描述了一个问题的可行解决方案。注意到组成算法的是一系列明晰确定的指令，我们把这些指令叫做原子指令，所谓原子就是指这些指令是最简单的，不可再分的指令了。如果要使算法是真正可行的，我们还必须确保原子指令是可行的。如果有一个算法，描述了如何成为富翁。而这个算法的一个原子指令是“先定一个小目标，我先挣它一个亿！”，那么这个算法对于我来说是显然是不可行的了😂。</p>
 <p>首先，如果数的表示方法为十进制整数，而个位数相乘或者相加都为原子指令的话，竖式计算法当然就是一种最好不过的算法了。</p>
-<p><img src="img/image-20220320170908155.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/multiplication-part1/img/image-20220320170908155.png"
+        data-srcset="/posts/multiplication-part1/img/image-20220320170908155.png, /posts/multiplication-part1/img/image-20220320170908155.png 1.5x, /posts/multiplication-part1/img/image-20220320170908155.png 2x"
+        data-sizes="auto"
+        alt="/posts/multiplication-part1/img/image-20220320170908155.png"
+        title="/posts/multiplication-part1/img/image-20220320170908155.png" width="185" height="150" /></p>
 <p>其次，如果把数字定位为线段的长度，原子指令定为基本的尺规作图步骤的话，一种乘法的算法就是如下这样。</p>
-<p><img src="img/image-20220320171156010.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/multiplication-part1/img/image-20220320171156010.png"
+        data-srcset="/posts/multiplication-part1/img/image-20220320171156010.png, /posts/multiplication-part1/img/image-20220320171156010.png 1.5x, /posts/multiplication-part1/img/image-20220320171156010.png 2x"
+        data-sizes="auto"
+        alt="/posts/multiplication-part1/img/image-20220320171156010.png"
+        title="/posts/multiplication-part1/img/image-20220320171156010.png" width="895" height="445" /></p>
 <p>当然，我们也需要有一些评价这些算法的指标以便在解决同一问题的不同算法间取舍。最重要的指标当然是算法正确性了，另外，算法执行的快慢也是一个很重要的指标，它可以用一个算法从开始到结束所执行的原子指令条数来衡量。由于计算指令条数的精确数目较为繁琐且意义不大，时间复杂度也就随之而出了。</p>
 <p>在计算n位数×n位数时，在使用十进制数字表示和竖式算法时，时间复杂度为$O(n^2)$，因为第一个数的每一个数字都要和第二个数的每一个数字相乘；使用几何模型和上图所述算法时，由于只需要有限个步骤，算法时间复杂度就是$O(1)$了。</p>
 <p>考虑到无论我们实际日常使用还是计算机表示，使用X进制表示法都是最常见的，把个位数的×和＋都作为原子指令也是最自然的，我们的研究对象也就主要集中在这种计算模型上了。那么问题来了，计算乘法的算法多种多样，有没有一种算法能以低于$O(n^2)$的时间复杂度来计算乘法呢？</p>
 <h1 id="splitmultiply">SplitMultiply</h1>
 <p>分而治之的思想在算法上的应用往往能得很好的效果。比如说利用了分治法的Quick-Sort, Merge-Sort都能得到很好的时间复杂度。相应的，也许分治的思想也能在乘法中起到作用。</p>
 <p>很显然，$(10^ma + b)(10^mc + d) = 10^{2m}ac + 10^m(bc + ad) + bd$，按照这个分解，就有了如下的分治算法：</p>
-<p><img src="img/image-20220320173825660.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/multiplication-part1/img/image-20220320173825660.png"
+        data-srcset="/posts/multiplication-part1/img/image-20220320173825660.png, /posts/multiplication-part1/img/image-20220320173825660.png 1.5x, /posts/multiplication-part1/img/image-20220320173825660.png 2x"
+        data-sizes="auto"
+        alt="/posts/multiplication-part1/img/image-20220320173825660.png"
+        title="/posts/multiplication-part1/img/image-20220320173825660.png" width="662" height="387" /></p>
 <p>这个算法的正确性显而易见，但是要计算这样的递归算法的时间复杂度就较为困难了。不过，其用时的递推式却很容易写出来，即$T(n)=4T(n/2)+O(n)$，而要根据这个递推式求出$T(n)$的渐进式，递归树法能给我们很多Insight。</p>
-<p><img src="img/image-20220320175007044.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/multiplication-part1/img/image-20220320175007044.png"
+        data-srcset="/posts/multiplication-part1/img/image-20220320175007044.png, /posts/multiplication-part1/img/image-20220320175007044.png 1.5x, /posts/multiplication-part1/img/image-20220320175007044.png 2x"
+        data-sizes="auto"
+        alt="/posts/multiplication-part1/img/image-20220320175007044.png"
+        title="/posts/multiplication-part1/img/image-20220320175007044.png" width="902" height="239" /></p>
 <p>将全部项求和，很容易得出时间复杂度任然为$O(n^2)$。</p>
 <p>但是，为什么Quick-Sort, Merge-Sort都可以成功降低复杂度呢？这可以从二者用时的递推式中看出了:$T(n)=2T(n/2)+O(n)$。</p>
-<p>再考虑递归树中的耗时大概分为两大部分，一部分是每次递归时的耗时，一部分是所有叶节点对应的最小子情况的耗时。假设递推式为$T(n)=aT(n/b)+f(n)$，不妨设当$n$为1时到达子节点，树高为H，叶节点数为L，则有$n/b^H=1 \implies H=log_bn,L=b^H=a^{log_bn}=n^{log_ba}$,因此，叶节点对应的项的代价为为$\Theta(n^{log_ba})$,而内部节点对应的代价为$\Sigma_{j=0}^{log_bn-1}a^jf(n/b^j)$，因此，整个递归过程的用时就由这两项决定。由这两项的相对大小就可以得到整个过程的渐进复杂度。在对这两项进行分析之后，就得到了<a href="https://en.wikipedia.org/wiki/Master_theorem_(analysis_of_algorithms)">主定理</a>，之后就可以以此为出发点分析算法的时间复杂度了。</p>
-<p><img src="img/image-20220320194310076.png" alt=""></p>
+<p>再考虑递归树中的耗时大概分为两大部分，一部分是每次递归时的耗时，一部分是所有叶节点对应的最小子情况的耗时。假设递推式为$T(n)=aT(n/b)+f(n)$，不妨设当$n$为1时到达子节点，树高为H，叶节点数为L，则有$n/b^H=1 \implies H=log_bn,L=b^H=a^{log_bn}=n^{log_ba}$,因此，叶节点对应的项的代价为为$\Theta(n^{log_ba})$,而内部节点对应的代价为$\Sigma_{j=0}^{log_bn-1}a^jf(n/b^j)$，因此，整个递归过程的用时就由这两项决定。由这两项的相对大小就可以得到整个过程的渐进复杂度。在对这两项进行分析之后，就得到了<a href="https://en.wikipedia.org/wiki/Master_theorem_%28analysis_of_algorithms%29" target="_blank" rel="noopener noreffer ">主定理</a>，之后就可以以此为出发点分析算法的时间复杂度了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/multiplication-part1/img/image-20220320194310076.png"
+        data-srcset="/posts/multiplication-part1/img/image-20220320194310076.png, /posts/multiplication-part1/img/image-20220320194310076.png 1.5x, /posts/multiplication-part1/img/image-20220320194310076.png 2x"
+        data-sizes="auto"
+        alt="/posts/multiplication-part1/img/image-20220320194310076.png"
+        title="/posts/multiplication-part1/img/image-20220320194310076.png" width="816" height="304" /></p>
 <p>SplitMultiply算法符合情况一，也就是由于SplitMultiply算法的递归过程中每层节点扩展得太快，导致叶节点完全占据了主导地位，因此复杂度完全由叶节点决定；而两个分治的排序算法都符合情况二，即每层节点代价的总和差不多相同，因此最终时间复杂度为$\Theta(nlogn)$。</p>
 <h1 id="fastmultiply">FastMultiply</h1>
 <p>SplitMultiply的失败之处在于每层节点扩展得太快，即$log_ba$太大，因此有没有一种适用于乘法的分治算法使得$log_ba$较小呢？事实上，Karatsuba就把a从4降到了3，从而使得乘法的时间复杂度由$n^2$降至$n^{log_23}=n^{1.58496……}$。</p>
 <p>Karatsuba的想法主要来源于他发现，上面的分解式中$bc+ad$是一个整体，如能一次就把这个整体算出来，就能只调用三个递归子过程。考虑到$ac+ab-(a-c)(c-d)=bc+ad$，我们只需要额外计算一个$(a-c)(c-d)$即可获得中间的$bc+ad$的值。（注意到$a \times 10^m$的复杂度实际上为$O(n)$）</p>
 <p>具体算法如下：</p>
-<p><img src="img/image-20220320201054938.png" alt=""></p>
-<p>Karatsuba在发现这个算法时还是一个23岁的学生。1950年代，苏联数学家Kolmogorov举办了一个研讨会，提出“任何n*n的乘法算法都不可能在$n^2$的时间复杂度以下”，可是在一周之后，Karatsuba就发现了这个算法。</p>
-        </section>
-        <div class="post-tags">
-          
-          
-          <nav class="nav tags">
-            <ul class="tags">
-              
-              <li><a href="/tags/book">Book</a></li>
-              
-            </ul>
-          </nav>
-          
-          
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/multiplication-part1/img/image-20220320201054938.png"
+        data-srcset="/posts/multiplication-part1/img/image-20220320201054938.png, /posts/multiplication-part1/img/image-20220320201054938.png 1.5x, /posts/multiplication-part1/img/image-20220320201054938.png 2x"
+        data-sizes="auto"
+        alt="/posts/multiplication-part1/img/image-20220320201054938.png"
+        title="/posts/multiplication-part1/img/image-20220320201054938.png" width="655" height="350" /></p>
+<p>Karatsuba在发现这个算法时还是一个23岁的学生。1950年代，苏联数学家Kolmogorov举办了一个研讨会，提出“任何n*n的乘法算法都不可能在$n^2$的时间复杂度以下”，可是在一周之后，Karatsuba就发现了这个算法。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-03-20</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/multiplication-part1/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/multiplication-part1/" data-title="Multiplication" data-hashtags="Book"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/multiplication-part1/" data-hashtag="Book"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/multiplication-part1/" data-title="Multiplication"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/multiplication-part1/" data-title="Multiplication"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/multiplication-part1/" data-title="Multiplication"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
         </div>
-      </div>
-
-      
-      
-      <div class="toc">
-        <strong>Table of contents:</strong>
-        <nav id="TableOfContents"></nav>
-      </div>
-      
     </div>
 
-    </article>
-</main>
-<footer>
-  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a></div>
-  <div class="footer-info">
-    2025  <a
-      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
-  </div>
-</footer>
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/book/">Book</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
 
-
-
+    <div class="post-nav"><a href="/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" class="prev" rel="prev" title="浅析jmp_buf的定义"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>浅析jmp_buf的定义</a>
+            <a href="/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/" class="next" rel="next" title="探究支撑os的硬件(以xv6和riscv为例)">探究支撑os的硬件(以xv6和riscv为例)<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-    </body>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html><head lang="en">
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深度学习基础知识总结 - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="" />
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>深度学习基础知识总结 - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="深度学习基础知识总结">
+  <meta property="og:description" content="Ekstasis&#39;s Blog">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -14,70 +15,184 @@
     <meta property="article:modified_time" content="2025-01-13T19:29:29+08:00">
     <meta property="article:tag" content="DeepLearning">
     <meta property="article:tag" content="Summary">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
   <meta name="twitter:title" content="深度学习基础知识总结">
+  <meta name="twitter:description" content="Ekstasis&#39;s Blog">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" /><link rel="prev" href="https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/" /><link rel="next" href="https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "深度学习基础知识总结",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93\/"
+        },"genre": "posts","keywords": "DeepLearning, Summary","wordcount":  7320 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93\/","datePublished": "2025-01-13T19:29:29+08:00","dateModified": "2025-01-13T19:29:29+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
-	
-
-	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
-		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
-  	
-   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['$', '$']]                  
-    },
-    loader:{
-      load: ['ui/safe']
-    },
-  };
-</script>
-  	
-
-	
-</head>
-<body>
-        <div class="content"><header>
-	<div class="main">
-		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
-	</div>
-	<nav>
-		
-		<a href="/posts/">All Posts</a>
-		
-		<a href="/categories/">Categories</a>
-		
-		<a href="/tags/">Tags</a>
-		
-		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
-		
-		
-	</nav>
-</header>
-
-<main>
-  <article>
-    <div class="post-container">
-      
-      <div class="post-content">
-        <div class="title">
-          <h1 class="title">深度学习基础知识总结</h1>
-          <div class="meta">Posted on Jan 13, 2025</div>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
-        
-        <section class="body">
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">深度学习基础知识总结</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-01-13">2025-01-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;7320 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;15 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本概念">基本概念</a></li>
+    <li><a href="#对学习的理解">对学习的理解</a></li>
+    <li><a href="#模型评估和选择">模型评估和选择</a>
+      <ul>
+        <li><a href="#经验误差与过拟合">经验误差与过拟合</a></li>
+        <li><a href="#评估方法">评估方法</a>
           <ul>
-<li><a href="https://stanford.edu/~shervine/teaching/">cheat sheet</a></li>
-<li><a href="https://ml-cheatsheet.readthedocs.io/en/latest/">Machine Learning Glossary</a></li>
+            <li><a href="#1-留出法hold-out-method">1. <strong>留出法（Hold-out Method）</strong></a></li>
+            <li><a href="#2-交叉验证法cross-validation">2. <strong>交叉验证法（Cross-validation）</strong></a></li>
+            <li><a href="#3-自助法bootstrapping">3. <strong>自助法（Bootstrapping）</strong></a></li>
+            <li><a href="#参数调节与最终模型选择">参数调节与最终模型选择</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#神经网络httpsml-cheatsheetreadthedocsioenlatestnn_conceptshtml"><a href="https://ml-cheatsheet.readthedocs.io/en/latest/nn_concepts.html">神经网络</a></a>
+      <ul>
+        <li><a href="#神经元模型">神经元模型</a></li>
+        <li><a href="#感知机和多层网络">感知机和多层网络</a></li>
+        <li><a href="#反向传播算法">反向传播算法</a></li>
+      </ul>
+    </li>
+    <li><a href="#深度学习训练技巧">深度学习训练技巧</a>
+      <ul>
+        <li><a href="#应对欠拟合问题">应对欠拟合问题</a>
+          <ul>
+            <li><a href="#1-局部最优与鞍点">1. 局部最优与鞍点</a></li>
+            <li><a href="#2-小批量与噪声">2. 小批量与噪声</a></li>
+            <li><a href="#3-自适应学习率">3. 自适应学习率</a></li>
+            <li><a href="#4-动量momentum">4. 动量（Momentum）</a></li>
+            <li><a href="#5-批归一化batch-normalization">5. 批归一化（Batch Normalization）</a></li>
+            <li><a href="#6-激活函数的选择">6. 激活函数的选择</a></li>
+          </ul>
+        </li>
+        <li><a href="#应对过拟合问题">应对过拟合问题</a>
+          <ul>
+            <li><a href="#1-增加数据量">1. 增加数据量</a></li>
+            <li><a href="#2-正则化方法">2. 正则化方法</a></li>
+            <li><a href="#3-提前停止early-stopping">3. 提前停止（Early Stopping）</a></li>
+            <li><a href="#4-更简单的模型结构">4. 更简单的模型结构</a></li>
+          </ul>
+        </li>
+        <li><a href="#分类任务中的优化策略">分类任务中的优化策略</a>
+          <ul>
+            <li><a href="#1-分类问题转化为回归问题">1. 分类问题转化为回归问题</a></li>
+            <li><a href="#2-损失函数的选择">2. 损失函数的选择</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#pytorch手写数字识别的例子">Pytorch——手写数字识别的例子</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><ul>
+<li><a href="https://stanford.edu/~shervine/teaching/" target="_blank" rel="noopener noreffer ">cheat sheet</a></li>
+<li><a href="https://ml-cheatsheet.readthedocs.io/en/latest/" target="_blank" rel="noopener noreffer ">Machine Learning Glossary</a></li>
 </ul>
 <h2 id="基本概念">基本概念</h2>
 <blockquote>
-<p>什么是机器学习？</p></blockquote>
+<p>什么是机器学习？</p>
+</blockquote>
 <p>机器学习致力于研究如何通过计算的手段，利用经验来改善系统自身的性能。</p>
 <p>经验通常以&quot;<strong>数据</strong>&ldquo;形式存在，因此机器学习研究的主要内容，是关于在计算机上从数据中产生&rdquo;<strong>模型</strong>&quot;(model) 的算法，即&quot;<strong>学习算法</strong>&quot; (learning algorithm).</p>
 <p>记录的集合称为一个&quot;<strong>数据集</strong>&quot; (data set) ，其中每条记录是关于一个事件或对象的描述，称为一个&quot;<strong>示例</strong>&quot;(instance) 或&quot;<strong>样本</strong>&quot;(sample). 反映事件或对象在某方面的表现或性质的事项称为&quot;<strong>属性</strong>&quot;(attribute) 或&quot;<strong>特征</strong>&quot;(feature); 属性上的取值称为&quot;<strong>属性值</strong>&quot; (attribute value). 属性张成的空间称为&quot;<strong>属性空间</strong>&quot; (attribute space) 、&quot;<strong>样本空间</strong>&quot; (sample space)或&quot;<strong>输入空间</strong>&quot;。我们也把一个示例称为一个&quot;<strong>特征向量</strong>&quot; (feature vector).属性的数目被称为样本的&quot;<strong>维数</strong>&quot; (dimensionality).</p>
@@ -86,12 +201,21 @@
 <p>学得模型后，使用其母行预测的过程称为&quot;<strong>测试</strong>&quot;(testing) ，被预测的样本
 称为&quot;<strong>测试样本</strong>&quot; (testing sample).</p>
 <blockquote>
-<p>都有哪些机器学习算法？</p></blockquote>
-<p><a href="https://s3.amazonaws.com/assets.datacamp.com/email/other/ML+Cheat+Sheet_2.pdf">一份算法列表</a></p>
-<p><img src="img/CheatSheet.png" alt=""></p>
+<p>都有哪些机器学习算法？</p>
+</blockquote>
+<p><a href="https://s3.amazonaws.com/assets.datacamp.com/email/other/ML&#43;Cheat&#43;Sheet_2.pdf" target="_blank" rel="noopener noreffer ">一份算法列表</a></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png"
+        data-srcset="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png 1.5x, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png 2x"
+        data-sizes="auto"
+        alt="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png"
+        title="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/CheatSheet.png" width="1280" height="721" /></p>
 <p>除如图所示的监督和非监督学习外，<strong>强化学习</strong>也是一类基本学习算法。</p>
 <blockquote>
-<p>什么是深度学习</p></blockquote>
+<p>什么是深度学习</p>
+</blockquote>
 <p>深度学习（Deep Learning）是机器学习的一个分支，是一种基于人工神经网络的算法模型。它模仿人类大脑处理信息的方式，采用<strong>多层神经网络</strong>从大量数据中提取特征并进行决策。深度学习在监督，非监督，强化学习中均有应用。</p>
 <h2 id="对学习的理解">对学习的理解</h2>
 <p>我们可以把学习过程看作一个在所有假设 (hypothesis)组成的空间中进行搜索的过程，搜索目标是找到与训练集&quot;匹配&quot;(fit) 的假设，即能够将训练集中的瓜判断正确的假设.假设的表示一旦确定，假设空间及其规模大小就确定了.</p>
@@ -103,9 +227,11 @@
 <p>不同的神经网络架构既体现了不同的假设空间，也体现了不同的归纳偏好</p>
 <p><strong>假设空间</strong>：由架构定义，是模型可以表示的所有可能函数。</p>
 <blockquote>
-<p><a href="https://www.wikiwand.com/en/articles/Universal_approximation_theorem">理论上来说</a>，一层全连接神经网络（具有足够的神经元和非线性激活函数）就能逼近任意连续函数。</p></blockquote>
-<p><strong>归纳偏好</strong>：由架构及其优化过程（例如损失函数、正则化策略）定义，是模型在有限数据下更倾向选择的函数。</p></blockquote>
-<p>而同时，根据<a href="https://www.wikiwand.com/en/articles/No_free_lunch_theorem">NFL 定理</a>，<strong>没有任何一种学习算法在所有问题上都优于其他算法</strong>。</p>
+<p><a href="https://www.wikiwand.com/en/articles/Universal_approximation_theorem" target="_blank" rel="noopener noreffer ">理论上来说</a>，一层全连接神经网络（具有足够的神经元和非线性激活函数）就能逼近任意连续函数。</p>
+</blockquote>
+<p><strong>归纳偏好</strong>：由架构及其优化过程（例如损失函数、正则化策略）定义，是模型在有限数据下更倾向选择的函数。</p>
+</blockquote>
+<p>而同时，根据<a href="https://www.wikiwand.com/en/articles/No_free_lunch_theorem" target="_blank" rel="noopener noreffer ">NFL 定理</a>，<strong>没有任何一种学习算法在所有问题上都优于其他算法</strong>。</p>
 <p>直观来说：</p>
 <ul>
 <li>如果我们对<strong>问题分布</strong>一无所知，那么所有算法在这些问题上成功的概率是等价的。</li>
@@ -146,7 +272,8 @@
 </ul>
 <p><strong>本质限制</strong>：过拟合无法完全避免，因为机器学习问题通常是 NP 难或更复杂的，而有效的学习算法必然是多项式时间内运行完成。要彻底避免过拟合，经验误差最小化就能找到最优解，而这在理论上等同于 $P=NP$（构造性地证明），目前尚未被证明。</p>
 <blockquote>
-<p>许多学习问题（如神经网络权重优化、支持向量机中的核参数选择等）涉及<strong>非凸优化</strong>问题，或需要在一个离散的组合空间中搜索最佳解。这类问题通常被证明为 NP难。</p></blockquote>
+<p>许多学习问题（如神经网络权重优化、支持向量机中的核参数选择等）涉及<strong>非凸优化</strong>问题，或需要在一个离散的组合空间中搜索最佳解。这类问题通常被证明为 NP难。</p>
+</blockquote>
 <p>在实际任务中，我们面临许多选择，包括：</p>
 <ul>
 <li><strong>不同的学习算法</strong>（如决策树、支持向量机、深度学习）。</li>
@@ -172,7 +299,7 @@
 </ul>
 <h4 id="2-交叉验证法cross-validation">2. <strong>交叉验证法（Cross-validation）</strong></h4>
 <p>交叉验证将数据集 $D$ 分为 $k$ 个大小相等的互斥子集：
-$D = D_1 \cup D_2 \cup ... \cup D_k$​，且 $D_i \cap D_j = \emptyset \, (i \neq j)$</p>
+$D = D_1 \cup D_2 \cup &hellip; \cup D_k$​，且 $D_i \cap D_j = \emptyset , (i \neq j)$</p>
 <p>每次用 $k−1$ 个子集作为训练集，剩余一个子集作为测试集，重复 $k$ 次后取测试结果的均值作为最终评估结果。常见的 $k$ 值为 10，称为<strong>10 折交叉验证</strong>（10-fold Cross-validation）。</p>
 <p><strong>优点：</strong></p>
 <ul>
@@ -185,12 +312,13 @@ $D = D_1 \cup D_2 \cup ... \cup D_k$​，且 $D_i \cap D_j = \emptyset \, (i \n
 <li>LOO 不受随机划分影响，训练集与全数据集非常接近，但计算复杂度较高，尤其在样本量较大时。</li>
 </ul>
 <blockquote>
-<p>在理论上，多次留出法的随机划分结果有可能与交叉验证法某次划分完全一致</p></blockquote>
+<p>在理论上，多次留出法的随机划分结果有可能与交叉验证法某次划分完全一致</p>
+</blockquote>
 <h4 id="3-自助法bootstrapping">3. <strong>自助法（Bootstrapping）</strong></h4>
 <p>自助法通过<strong>自助采样</strong>（Bootstrap Sampling）生成新的训练集。每次从原始数据集 $D$ 中随机抽取一个样本放入训练集，并将其放回，再次采样，重复 $m$ 次。采样后：</p>
 <ul>
 <li>$D′$ 为训练集，包含 $m$ 个样本，其中部分样本重复出现。</li>
-<li>$D \setminus D'$ 作为测试集，包含约 36.8% 的未被采样样本（概率计算如下）： $P(\text{样本未被采样}) = (1 - \frac{1}{m})^m \approx e^{-1} \approx 36.8\%$</li>
+<li>$D \setminus D&rsquo;$ 作为测试集，包含约 36.8% 的未被采样样本（概率计算如下）： $P(\text{样本未被采样}) = (1 - \frac{1}{m})^m \approx e^{-1} \approx 36.8%$</li>
 </ul>
 <p><strong>特点：</strong></p>
 <ul>
@@ -227,20 +355,41 @@ $D = D_1 \cup D_2 \cup ... \cup D_k$​，且 $D_i \cap D_j = \emptyset \, (i \n
 </ul>
 </li>
 </ol>
-<h2 id="神经网络"><a href="https://ml-cheatsheet.readthedocs.io/en/latest/nn_concepts.html">神经网络</a></h2>
+<h2 id="神经网络httpsml-cheatsheetreadthedocsioenlatestnn_conceptshtml"><a href="https://ml-cheatsheet.readthedocs.io/en/latest/nn_concepts.html" target="_blank" rel="noopener noreffer ">神经网络</a></h2>
 <h3 id="神经元模型">神经元模型</h3>
 <p><strong>神经网络</strong>是由具有适应性的简单单元组成的广泛并行互连的网络，它的组织能够模拟生物神经系统对真实世界物体所作出的交互反应。神经网络中最基本的成分是<strong>神经元</strong> (neuron)模型。</p>
-<p><img src="img/neuron.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png"
+        data-srcset="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png 1.5x, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png 2x"
+        data-sizes="auto"
+        alt="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png"
+        title="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neuron.png" width="800" height="295" /></p>
 <p>（M-P 神经元）</p>
 <h3 id="感知机和多层网络">感知机和多层网络</h3>
 <p>感知机 (Perceptron) 由两层 神经元 组成，感知机能容易地实现逻辑与、或、非运算。</p>
-<p><img src="img/image-20250113181958415.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png"
+        data-srcset="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png 1.5x, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png 2x"
+        data-sizes="auto"
+        alt="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png"
+        title="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/image-20250113181958415.png" width="678" height="620" /></p>
 <p>史一般的，常见的神经网络是形如图所示的层级结构，每层神经元与下
 层神经元全互连。神经元之间不存在同层连接，也不存在跨层连接。这样 的
 神经网络结构通常称为&quot; 多层前馈神经网络 &quot; (multi-layer feedforward neural networks)</p>
-<p><img src="img/neural-network-en.png" alt=""></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png"
+        data-srcset="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png 1.5x, /posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png 2x"
+        data-sizes="auto"
+        alt="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png"
+        title="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/img/neural-network-en.png" width="1500" height="350" /></p>
 <h3 id="反向传播算法">反向传播算法</h3>
-<p>最常用的神经网络训练方法，详见： <a href="https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html">https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html</a></p>
+<p>最常用的神经网络训练方法，详见： <a href="https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html" target="_blank" rel="noopener noreffer ">https://ml-cheatsheet.readthedocs.io/en/latest/backpropagation.html</a></p>
 <h2 id="深度学习训练技巧">深度学习训练技巧</h2>
 <p>深度学习训练中的变量：</p>
 <ol>
@@ -323,235 +472,195 @@ $D = D_1 \cup D_2 \cup ... \cup D_k$​，且 $D_i \cap D_j = \emptyset \, (i \n
 <li><strong>交叉熵损失 (Cross-Entropy Loss)</strong>：对于分类任务，尤其是多分类任务，交叉熵损失是更合适的选择，特别是与Softmax结合使用时，能够更好地指导优化过程。</li>
 </ul>
 <h2 id="pytorch手写数字识别的例子">Pytorch——手写数字识别的例子</h2>
-<p><a href="http://blog.ezyang.com/2019/05/pytorch-internals/">pytorch internals</a></p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch.nn</span> <span style="color:#c678dd">as</span> <span style="color:#e06c75">nn</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch.optim</span> <span style="color:#c678dd">as</span> <span style="color:#e06c75">optim</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">import</span> <span style="color:#e06c75">torch.nn.functional</span> <span style="color:#c678dd">as</span> <span style="color:#e06c75">F</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">from</span> <span style="color:#e06c75">torch.utils.data</span> <span style="color:#c678dd">import</span> <span style="color:#e06c75">DataLoader</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">from</span> <span style="color:#e06c75">torchvision</span> <span style="color:#c678dd">import</span> <span style="color:#e06c75">datasets</span>, <span style="color:#e06c75">transforms</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">from</span> <span style="color:#e06c75">torch.utils.data</span> <span style="color:#c678dd">import</span> <span style="color:#e06c75">random_split</span>
+<p><a href="http://blog.ezyang.com/2019/05/pytorch-internals/" target="_blank" rel="noopener noreffer ">pytorch internals</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.optim <span style="color:#66d9ef">as</span> optim
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn.functional <span style="color:#66d9ef">as</span> F
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> torch.utils.data <span style="color:#f92672">import</span> DataLoader
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> torchvision <span style="color:#f92672">import</span> datasets, transforms
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> torch.utils.data <span style="color:#f92672">import</span> random_split
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 超参数</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">batch_size</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">64</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">learning_rate</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.001</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">epochs</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">10</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">dropout_rate</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.5</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 超参数</span>
+</span></span><span style="display:flex;"><span>batch_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>learning_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.001</span>
+</span></span><span style="display:flex;"><span>epochs <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>dropout_rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 1. 数据加载和预处理</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">transform</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">transforms</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Compose</span>([
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">transforms</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">ToTensor</span>(),
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">transforms</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Normalize</span>((<span style="color:#d19a66">0.5</span>,), (<span style="color:#d19a66">0.5</span>,))
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 1. 数据加载和预处理</span>
+</span></span><span style="display:flex;"><span>transform <span style="color:#f92672">=</span> transforms<span style="color:#f92672">.</span>Compose([
+</span></span><span style="display:flex;"><span>    transforms<span style="color:#f92672">.</span>ToTensor(),
+</span></span><span style="display:flex;"><span>    transforms<span style="color:#f92672">.</span>Normalize((<span style="color:#ae81ff">0.5</span>,), (<span style="color:#ae81ff">0.5</span>,))
 </span></span><span style="display:flex;"><span>])
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 加载MNIST数据集</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">train_dataset</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">datasets</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">MNIST</span>(<span style="color:#e06c75">root</span><span style="color:#56b6c2">=</span><span style="color:#98c379">&#39;./data&#39;</span>, <span style="color:#e06c75">train</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>, <span style="color:#e06c75">download</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>, <span style="color:#e06c75">transform</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">transform</span>)
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">test_dataset</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">datasets</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">MNIST</span>(<span style="color:#e06c75">root</span><span style="color:#56b6c2">=</span><span style="color:#98c379">&#39;./data&#39;</span>, <span style="color:#e06c75">train</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>, <span style="color:#e06c75">download</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>, <span style="color:#e06c75">transform</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">transform</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 加载MNIST数据集</span>
+</span></span><span style="display:flex;"><span>train_dataset <span style="color:#f92672">=</span> datasets<span style="color:#f92672">.</span>MNIST(root<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;./data&#39;</span>, train<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, download<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, transform<span style="color:#f92672">=</span>transform)
+</span></span><span style="display:flex;"><span>test_dataset <span style="color:#f92672">=</span> datasets<span style="color:#f92672">.</span>MNIST(root<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;./data&#39;</span>, train<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, download<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, transform<span style="color:#f92672">=</span>transform)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 数据分批次处理</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">train_loader</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">DataLoader</span>(<span style="color:#e06c75">train_dataset</span>, <span style="color:#e06c75">batch_size</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">shuffle</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">True</span>)
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">test_loader</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">DataLoader</span>(<span style="color:#e06c75">test_dataset</span>, <span style="color:#e06c75">batch_size</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">batch_size</span>, <span style="color:#e06c75">shuffle</span><span style="color:#56b6c2">=</span><span style="color:#e5c07b">False</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 数据分批次处理</span>
+</span></span><span style="display:flex;"><span>train_loader <span style="color:#f92672">=</span> DataLoader(train_dataset, batch_size<span style="color:#f92672">=</span>batch_size, shuffle<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>test_loader <span style="color:#f92672">=</span> DataLoader(test_dataset, batch_size<span style="color:#f92672">=</span>batch_size, shuffle<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 2. 定义卷积神经网络 (CNN)</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">class</span> <span style="color:#e5c07b">SimpleCNN</span>(<span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Module</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#56b6c2;font-weight:bold">__init__</span>(<span style="color:#e06c75">self</span>):
-</span></span><span style="display:flex;"><span>        <span style="color:#e5c07b">super</span>(<span style="color:#e06c75">SimpleCNN</span>, <span style="color:#e06c75">self</span>)<span style="color:#56b6c2">.</span><span style="color:#56b6c2;font-weight:bold">__init__</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2. 定义卷积神经网络 (CNN)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleCNN</span>(nn<span style="color:#f92672">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self):
+</span></span><span style="display:flex;"><span>        super(SimpleCNN, self)<span style="color:#f92672">.</span>__init__()
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 第一卷积层，输入1个通道，输出32个通道</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Conv2d</span>(<span style="color:#d19a66">1</span>, <span style="color:#d19a66">32</span>, <span style="color:#e06c75">kernel_size</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">3</span>, <span style="color:#e06c75">stride</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">padding</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">BatchNorm2d</span>(<span style="color:#d19a66">32</span>)  <span style="color:#7f848e"># 批归一化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 第一卷积层，输入1个通道，输出32个通道</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>conv1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Conv2d(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">32</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, stride<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, padding<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>bn1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>BatchNorm2d(<span style="color:#ae81ff">32</span>)  <span style="color:#75715e"># 批归一化</span>
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 第二卷积层，输入32个通道，输出64个通道</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Conv2d</span>(<span style="color:#d19a66">32</span>, <span style="color:#d19a66">64</span>, <span style="color:#e06c75">kernel_size</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">3</span>, <span style="color:#e06c75">stride</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">padding</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">BatchNorm2d</span>(<span style="color:#d19a66">64</span>)  <span style="color:#7f848e"># 批归一化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 第二卷积层，输入32个通道，输出64个通道</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>conv2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Conv2d(<span style="color:#ae81ff">32</span>, <span style="color:#ae81ff">64</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, stride<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, padding<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>bn2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>BatchNorm2d(<span style="color:#ae81ff">64</span>)  <span style="color:#75715e"># 批归一化</span>
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 第三卷积层，输入64个通道，输出128个通道</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv3</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Conv2d</span>(<span style="color:#d19a66">64</span>, <span style="color:#d19a66">128</span>, <span style="color:#e06c75">kernel_size</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">3</span>, <span style="color:#e06c75">stride</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>, <span style="color:#e06c75">padding</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">1</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn3</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">BatchNorm2d</span>(<span style="color:#d19a66">128</span>)  <span style="color:#7f848e"># 批归一化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 第三卷积层，输入64个通道，输出128个通道</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>conv3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Conv2d(<span style="color:#ae81ff">64</span>, <span style="color:#ae81ff">128</span>, kernel_size<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, stride<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, padding<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>bn3 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>BatchNorm2d(<span style="color:#ae81ff">128</span>)  <span style="color:#75715e"># 批归一化</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 线性层（全连接层）</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc1</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#d19a66">128</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span>, <span style="color:#d19a66">512</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc2</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Linear</span>(<span style="color:#d19a66">512</span>, <span style="color:#d19a66">10</span>)  <span style="color:#7f848e"># 输出10个类别（MNIST是0-9的数字）</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 线性层（全连接层）</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc1 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">128</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">512</span>)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>fc2 <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(<span style="color:#ae81ff">512</span>, <span style="color:#ae81ff">10</span>)  <span style="color:#75715e"># 输出10个类别（MNIST是0-9的数字）</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># Dropout层，防止过拟合</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">dropout</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Dropout</span>(<span style="color:#e06c75">p</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">dropout_rate</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Dropout层，防止过拟合</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>dropout <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Dropout(p<span style="color:#f92672">=</span>dropout_rate)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">forward</span>(<span style="color:#e06c75">self</span>, <span style="color:#e06c75">x</span>):
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 卷积层 + 激活函数 + 批归一化 + 池化</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn1</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv1</span>(<span style="color:#e06c75">x</span>)))
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max_pool2d</span>(<span style="color:#e06c75">x</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 卷积层 + 激活函数 + 批归一化 + 池化</span>
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>bn1(self<span style="color:#f92672">.</span>conv1(x)))
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>max_pool2d(x, <span style="color:#ae81ff">2</span>)
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn2</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv2</span>(<span style="color:#e06c75">x</span>)))
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max_pool2d</span>(<span style="color:#e06c75">x</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>bn2(self<span style="color:#f92672">.</span>conv2(x)))
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>max_pool2d(x, <span style="color:#ae81ff">2</span>)
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">bn3</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">conv3</span>(<span style="color:#e06c75">x</span>)))
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max_pool2d</span>(<span style="color:#e06c75">x</span>, <span style="color:#d19a66">2</span>)
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>bn3(self<span style="color:#f92672">.</span>conv3(x)))
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>max_pool2d(x, <span style="color:#ae81ff">2</span>)
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 将特征图展平（Flatten）</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">x</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">view</span>(<span style="color:#56b6c2">-</span><span style="color:#d19a66">1</span>, <span style="color:#d19a66">128</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span> <span style="color:#56b6c2">*</span> <span style="color:#d19a66">7</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 将特征图展平（Flatten）</span>
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">128</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">7</span>)
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 全连接层</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">F</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">relu</span>(<span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc1</span>(<span style="color:#e06c75">x</span>))
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">dropout</span>(<span style="color:#e06c75">x</span>)  <span style="color:#7f848e"># 在全连接层后应用Dropout</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 全连接层</span>
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> F<span style="color:#f92672">.</span>relu(self<span style="color:#f92672">.</span>fc1(x))
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>dropout(x)  <span style="color:#75715e"># 在全连接层后应用Dropout</span>
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">x</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">self</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">fc2</span>(<span style="color:#e06c75">x</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">return</span> <span style="color:#e06c75">x</span>
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>fc2(x)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 3. 模型、损失函数和优化器</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">model</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">SimpleCNN</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 3. 模型、损失函数和优化器</span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> SimpleCNN()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># Adam优化器，并使用L2正则化（weight decay）</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">optimizer</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">optim</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">Adam</span>(<span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">parameters</span>(), <span style="color:#e06c75">lr</span><span style="color:#56b6c2">=</span><span style="color:#e06c75">learning_rate</span>, <span style="color:#e06c75">weight_decay</span><span style="color:#56b6c2">=</span><span style="color:#d19a66">0.0001</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Adam优化器，并使用L2正则化（weight decay）</span>
+</span></span><span style="display:flex;"><span>optimizer <span style="color:#f92672">=</span> optim<span style="color:#f92672">.</span>Adam(model<span style="color:#f92672">.</span>parameters(), lr<span style="color:#f92672">=</span>learning_rate, weight_decay<span style="color:#f92672">=</span><span style="color:#ae81ff">0.0001</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 使用交叉熵损失函数（适用于分类任务）</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">criterion</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">nn</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">CrossEntropyLoss</span>()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用交叉熵损失函数（适用于分类任务）</span>
+</span></span><span style="display:flex;"><span>criterion <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>CrossEntropyLoss()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 4. 训练过程</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">train</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">train_loader</span>, <span style="color:#e06c75">optimizer</span>, <span style="color:#e06c75">criterion</span>, <span style="color:#e06c75">epoch</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">train</span>()
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">running_loss</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.0</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">total</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 4. 训练过程</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">train</span>(model, train_loader, optimizer, criterion, epoch):
+</span></span><span style="display:flex;"><span>    model<span style="color:#f92672">.</span>train()
+</span></span><span style="display:flex;"><span>    running_loss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    correct <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    total <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">for</span> <span style="color:#e06c75">batch_idx</span>, (<span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span>) <span style="color:#56b6c2">in</span> <span style="color:#e5c07b">enumerate</span>(<span style="color:#e06c75">train_loader</span>):
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 将数据移到GPU（如果可用）</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">data</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>(), <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> batch_idx, (data, target) <span style="color:#f92672">in</span> enumerate(train_loader):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 将数据移到GPU（如果可用）</span>
+</span></span><span style="display:flex;"><span>        data, target <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>cuda(), target<span style="color:#f92672">.</span>cuda()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 清除梯度</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">optimizer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">zero_grad</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 清除梯度</span>
+</span></span><span style="display:flex;"><span>        optimizer<span style="color:#f92672">.</span>zero_grad()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 向前传播</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">output</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">model</span>(<span style="color:#e06c75">data</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 向前传播</span>
+</span></span><span style="display:flex;"><span>        output <span style="color:#f92672">=</span> model(data)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 计算损失</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">loss</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">criterion</span>(<span style="color:#e06c75">output</span>, <span style="color:#e06c75">target</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">running_loss</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">loss</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 计算损失</span>
+</span></span><span style="display:flex;"><span>        loss <span style="color:#f92672">=</span> criterion(output, target)
+</span></span><span style="display:flex;"><span>        running_loss <span style="color:#f92672">+=</span> loss<span style="color:#f92672">.</span>item()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 向后传播</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">loss</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">backward</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 向后传播</span>
+</span></span><span style="display:flex;"><span>        loss<span style="color:#f92672">.</span>backward()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 更新参数</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">optimizer</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">step</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 更新参数</span>
+</span></span><span style="display:flex;"><span>        optimizer<span style="color:#f92672">.</span>step()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#7f848e"># 计算准确度</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">_</span>, <span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max</span>(<span style="color:#e06c75">output</span>, <span style="color:#d19a66">1</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">total</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">size</span>(<span style="color:#d19a66">0</span>)
-</span></span><span style="display:flex;"><span>        <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">+=</span> (<span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">target</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">sum</span>()<span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 计算准确度</span>
+</span></span><span style="display:flex;"><span>        _, predicted <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(output, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        total <span style="color:#f92672">+=</span> target<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        correct <span style="color:#f92672">+=</span> (predicted <span style="color:#f92672">==</span> target)<span style="color:#f92672">.</span>sum()<span style="color:#f92672">.</span>item()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># 打印每个epoch的损失和准确率</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">print</span>(<span style="color:#98c379">f</span><span style="color:#98c379">&#39;Epoch </span><span style="color:#98c379">{</span><span style="color:#e06c75">epoch</span><span style="color:#98c379">}</span><span style="color:#98c379">, Loss: </span><span style="color:#98c379">{</span><span style="color:#e06c75">running_loss</span><span style="color:#56b6c2">/</span><span style="color:#e5c07b">len</span>(<span style="color:#e06c75">train_loader</span>)<span style="color:#98c379">:</span><span style="color:#98c379">.4f</span><span style="color:#98c379">}</span><span style="color:#98c379">, Accuracy: </span><span style="color:#98c379">{</span><span style="color:#d19a66">100.</span> <span style="color:#56b6c2">*</span> <span style="color:#e06c75">correct</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">total</span><span style="color:#98c379">:</span><span style="color:#98c379">.2f</span><span style="color:#98c379">}</span><span style="color:#98c379">%&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 打印每个epoch的损失和准确率</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Epoch </span><span style="color:#e6db74">{</span>epoch<span style="color:#e6db74">}</span><span style="color:#e6db74">, Loss: </span><span style="color:#e6db74">{</span>running_loss<span style="color:#f92672">/</span>len(train_loader)<span style="color:#e6db74">:</span><span style="color:#e6db74">.4f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">, Accuracy: </span><span style="color:#e6db74">{</span><span style="color:#ae81ff">100.</span> <span style="color:#f92672">*</span> correct<span style="color:#f92672">/</span>total<span style="color:#e6db74">:</span><span style="color:#e6db74">.2f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">%&#39;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 5. 测试过程</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">def</span> <span style="color:#61afef;font-weight:bold">test</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">test_loader</span>, <span style="color:#e06c75">criterion</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">eval</span>()  <span style="color:#7f848e"># 切换为评估模式</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">test_loss</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0.0</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">total</span> <span style="color:#56b6c2">=</span> <span style="color:#d19a66">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 5. 测试过程</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">test</span>(model, test_loader, criterion):
+</span></span><span style="display:flex;"><span>    model<span style="color:#f92672">.</span>eval()  <span style="color:#75715e"># 切换为评估模式</span>
+</span></span><span style="display:flex;"><span>    test_loss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    correct <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    total <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#c678dd">with</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">no_grad</span>():  <span style="color:#7f848e"># 测试时不需要计算梯度</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#c678dd">for</span> <span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span> <span style="color:#56b6c2">in</span> <span style="color:#e06c75">test_loader</span>:
-</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 将数据移到GPU（如果可用）</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">data</span>, <span style="color:#e06c75">target</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">data</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>(), <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> torch<span style="color:#f92672">.</span>no_grad():  <span style="color:#75715e"># 测试时不需要计算梯度</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> data, target <span style="color:#f92672">in</span> test_loader:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 将数据移到GPU（如果可用）</span>
+</span></span><span style="display:flex;"><span>            data, target <span style="color:#f92672">=</span> data<span style="color:#f92672">.</span>cuda(), target<span style="color:#f92672">.</span>cuda()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 向前传播</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">output</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">model</span>(<span style="color:#e06c75">data</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 向前传播</span>
+</span></span><span style="display:flex;"><span>            output <span style="color:#f92672">=</span> model(data)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 计算损失</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">loss</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">criterion</span>(<span style="color:#e06c75">output</span>, <span style="color:#e06c75">target</span>)
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">test_loss</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">loss</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 计算损失</span>
+</span></span><span style="display:flex;"><span>            loss <span style="color:#f92672">=</span> criterion(output, target)
+</span></span><span style="display:flex;"><span>            test_loss <span style="color:#f92672">+=</span> loss<span style="color:#f92672">.</span>item()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            <span style="color:#7f848e"># 计算准确度</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">_</span>, <span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">max</span>(<span style="color:#e06c75">output</span>, <span style="color:#d19a66">1</span>)
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">total</span> <span style="color:#56b6c2">+=</span> <span style="color:#e06c75">target</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">size</span>(<span style="color:#d19a66">0</span>)
-</span></span><span style="display:flex;"><span>            <span style="color:#e06c75">correct</span> <span style="color:#56b6c2">+=</span> (<span style="color:#e06c75">predicted</span> <span style="color:#56b6c2">==</span> <span style="color:#e06c75">target</span>)<span style="color:#56b6c2">.</span><span style="color:#e06c75">sum</span>()<span style="color:#56b6c2">.</span><span style="color:#e06c75">item</span>()
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 计算准确度</span>
+</span></span><span style="display:flex;"><span>            _, predicted <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>max(output, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>            total <span style="color:#f92672">+=</span> target<span style="color:#f92672">.</span>size(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            correct <span style="color:#f92672">+=</span> (predicted <span style="color:#f92672">==</span> target)<span style="color:#f92672">.</span>sum()<span style="color:#f92672">.</span>item()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#7f848e"># 打印测试集上的损失和准确率</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">print</span>(<span style="color:#98c379">f</span><span style="color:#98c379">&#39;Test Loss: </span><span style="color:#98c379">{</span><span style="color:#e06c75">test_loss</span><span style="color:#56b6c2">/</span><span style="color:#e5c07b">len</span>(<span style="color:#e06c75">test_loader</span>)<span style="color:#98c379">:</span><span style="color:#98c379">.4f</span><span style="color:#98c379">}</span><span style="color:#98c379">, Test Accuracy: </span><span style="color:#98c379">{</span><span style="color:#d19a66">100.</span> <span style="color:#56b6c2">*</span> <span style="color:#e06c75">correct</span><span style="color:#56b6c2">/</span><span style="color:#e06c75">total</span><span style="color:#98c379">:</span><span style="color:#98c379">.2f</span><span style="color:#98c379">}</span><span style="color:#98c379">%&#39;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 打印测试集上的损失和准确率</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Test Loss: </span><span style="color:#e6db74">{</span>test_loss<span style="color:#f92672">/</span>len(test_loader)<span style="color:#e6db74">:</span><span style="color:#e6db74">.4f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">, Test Accuracy: </span><span style="color:#e6db74">{</span><span style="color:#ae81ff">100.</span> <span style="color:#f92672">*</span> correct<span style="color:#f92672">/</span>total<span style="color:#e6db74">:</span><span style="color:#e6db74">.2f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">%&#39;</span>)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 6. 训练和测试模型</span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e"># 如果有GPU，使用GPU训练</span>
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">device</span> <span style="color:#56b6c2">=</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">device</span>(<span style="color:#98c379">&#34;cuda&#34;</span> <span style="color:#c678dd">if</span> <span style="color:#e06c75">torch</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">cuda</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">is_available</span>() <span style="color:#c678dd">else</span> <span style="color:#98c379">&#34;cpu&#34;</span>)
-</span></span><span style="display:flex;"><span><span style="color:#e06c75">model</span><span style="color:#56b6c2">.</span><span style="color:#e06c75">to</span>(<span style="color:#e06c75">device</span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 6. 训练和测试模型</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 如果有GPU，使用GPU训练</span>
+</span></span><span style="display:flex;"><span>device <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>device(<span style="color:#e6db74">&#34;cuda&#34;</span> <span style="color:#66d9ef">if</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#34;cpu&#34;</span>)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>to(device)
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">for</span> <span style="color:#e06c75">epoch</span> <span style="color:#56b6c2">in</span> <span style="color:#e5c07b">range</span>(<span style="color:#d19a66">1</span>, <span style="color:#e06c75">epochs</span> <span style="color:#56b6c2">+</span> <span style="color:#d19a66">1</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">train</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">train_loader</span>, <span style="color:#e06c75">optimizer</span>, <span style="color:#e06c75">criterion</span>, <span style="color:#e06c75">epoch</span>)
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">test</span>(<span style="color:#e06c75">model</span>, <span style="color:#e06c75">test_loader</span>, <span style="color:#e06c75">criterion</span>)
-</span></span></code></pre></div>
-        </section>
-        <div class="post-tags">
-          
-          
-          <nav class="nav tags">
-            <ul class="tags">
-              
-              <li><a href="/tags/deeplearning">DeepLearning</a></li>
-              
-              <li><a href="/tags/summary">Summary</a></li>
-              
-            </ul>
-          </nav>
-          
-          
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> epoch <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, epochs <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>    train(model, train_loader, optimizer, criterion, epoch)
+</span></span><span style="display:flex;"><span>    test(model, test_loader, criterion)
+</span></span></code></pre></div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-01-13</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" data-title="深度学习基础知识总结" data-hashtags="DeepLearning,Summary"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" data-hashtag="DeepLearning"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" data-title="深度学习基础知识总结"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" data-title="深度学习基础知识总结"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/" data-title="深度学习基础知识总结"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
         </div>
-      </div>
-
-      
-      
-      <div class="toc">
-        <strong>Table of contents:</strong>
-        <nav id="TableOfContents">
-  <ul>
-    <li><a href="#基本概念">基本概念</a></li>
-    <li><a href="#对学习的理解">对学习的理解</a></li>
-    <li><a href="#模型评估和选择">模型评估和选择</a>
-      <ul>
-        <li><a href="#经验误差与过拟合">经验误差与过拟合</a></li>
-        <li><a href="#评估方法">评估方法</a></li>
-      </ul>
-    </li>
-    <li><a href="#神经网络"><a href="https://ml-cheatsheet.readthedocs.io/en/latest/nn_concepts.html">神经网络</a></a>
-      <ul>
-        <li><a href="#神经元模型">神经元模型</a></li>
-        <li><a href="#感知机和多层网络">感知机和多层网络</a></li>
-        <li><a href="#反向传播算法">反向传播算法</a></li>
-      </ul>
-    </li>
-    <li><a href="#深度学习训练技巧">深度学习训练技巧</a>
-      <ul>
-        <li><a href="#应对欠拟合问题">应对欠拟合问题</a></li>
-        <li><a href="#应对过拟合问题">应对过拟合问题</a></li>
-        <li><a href="#分类任务中的优化策略">分类任务中的优化策略</a></li>
-      </ul>
-    </li>
-    <li><a href="#pytorch手写数字识别的例子">Pytorch——手写数字识别的例子</a></li>
-  </ul>
-</nav>
-      </div>
-      
     </div>
 
-    </article>
-</main>
-<footer>
-  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a></div>
-  <div class="footer-info">
-    2025  <a
-      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
-  </div>
-</footer>
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/deeplearning/">DeepLearning</a>,&nbsp;<a href="/tags/summary/">Summary</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
 
-
-
+    <div class="post-nav"><a href="/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/" class="prev" rel="prev" title="吉登斯「社会学」笔记"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>吉登斯「社会学」笔记</a>
+            <a href="/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/" class="next" rel="next" title="MySQL 知识点总结 ">MySQL 知识点总结 <i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-    </body>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

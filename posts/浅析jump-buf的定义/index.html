@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html><head lang="en">
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>浅析jmp_buf的定义 - Ekstasis&#39;s Blog</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="" />
-	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/">
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>浅析jmp_buf的定义 - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/">
   <meta property="og:site_name" content="Ekstasis&#39;s Blog">
   <meta property="og:title" content="浅析jmp_buf的定义">
+  <meta property="og:description" content="Ekstasis&#39;s Blog">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -14,141 +15,188 @@
     <meta property="article:modified_time" content="2021-11-14T09:23:52+00:00">
     <meta property="article:tag" content="C">
     <meta property="article:tag" content="Knowledge">
+    <meta property="og:image" content="https://rzyn2020.github.io/images/yinyang.webp">
 
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/images/yinyang.webp">
   <meta name="twitter:title" content="浅析jmp_buf的定义">
+  <meta name="twitter:description" content="Ekstasis&#39;s Blog">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" /><link rel="prev" href="https://rzyn2020.github.io/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/" /><link rel="next" href="https://rzyn2020.github.io/posts/multiplication-part1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "浅析jmp_buf的定义",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89\/"
+        },"genre": "posts","keywords": "C, Knowledge","wordcount":  758 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89\/","datePublished": "2021-11-14T09:23:52+00:00","dateModified": "2021-11-14T09:23:52+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
 
-        <link href="https://rzyn2020.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
-	
-
-	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://rzyn2020.github.io/css/main.df3f44613463554998dacba673a067eb0777f76fe3d12bc0a1de5bad493ef666.css" />
-		<link id="darkModeStyle" rel="stylesheet" type="text/css" href="https://rzyn2020.github.io/css/dark.50b57e12d401420df23965fed157368aba37b76df0ecefd0b1ecd4da664f01a0.css" media="(prefers-color-scheme: dark)"  />
-  	
-   	 	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-<script>
-  MathJax = {
-    tex: {
-      displayMath: [['\\[', '\\]'], ['$$', '$$']],  
-      inlineMath: [['$', '$']]                  
-    },
-    loader:{
-      load: ['ui/safe']
-    },
-  };
-</script>
-  	
-
-	
-</head>
-<body>
-        <div class="content"><header>
-	<div class="main">
-		<a href="https://rzyn2020.github.io/">Ekstasis&#39;s Blog</a>
-	</div>
-	<nav>
-		
-		<a href="/posts/">All Posts</a>
-		
-		<a href="/categories/">Categories</a>
-		
-		<a href="/tags/">Tags</a>
-		
-		<a href="https://rzyn2020.github.io/algorithm/">Algorithm</a>
-		
-		
-	</nav>
-</header>
-
-<main>
-  <article>
-    <div class="post-container">
-      
-      <div class="post-content">
-        <div class="title">
-          <h1 class="title">浅析jmp_buf的定义</h1>
-          <div class="meta">Posted on Nov 14, 2021</div>
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
-        
-        <section class="body">
-          <p><code>int setjmp(jmp_buf env)</code></p>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/yinyang.webp"
+        data-srcset="/images/yinyang.webp, /images/yinyang.webp 1.5x, /images/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/images/yinyang.webp"
+        title="/images/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">浅析jmp_buf的定义</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/system/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>System</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-11-14">2021-11-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;758 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p><code>int setjmp(jmp_buf env)</code></p>
 <p><code>void longjmp(jmp_buf env, int val)</code></p>
 <p>setjmp 和 longjmp 是<code>setjmp.h</code>定义的相互协作的一组跳转函数。 调用 setjmp 时可以将当前的环境保存在一个<code>jmp_buf</code>类型的变量中，之后调用 longjmp 后会跳转到 setjmp 执行后的下一条语句执行，就好像刚刚从 setjmp返回一样。</p>
 <blockquote>
-<p>函数行为描述见man，源码见<a href="https://www.gnu.org/software/libc/">glibc</a>。</p></blockquote>
+<p>函数行为描述见man，源码见<a href="https://www.gnu.org/software/libc/" target="_blank" rel="noopener noreffer ">glibc</a>。</p>
+</blockquote>
 <p>其中,<code>jmp_buf</code>的定义如下:</p>
-<div class="highlight"><pre tabindex="0" style="color:#abb2bf;background-color:#282c34;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#c678dd">typedef</span> <span style="color:#e5c07b">long</span> <span style="color:#e5c07b">int</span> <span style="color:#e06c75">__jmp_buf</span>[<span style="color:#d19a66">8</span>];
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">int</span> __jmp_buf[<span style="color:#ae81ff">8</span>];
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#7f848e">/* Calling environment, plus possibly a saved signal mask.  */</span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">struct</span> <span style="color:#e06c75">__jmp_buf_tag</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* Calling environment, plus possibly a saved signal mask.  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> __jmp_buf_tag
 </span></span><span style="display:flex;"><span>  {
-</span></span><span style="display:flex;"><span>    <span style="color:#7f848e">/* NOTE: The machine-dependent definitions of `__sigsetjmp&#39;
-</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">       assume that a `jmp_buf&#39; begins with a `__jmp_buf&#39; and that
-</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">       `__mask_was_saved&#39; follows it.  Do not move these members
-</span></span></span><span style="display:flex;"><span><span style="color:#7f848e">       or add others before it.  */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">__jmp_buf</span> <span style="color:#e06c75">__jmpbuf</span>;		<span style="color:#7f848e">/* Calling environment.  */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e5c07b">int</span> <span style="color:#e06c75">__mask_was_saved</span>;	<span style="color:#7f848e">/* Saved the signal mask?  */</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#e06c75">__sigset_t</span> <span style="color:#e06c75">__saved_mask</span>;	<span style="color:#7f848e">/* Saved signal mask.  */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* NOTE: The machine-dependent definitions of `__sigsetjmp&#39;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">       assume that a `jmp_buf&#39; begins with a `__jmp_buf&#39; and that
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">       `__mask_was_saved&#39; follows it.  Do not move these members
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">       or add others before it.  */</span>
+</span></span><span style="display:flex;"><span>    __jmp_buf __jmpbuf;		<span style="color:#75715e">/* Calling environment.  */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> __mask_was_saved;	<span style="color:#75715e">/* Saved the signal mask?  */</span>
+</span></span><span style="display:flex;"><span>    __sigset_t __saved_mask;	<span style="color:#75715e">/* Saved signal mask.  */</span>
 </span></span><span style="display:flex;"><span>  };
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#c678dd">typedef</span> <span style="color:#c678dd">struct</span> <span style="color:#e06c75">__jmp_buf_tag</span> <span style="color:#e06c75">jmp_buf</span>[<span style="color:#d19a66">1</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> __jmp_buf_tag jmp_buf[<span style="color:#ae81ff">1</span>];
 </span></span></code></pre></div><p>本来预想jmp_buf应该是简单的一个存储寄存器信息的数组，却发现其定义较为复杂。在阅读其定义的时候，又牵扯出了许多不熟悉的c知识点。试解析定义如下：
 其中<code>typedef struct __jmp_buf_tag jmp_buf[1]</code>定义了一个名为<code>jmp_buf</code>的变量类型,它实际上是一个大小为1的<code>struct __jmp_buf_tag</code>数组。而结构体<code>struct __jmp_buf_tag</code>包含三个成员，后两个与信号机制有关，不做讨论。第一个成员为<code>__jmp_buf</code>类型，用来保存寄存器信息。而<code>__jmp_buf</code>类型实际上是一个大小为8的<code>long int</code>数组。
 那么为什么要把实际上存储信息的结构体<code>__jmp_buf_tag</code>包含在一个数组里面呢？也许是因为将数组当作参数传递时总是传递数组的地址，而将结构体当作参数传递时却总是将整个结构体的值赋值一遍传给被调用函数。我们的<code>jmp_buf</code>作为一个在函数调用间保存信息的实体应该满足数组的特征，因此将其定义为数组更合适一些。当然，如果不这样做，每次被调用函数需要结构体<code>__jmp_buf_tag</code>时传入它的指针也是可行的，只是略显麻烦罢了。</p>
 <blockquote>
 <p>hint:
 结构体定义了一种变量类型，作为一个整体复制和赋值。在行为上更加类似于int而非int[];
-变量名是与值绑定的符号，而指针是与一个地址值绑定的符号。</p></blockquote>
-        </section>
-        <div class="post-tags">
-          
-          
-          <nav class="nav tags">
-            <ul class="tags">
-              
-              <li><a href="/tags/c">C</a></li>
-              
-              <li><a href="/tags/knowledge">Knowledge</a></li>
-              
-            </ul>
-          </nav>
-          
-          
+变量名是与值绑定的符号，而指针是与一个地址值绑定的符号。</p>
+</blockquote></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2021-11-14</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" data-title="浅析jmp_buf的定义" data-hashtags="C,Knowledge"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" data-hashtag="C"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" data-title="浅析jmp_buf的定义"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" data-title="浅析jmp_buf的定义"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/" data-title="浅析jmp_buf的定义"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
         </div>
-      </div>
-
-      
-      
-      <div class="toc">
-        <strong>Table of contents:</strong>
-        <nav id="TableOfContents"></nav>
-      </div>
-      
     </div>
 
-    </article>
-</main>
-<footer>
-  <div style="display:flex"><a class="soc" href="https://github.com/RZYN2020" rel="me" title="Github"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="mailto:zhaoyzzz@outlook.com" rel="me" title="Email"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://rzyn2020.github.io/resume/resume.html" rel="me" title="Resume"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://neodb.social/users/Ekstasis" rel="me" title="Neodb"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a><a class="soc" href="https://myanimelist.net/animelist/yuki960" rel="me" title="Mal"><svg class="feather">
-   <use href="/svg/feather-sprite.51cf5647cb1987f769b616558f2620fd9423d72058490231b391bf6aa3744b55.svg#%25!s%28%3cnil%3e%29" />
-</svg></a><a class="border"></a></div>
-  <div class="footer-info">
-    2025  <a
-      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
-  </div>
-</footer>
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/c/">C</a>,&nbsp;<a href="/tags/knowledge/">Knowledge</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
 
-
-
+    <div class="post-nav"><a href="/posts/%E6%A0%91%E7%9A%84%E9%9D%9E%E9%80%92%E5%BD%92%E9%81%8D%E5%8E%86%E7%94%A8%E6%A0%88%E6%A8%A1%E6%8B%9F%E9%80%92%E5%BD%92/" class="prev" rel="prev" title="树的非递归遍历—用栈模拟递归"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>树的非递归遍历—用栈模拟递归</a>
+            <a href="/posts/multiplication-part1/" class="next" rel="next" title="Multiplication">Multiplication<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
 </div>
-    </body>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

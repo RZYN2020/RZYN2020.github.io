@@ -1,26 +1,29 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Compiler on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/compiler/</link>
-    <description>Recent content in Compiler on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Sat, 09 Nov 2024 15:51:53 +0800</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/compiler/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>编译器开发反思</title>
-      <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
-      <pubDate>Sat, 09 Nov 2024 15:51:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;纵横计不就，慷慨志犹存&lt;/p&gt;&lt;/blockquote&gt;</description>
-    </item>
-    <item>
-      <title>编译器的结构与任务</title>
-      <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
-      <pubDate>Mon, 06 Mar 2023 11:52:38 +0000</pubDate>
-      <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
-      <description>&lt;blockquote&gt;&#xA;&lt;p&gt;Surely all this is not without meaning.&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;!-- raw HTML omitted --&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Compiler - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/compiler/</link>
+        <description>Compiler - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/compiler/" rel="self" type="application/rss+xml" /><item>
+    <title>编译器开发反思</title>
+    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
+    <pubDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
+    <description><![CDATA[<blockquote>
+<p>纵横计不就，慷慨志犹存</p>
+</blockquote>]]></description>
+</item>
+<item>
+    <title>编译器的结构与任务</title>
+    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
+    <pubDate>Mon, 06 Mar 2023 11:52:38 &#43;0000</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
+    <description><![CDATA[<blockquote>
+<p>Surely all this is not without meaning.</p>
+</blockquote>
+<p style="text-align: right">—— HERMAN MELVILLE, Moby-Dick, 1851 </p>]]></description>
+</item>
+</channel>
 </rss>

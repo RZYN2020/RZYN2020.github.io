@@ -1,19 +1,16 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>BitTorrent on Ekstasis&#39;s Blog</title>
-    <link>https://rzyn2020.github.io/tags/bittorrent/</link>
-    <description>Recent content in BitTorrent on Ekstasis&#39;s Blog</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Sat, 16 Nov 2024 21:58:53 +0800</lastBuildDate>
-    <atom:link href="https://rzyn2020.github.io/tags/bittorrent/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>BitTorrent协议及其扩展</title>
-      <link>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
-      <pubDate>Sat, 16 Nov 2024 21:58:53 +0800</pubDate>
-      <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
-      <description>&lt;p&gt;“I call architecture frozen music&amp;hellip;” - Goethe&lt;/p&gt;</description>
-    </item>
-  </channel>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>BitTorrent - Tag - Ekstasis&#39;s Blog</title>
+        <link>https://rzyn2020.github.io/tags/bittorrent/</link>
+        <description>BitTorrent - Tag - Ekstasis&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 16 Nov 2024 21:58:53 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/bittorrent/" rel="self" type="application/rss+xml" /><item>
+    <title>BitTorrent协议及其扩展</title>
+    <link>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
+    <pubDate>Sat, 16 Nov 2024 21:58:53 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
+    <description><![CDATA[<p>“I call architecture frozen music&hellip;” - Goethe</p>]]></description>
+</item>
+</channel>
 </rss>
