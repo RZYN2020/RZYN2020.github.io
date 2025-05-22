@@ -10,7 +10,7 @@ categories:
 toc: true
 ---
 
-Once upon a time, there was a mountain.
+> Once upon a time, there was a mountain.
 
 <!--more-->
 
