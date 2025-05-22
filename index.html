@@ -48,7 +48,7 @@
         title="/img/yinyang.webp" />Ekstasis&#39;s Blog</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/algorithm/"> Algo </a><a class="menu-item" href="/resume/resume.html"> CV </a><a class="menu-item" href="/journal/"> Journal </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -97,7 +97,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/algorithm/" title="">Algo</a><a class="menu-item" href="/resume/resume.html" title="">CV</a><a class="menu-item" href="/journal/" title="">Journal</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
@@ -116,9 +116,17 @@
         alt="https://www.gravatar.com/avatar/12ad50a30c02fb59ea51edd7eeb82cc0?s=240&amp;d=mp"
         title="https://www.gravatar.com/avatar/12ad50a30c02fb59ea51edd7eeb82cc0?s=240&amp;d=mp" /></a></div><h1 class="home-title">Ekstasis's Blog</h1><div class="home-subtitle">Amor Fati</div><div class="links"><a href="https://github.com/RZYN2020" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a><a href="mailto:zhaoyzzz@outlook.com" title="Email" rel="me"><i class="far fa-envelope fa-fw" aria-hidden="true"></i></a></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/posts/adaptation-in-action/">Adaptation in Action (and RL Basic)</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-05-15">2025-05-15</time></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div><div class="content"><blockquote>
+<p>Gott ist tot&hellip; Wir müssen selbst zu Göttern werden.</p>
+</blockquote></div><div class="post-footer">
+        <a href="/posts/adaptation-in-action/">Read More</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/llm/">LLM</a>,&nbsp;<a href="/tags/rl/">RL</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/posts/optimize-the-performance-of-a-lm/">Optimize the Performance of a LM</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-05-10">2025-05-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div><div class="content"><h2 id="intro">Intro</h2>
-<p>在 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-05-10">2025-05-10</time></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div><div class="content"><blockquote>
+<p>Time is money.</p>
+</blockquote></div><div class="post-footer">
         <a href="/posts/optimize-the-performance-of-a-lm/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/llm/">LLM</a>,&nbsp;<a href="/tags/code/">Code</a>,&nbsp;<a href="/tags/performance/">Performance</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
@@ -130,7 +138,9 @@
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/cheatsheet/">CheatSheet</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
         <a href="/posts/building-a-transformer-lm/">Building a Transformer LM</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-04-06">2025-04-06</time></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div><div class="content"><p>Once upon a time, there was a mountain.</p></div><div class="post-footer">
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-04-06">2025-04-06</time></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div><div class="content"><blockquote>
+<p>Once upon a time, there was a mountain.</p>
+</blockquote></div><div class="post-footer">
         <a href="/posts/building-a-transformer-lm/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/llm/">LLM</a>,&nbsp;<a href="/tags/code/">Code</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
@@ -143,13 +153,6 @@
     </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2025-01-13">2025-01-13</time></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div><div class="content"></div><div class="post-footer">
         <a href="/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">Read More</a><div class="post-tags">
                 <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/deeplearning/">DeepLearning</a>,&nbsp;<a href="/tags/summary/">Summary</a></div></div>
-</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/">吉登斯「社会学」笔记</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-publish">published on <time datetime="2024-11-23">2024-11-23</time></span>&nbsp;<span class="post-category">included in <a href="/categories/sociology/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Sociology</a></span></div><div class="content"><blockquote>
-<p>人们自己创造自己的历史，但是他们并不是随心所欲地创造，并不是在他们自己选定的条件下创造，而是在直接碰到的、既定的、从过去继承下来的条件下创造。</p>
-</blockquote></div><div class="post-footer">
-        <a href="/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/book/">Book</a></div></div>
 </article><ul class="pagination"><li class="page-item active">
                     <span class="page-link">
                         <a href="/">1</a>

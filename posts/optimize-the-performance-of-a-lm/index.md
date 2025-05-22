@@ -1,6 +1,10 @@
 # Optimize the Performance of a LM
 
 
+> Time is money.
+
+<!--more-->
+
 ## Intro
 
 在 [Building a Transformer LM](https://rzyn2020.github.io/posts/building-a-transformer-lm/) 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。

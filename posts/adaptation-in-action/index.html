@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Adaptation in Action (and RL Basic) - Ekstasis&#39;s Blog</title><meta name="Description" content="Ekstasis&#39;s Blog"><meta property="og:url" content="https://rzyn2020.github.io/posts/adaptation-in-action/">
+  <meta property="og:site_name" content="Ekstasis&#39;s Blog">
+  <meta property="og:title" content="Adaptation in Action (and RL Basic)">
+  <meta property="og:description" content="Gott ist tot… Wir müssen selbst zu Göttern werden.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-05-15T21:17:13+08:00">
+    <meta property="article:modified_time" content="2025-05-15T21:17:13+08:00">
+    <meta property="article:tag" content="LLM">
+    <meta property="article:tag" content="RL">
+    <meta property="og:image" content="https://rzyn2020.github.io/img/yinyang.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://rzyn2020.github.io/img/yinyang.webp">
+  <meta name="twitter:title" content="Adaptation in Action (and RL Basic)">
+  <meta name="twitter:description" content="Gott ist tot… Wir müssen selbst zu Göttern werden.">
+<meta name="application-name" content="Ekstasis">
+<meta name="apple-mobile-web-app-title" content="Ekstasis"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://rzyn2020.github.io/posts/adaptation-in-action/" /><link rel="prev" href="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Adaptation in Action (and RL Basic)",
+        "inLanguage": "en",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/rzyn2020.github.io\/posts\/adaptation-in-action\/"
+        },"genre": "posts","keywords": "LLM, RL","wordcount":  3991 ,
+        "url": "https:\/\/rzyn2020.github.io\/posts\/adaptation-in-action\/","datePublished": "2025-05-15T21:17:13+08:00","dateModified": "2025-05-15T21:17:13+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "Ekstasis"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/yinyang.webp"
+        data-srcset="/img/yinyang.webp, /img/yinyang.webp 1.5x, /img/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/img/yinyang.webp"
+        title="/img/yinyang.webp" />Ekstasis&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> All Posts </a><a class="menu-item" href="/categories/"> Categories </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/algorithm/"> Algo </a><a class="menu-item" href="/resume/resume.html"> CV </a><a class="menu-item" href="/journal/"> Journal </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Ekstasis&#39;s Blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/yinyang.webp"
+        data-srcset="/img/yinyang.webp, /img/yinyang.webp 1.5x, /img/yinyang.webp 2x"
+        data-sizes="auto"
+        alt="/img/yinyang.webp"
+        title="/img/yinyang.webp" />Ekstasis&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">All Posts</a><a class="menu-item" href="/categories/" title="">Categories</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/algorithm/" title="">Algo</a><a class="menu-item" href="/resume/resume.html" title="">CV</a><a class="menu-item" href="/journal/" title="">Journal</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Adaptation in Action (and RL Basic)</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-05-15">2025-05-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3991 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#evaluation">Evaluation</a></li>
+    <li><a href="#supervised-fine-tune">Supervised Fine Tune</a></li>
+    <li><a href="#rlhf">RLHF</a>
+      <ul>
+        <li><a href="#rl-theory">RL Theory</a></li>
+        <li><a href="#dpo-in-action">DPO in Action</a></li>
+      </ul>
+    </li>
+    <li><a href="#result">Result</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><blockquote>
+<p>Gott ist tot&hellip; Wir müssen selbst zu Göttern werden.</p>
+</blockquote>
+<h2 id="intro">Intro</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/adaptation.png"
+        data-srcset="./assets/adaptation.png, ./assets/adaptation.png 1.5x, ./assets/adaptation.png 2x"
+        data-sizes="auto"
+        alt="./assets/adaptation.png"
+        title="Adaptation" /></p>
+<p>我们在预训练后，就得到了一个擅长续写的 AI。但是光是续写并不是十分有用，我们需要费尽思 prompt 才能得到想要的结果。为了更好的应对下游任务，如 QA Chatbot，总结，推理等，需要做一些适配。</p>
+<p>下游任务往往需要模型有特定的回答模式，主题或者是新的知识。我们可以通过许多技术来适配。</p>
+<ol>
+<li>SFT (Supervised Fine-Tuning) ：通过在数千条“提示-回答”对上继续训练，以塑造模型风格、提升指令遵循能力和解决安全性的经典方法，尤其适合风格控制。比较难注入新知识。目前也有 LoRA 等技术实现低成本微调。</li>
+<li>RLHF (Reinforcement Learning from Human Feedback)：因为人类偏好的复杂性，我们很难有完善的预训练数据。但在很多情况下，即使我们不知道怎么回答，也很容易判断什么是好的回答。因此就有了 RLHF，通过训练一个奖励模型来学习人类对回答的偏好，再利用强化学习（如PPO）优化语言模型，使其生成更符合人类期望、更流畅且安全的输出。</li>
+<li>Prompt：虽然简单有效，但其效果高度依赖设计技巧且对复杂任务有天花板。</li>
+<li>RAG：通过从外部数据库查找资料，插入 prompt 作为上下文，有效解决了模型知识陈旧和事实性不足的问题，降低幻觉、增强专业性的经济高效手段，其核心在于高质量知识库与精准检索。</li>
+</ol>
+<p>在这篇博客中，我们会在有一张 4090D 的服务器上，以 Qwen2.5-7B 为基础模型，对其进行微调，并在这个过程中学习相关知识。</p>
+<h2 id="evaluation">Evaluation</h2>
+<p>在进行任何微调之前，建立一个健全的评估框架至关重要。如果没有评估标准，我们就无法衡量微调的效果，也无法判断模型是否在朝着期望的方向改进。在一般的深度学习任务中，交叉熵通常作为主要的衡量标准，但对于语言模型的某些能力（如结构化输出），单纯使用交叉熵并不合适。评估时，我们通常通过特定的 prompt 让模型生成规定格式的答案，然后通过文本解析或其他模型来评价这些答案的质量。</p>
+<p>在进行评估时，我们需要选择合适的推理服务来运行模型。目前主流的选择包括：</p>
+<ul>
+<li>vllm：最高性能的推理服务</li>
+<li>ollama：专注于一键式部署，可自动在 CPU 和 GPU 间平衡计算</li>
+<li>Hugging Face Transformers：提供标准化的训练和微调接口，但不专注于推理性能</li>
+</ul>
+<p>考虑到我们的 4090D 只有 24GB 显存，在 4096 序列长度下仅能勉强容纳 7B 参数模型及其 KV cache，而对于更大的模型（如 32B）则显存不足。因此，我们选择使用 vllm 作为基础模型的推理服务。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250520221633740.png"
+        data-srcset="./assets/image-20250520221633740.png, ./assets/image-20250520221633740.png 1.5x, ./assets/image-20250520221633740.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250520221633740.png"
+        title="image-20250520221633740" /></p>
+<p>评估语言模型通常涉及以下几个方面：</p>
+<p>首先是通用能力评估，我们使用 MMLU (Massive Multitask Language Understanding) 数据集来测试模型的事实性知识掌握程度。该数据集包含多个领域的选择题，每题提供 A、B、C、D 四个选项。我们使用如下统一格式的 prompt 来获取模型回答：</p>
+<pre tabindex="0"><code>Answer the following multiple choice question about {subject}. Respond with 
+a single sentence of the form &#34;The correct answer is _&#34;, filling the blank 
+with the letter corresponding to the correct answer (i.e., A, B, C or D).
+
+Question: {question}
+A. {options[0]}
+B. {options[1]}
+C. {options[2]}
+D. {options[3]}
+
+Answer:
+</code></pre><p>通过解析模型输出，我们可以计算正确率。在测试中，我们的 Qwen2.5-7B 在 MMLU 上获得了 68.64% 的准确率。</p>
+<p>其次是推理能力评估，我们采用 GSM8K 数据集。这个数据集包含一系列需要多步推理的数学问题，要求模型给出具体的数字答案。使用类似的评估方法，我们的 Qwen2.5-7B 在 GSM8K 上的得分为 22.52%。</p>
+<p>此外，还有专门评估对话质量的 AlpacaEval 数据集，它使用一个强大的评估模型来对比被测模型与参考模型（通常是 GPT-4 Turbo）的表现。评估结果用被测模型相对于参考模型的胜率来表示。</p>
+<p>最后，SimpleSafetyTests 用于评估模型输出的安全性，但同样需要一个较强的评估模型来判断输出是否安全。</p>
+<p>受限于我们 4090D 的计算能力，以及成本考虑，我们只能进行 MMLU 和 GSM8K 这两项基础测试来评估模型的通用能力和推理能力。</p>
+<h2 id="supervised-fine-tune">Supervised Fine Tune</h2>
+<p>如前所述，SFT 是通过在“提示-回答”对的数据集上继续训练预训练模型来适配下游任务的常用方法。这个过程相对直接，目标是让模型学习到在给定特定类型的提示时，生成特定格式或内容的回答。能够显著提升模型理解和执行指令的能力。不过它很难向模型注入新的事实性知识，或者纠正预训练阶段学到的错误知识，而且模型可能学会了模仿期望的输出格式，但并没有真正理解任务的本质。最后，数据非常重要，garbage in，garbage out。</p>
+<p>SFT 的效果在很大程度上取决于数据的质量和数量。数据来源可以多种多样，包括人工标注的数据、开源指令数据集（如 Alpaca, Dolly, OpenOrca 等）、用户反馈数据等。数据通常需要处理成统一的“提示-回答”格式。例如：</p>
+<pre tabindex="0"><code>{
+  &#34;instruction&#34;: &#34;解释一下什么是黑洞。&#34;,
+  &#34;output&#34;: &#34;黑洞是时空展现出极端强大的引力，以至于任何形式的物质和辐射都无法从中逃逸的区域。&#34;
+}
+</code></pre><p>或者对于对话格式：</p>
+<pre tabindex="0"><code>{
+  &#34;messages&#34;: [
+    {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: &#34;你好，你是谁？&#34;},
+    {&#34;role&#34;: &#34;assistant&#34;, &#34;content&#34;: &#34;我是一个大型语言模型，由 Llama 团队训练。&#34;}
+  ]
+}
+</code></pre><p>最经典的方法是全参数微调，即更新模型的所有参数。虽然效果通常最好，但计算资源消耗大，训练时间长。作为替代，我们可以进行参数高效微调 (Parameter-Efficient Fine-Tuning - PEFT)，只更新模型的一小部分参数，或者引入少量额外的可训练参数。</p>
+<p>常见的 PEFT 方法包括：</p>
+<ul>
+<li>LoRA (Low-Rank Adaptation)：通过在模型的某些层（通常是注意力层）注入低秩适配器矩阵来进行微调。它能以极少的额外参数（通常不到原模型参数的1%）达到接近全参数微调的效果，大大降低了微调的成本和存储需求。</li>
+<li>QLoRA：是 LoRA 的进一步优化，结合了量化技术，使得在更小的硬件上微调更大的模型成为可能</li>
+<li>其他方法：如 Adapter Tuning、Prefix Tuning、Prompt Tuning 等</li>
+</ul>
+<p>在我们的实验中，先尝试使用经典的全参数微调。使用 transformers 框架，微调的代码非常简单：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    config <span style="color:#f92672">=</span> parse_args()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> config<span style="color:#f92672">.</span>use_wandb:
+</span></span><span style="display:flex;"><span>        wandb<span style="color:#f92672">.</span>init(project<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;qwen-finetuning&#34;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Initialize model and tokenizer</span>
+</span></span><span style="display:flex;"><span>    tokenizer <span style="color:#f92672">=</span> AutoTokenizer<span style="color:#f92672">.</span>from_pretrained(config<span style="color:#f92672">.</span>model_name, trust_remote_code<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> AutoModelForCausalLM<span style="color:#f92672">.</span>from_pretrained(config<span style="color:#f92672">.</span>model_name, trust_remote_code<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Create dataset</span>
+</span></span><span style="display:flex;"><span>    train_dataset <span style="color:#f92672">=</span> CustomDataset(config<span style="color:#f92672">.</span>train_file, tokenizer, config<span style="color:#f92672">.</span>max_length)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Training arguments</span>
+</span></span><span style="display:flex;"><span>    training_args <span style="color:#f92672">=</span> TrainingArguments(
+</span></span><span style="display:flex;"><span>        output_dir<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>output_dir,
+</span></span><span style="display:flex;"><span>        num_train_epochs<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>num_epochs,
+</span></span><span style="display:flex;"><span>        per_device_train_batch_size<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>batch_size,
+</span></span><span style="display:flex;"><span>        gradient_accumulation_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>gradient_accumulation_steps,
+</span></span><span style="display:flex;"><span>        learning_rate<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>learning_rate,
+</span></span><span style="display:flex;"><span>        weight_decay<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>weight_decay,
+</span></span><span style="display:flex;"><span>        warmup_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>warmup_steps,
+</span></span><span style="display:flex;"><span>        logging_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>logging_steps,
+</span></span><span style="display:flex;"><span>        save_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>save_steps,
+</span></span><span style="display:flex;"><span>        eval_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>eval_steps,
+</span></span><span style="display:flex;"><span>        logging_dir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./logs&#34;</span>,
+</span></span><span style="display:flex;"><span>        fp16<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>        report_to<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;wandb&#34;</span> <span style="color:#66d9ef">if</span> config<span style="color:#f92672">.</span>use_wandb <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Initialize trainer</span>
+</span></span><span style="display:flex;"><span>    trainer <span style="color:#f92672">=</span> Trainer(
+</span></span><span style="display:flex;"><span>        model<span style="color:#f92672">=</span>model,
+</span></span><span style="display:flex;"><span>        args<span style="color:#f92672">=</span>training_args,
+</span></span><span style="display:flex;"><span>        train_dataset<span style="color:#f92672">=</span>train_dataset,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Start training</span>
+</span></span><span style="display:flex;"><span>    trainer<span style="color:#f92672">.</span>train()
+</span></span></code></pre></div><p>但是很快，显存不够，训练被迫中止了&hellip; 😢</p>
+<p>那么让我们计算一下微调到底需要多少显存。结合 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 与 <a href="https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/" target="_blank" rel="noopener noreffer ">Optimize the Performance of a LM</a> 中的估算和测量，我们知道 20M 参数在 FP32 精度下训练时，包括优化器状态和激活值在内，峰值显存约为 2GB。由于显存占用和参数量成正比，7B 参数的模型理论上需要约 700GB 显存！</p>
+<p>不过，我们可以通过一些优化方法来降低显存需求：</p>
+<ol>
+<li>混合精度训练：可以将显存需求减半至 400GB</li>
+<li>Gradient Checkpointing：通过重计算中间激活值，可以节省约 70% 的激活值显存（以 30% 的计算时间开销为代价）</li>
+<li>Gradient Accumulation：通过减少每次计算的 batch size 来降低显存使用</li>
+</ol>
+<p>即便采用这些优化，估计也需要至少 80GB 显存，或者使用 DeepSpeed 等分布式训练框架将参数、激活值和优化器状态分散到多个 GPU 上。但我们只有一块 24GB 显存的 4090D，似乎只能尝试 1.5B 规模的小模型了。</p>
+<p>不过，我们还有最后一招 —— PEFT。使用 QLoRA 技术，我们不直接调整原始参数，而是在特定层旁增加并调节新的参数（约原参数量的1%），再配合 4bit 量化等技术，24GB 显存就足够了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    config <span style="color:#f92672">=</span> parse_args()
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> config<span style="color:#f92672">.</span>use_wandb:
+</span></span><span style="display:flex;"><span>        wandb<span style="color:#f92672">.</span>init(project<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;qwen-finetuning&#34;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Configure quantization</span>
+</span></span><span style="display:flex;"><span>    bnb_config <span style="color:#f92672">=</span> BitsAndBytesConfig(
+</span></span><span style="display:flex;"><span>        load_in_4bit<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>        bnb_4bit_use_double_quant<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>        bnb_4bit_quant_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nf4&#34;</span>,
+</span></span><span style="display:flex;"><span>        bnb_4bit_compute_dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>bfloat16
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Initialize model with quantization</span>
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> AutoModelForCausalLM<span style="color:#f92672">.</span>from_pretrained(
+</span></span><span style="display:flex;"><span>        config<span style="color:#f92672">.</span>model_name,
+</span></span><span style="display:flex;"><span>        quantization_config<span style="color:#f92672">=</span>bnb_config,
+</span></span><span style="display:flex;"><span>        trust_remote_code<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>        device_map<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;auto&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Prepare model for k-bit training</span>
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> prepare_model_for_kbit_training(model)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># LoRA configuration</span>
+</span></span><span style="display:flex;"><span>    lora_config <span style="color:#f92672">=</span> LoraConfig(
+</span></span><span style="display:flex;"><span>        r<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>,
+</span></span><span style="display:flex;"><span>        lora_alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>,
+</span></span><span style="display:flex;"><span>        target_modules<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;q_proj&#34;</span>, <span style="color:#e6db74">&#34;k_proj&#34;</span>, <span style="color:#e6db74">&#34;v_proj&#34;</span>, <span style="color:#e6db74">&#34;o_proj&#34;</span>],
+</span></span><span style="display:flex;"><span>        lora_dropout<span style="color:#f92672">=</span><span style="color:#ae81ff">0.05</span>,
+</span></span><span style="display:flex;"><span>        bias<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>,
+</span></span><span style="display:flex;"><span>        task_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CAUSAL_LM&#34;</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Apply LoRA</span>
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> get_peft_model(model, lora_config)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Initialize tokenizer</span>
+</span></span><span style="display:flex;"><span>    tokenizer <span style="color:#f92672">=</span> AutoTokenizer<span style="color:#f92672">.</span>from_pretrained(config<span style="color:#f92672">.</span>model_name, trust_remote_code<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    trainer<span style="color:#f92672">.</span>train()
+</span></span></code></pre></div><p>此外，我们还可以使用 wandb（Weights &amp; Biases）来监控训练过程。</p>
+<p>但即便使用了 QLoRA，训练速度依然非常慢！</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/image-20250521135945812.png"
+        data-srcset="./assets/image-20250521135945812.png, ./assets/image-20250521135945812.png 1.5x, ./assets/image-20250521135945812.png 2x"
+        data-sizes="auto"
+        alt="./assets/image-20250521135945812.png"
+        title="image-20250521135945812" /></p>
+<p>让我们估算一下训练时间：每条数据平均 512 个 token，共 39438 条微调数据，3 个 epoch，总 token 数约为 39438 * 256 * 3 ≈ 30M tokens。即使按照 vllm 推理的速度（约 1000 tokens/s）来算，也需要大约 8 小时才能完成训练。</p>
+<p>所以&hellip;也许知道理论上可行就好了吧～</p>
+<h2 id="rlhf">RLHF</h2>
+<p>在 SFT 中，我们训练模型模仿一组高质量样本中的回答。然而，这往往不足以消除预训练过程中模型学到的不良行为。与 SFT 依赖外部优质样本不同，为了更好地对齐语言模型，我们通常需要从待改进的模型本身获取回答，并根据这些回答的质量和适当性来进行奖励或惩罚。</p>
+<p>RLHF（基于人类反馈的强化学习）是一种通过人类反馈来优化语言模型的方法。它的核心思想是：即使我们难以直接给出完美的回答示例，但我们通常能够判断哪个回答更好。</p>
+<p>最初的 RLHF 实现采用 PPO 算法，但目前更多地使用 DPO 算法。接下来我们将简要介绍强化学习的基础知识，并在最后深入理解 DPO 算法的原理，然后进行实践操作。</p>
+<h3 id="rl-theory">RL Theory</h3>
+<p><a href="https://hrl.boyuai.com/chapter/intro" target="_blank" rel="noopener noreffer ">https://hrl.boyuai.com/chapter/intro</a></p>
+<p><a href="https://spinningup.openai.com/en/latest/user/introduction.html" target="_blank" rel="noopener noreffer ">https://spinningup.openai.com/en/latest/user/introduction.html</a></p>
+<p>如何理解 policy： <a href="https://zhuanlan.zhihu.com/p/268100059" target="_blank" rel="noopener noreffer ">https://zhuanlan.zhihu.com/p/268100059</a></p>
+<p><a href="https://awjuliani.github.io/web-rl-playground/" target="_blank" rel="noopener noreffer ">https://awjuliani.github.io/web-rl-playground/</a></p>
+<ol>
+<li>
+<p>什么是强化学习</p>
+</li>
+<li>
+<p>多臂老虎机 exploration vs. exploitation</p>
+</li>
+<li>
+<p>马尔可夫决策过程 key concepts</p>
+<ol>
+<li>
+<p>MRP 是有解析解的（但求解时间复杂度为三次方）</p>
+</li>
+<li>
+<p>同时给一个 MDP 和一个 Policy，就能转化为一个 MRP</p>
+</li>
+<li>
+<p>其他求解价值函数的方法</p>
+<ol>
+<li>蒙特卡罗</li>
+<li>动态规划</li>
+</ol>
+</li>
+<li>
+<p>在确定 MDP 时，占用度量和策略一一对应</p>
+</li>
+<li>
+<p>最优策略存在</p>
+</li>
+</ol>
+</li>
+<li>
+<p>动态规划算法</p>
+<ol>
+<li>
+<p>策略迭代</p>
+<ol>
+<li>策略迭代中的策略评估使用贝尔曼期望方程来得到一个策略的状态价值函数，这是一个动态规划的过程</li>
+<li>首先策略评估，迭代贝尔曼期望方程直到不动点（可证明）</li>
+<li>策略提升：贪心应用策略提示定理</li>
+</ol>
+</li>
+<li>
+<p>价值迭代</p>
+<ol>
+<li>而价值迭代直接使用贝尔曼最优方程来进行动态规划，得到最终的最优状态价值。</li>
+<li>一种策略评估只进行了一轮更新的策略迭代算法。需要注意的是，价值迭代中不存在显式的策略</li>
+</ol>
+</li>
+<li>
+<p>动态规划的这两种强化学习算法要求事先知道环境的状态转移函数和奖励函数。另外，策略迭代和价值迭代通常只适用于有限马尔可夫决策过程，即状态空间和动作空间是离散且有限的。</p>
+</li>
+</ol>
+</li>
+<li>
+<p>时许差分和蒙特卡罗算法</p>
+<ol>
+<li>模型的强化学习中的两大经典算法：Sarsa 和 Q-learning，它们都是基于<strong>时序差分</strong>（temporal difference，TD）的强化学习算法。</li>
+</ol>
+</li>
+<li>
+<p>Sarsa = 时序差分 + 策略迭代 -》在线算法</p>
+</li>
+<li>
+<p>Q-Learning = 时序差分 + 价值迭代 -》离线算法（和离线强化学习不同）</p>
+</li>
+<li>
+<p>Dyna-Q 算法：通过采样估计模型</p>
+</li>
+<li>
+<p>DQN</p>
+</li>
+<li>
+<p>基于策略的算法：策略参数化</p>
+<ol>
+<li>REINFORCE算法：蒙特卡罗估计</li>
+<li>Actor-Critic 算法：也学习值函数，但目的是为了辅助策略更新</li>
+</ol>
+</li>
+<li>
+<p>TPRO算法：保证策略学习的性能单调性</p>
+</li>
+<li>
+<p>PPO 基于 TRPO 的思想，但是其算法实现更加简单。</p>
+</li>
+</ol>
+<p>PPO (Proximal Policy Optimization) 是 RLHF 中最常用的强化学习算法。它通过限制策略更新的幅度来保证训练的稳定性，并通过引入价值函数来减少梯度的方差。然而，PPO 的实现相对复杂，涉及到多个组件（Actor, Critic, Reward Model）的训练和协调，并且对超参数敏感。</p>
+<p>近年来，研究者们开始探索更简单、更直接的对齐方法。<strong>DPO (Direct Preference Optimization)</strong> 就是其中一种备受关注的方法。</p>
+<h3 id="dpo-in-action">DPO in Action</h3>
+<p>代码实现以及</p>
+<h2 id="result">Result</h2></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-05-15</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/adaptation-in-action/index.md" target="_blank">Read Markdown</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="https://rzyn2020.github.io/posts/adaptation-in-action/" data-title="Adaptation in Action (and RL Basic)" data-hashtags="LLM,RL"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="https://rzyn2020.github.io/posts/adaptation-in-action/" data-hashtag="LLM"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="https://rzyn2020.github.io/posts/adaptation-in-action/" data-title="Adaptation in Action (and RL Basic)"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="https://rzyn2020.github.io/posts/adaptation-in-action/" data-title="Adaptation in Action (and RL Basic)"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="https://rzyn2020.github.io/posts/adaptation-in-action/" data-title="Adaptation in Action (and RL Basic)"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/llm/">LLM</a>,&nbsp;<a href="/tags/rl/">RL</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/optimize-the-performance-of-a-lm/" class="prev" rel="prev" title="Optimize the Performance of a LM"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Optimize the Performance of a LM</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css"><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/copy-tex.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"","algoliaIndex":"","algoliaSearchKey":"","highlightTag":"em","maxResultLength":10,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

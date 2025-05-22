@@ -4,14 +4,25 @@
         <link>https://rzyn2020.github.io/categories/ai/</link>
         <description>AI - Category - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 10 May 2025 17:47:01 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/categories/ai/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 15 May 2025 21:17:13 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/categories/ai/" rel="self" type="application/rss+xml" /><item>
+    <title>Adaptation in Action (and RL Basic)</title>
+    <link>https://rzyn2020.github.io/posts/adaptation-in-action/</link>
+    <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/adaptation-in-action/</guid>
+    <description><![CDATA[<blockquote>
+<p>Gott ist tot&hellip; Wir müssen selbst zu Göttern werden.</p>
+</blockquote>]]></description>
+</item>
+<item>
     <title>Optimize the Performance of a LM</title>
     <link>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</link>
     <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</guid>
-    <description><![CDATA[<h2 id="intro">Intro</h2>
-<p>在 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。</p>]]></description>
+    <description><![CDATA[<blockquote>
+<p>Time is money.</p>
+</blockquote>]]></description>
 </item>
 <item>
     <title>Building a Transformer LM</title>
@@ -19,7 +30,9 @@
     <pubDate>Sun, 06 Apr 2025 09:58:31 &#43;0800</pubDate>
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
-    <description><![CDATA[<p>Once upon a time, there was a mountain.</p>]]></description>
+    <description><![CDATA[<blockquote>
+<p>Once upon a time, there was a mountain.</p>
+</blockquote>]]></description>
 </item>
 <item>
     <title>深度学习基础知识总结</title>

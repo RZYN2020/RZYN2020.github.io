@@ -4,14 +4,25 @@
         <link>https://rzyn2020.github.io/posts/</link>
         <description>All Posts | Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Mon, 12 May 2025 00:35:09 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 15 May 2025 21:17:13 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>Adaptation in Action (and RL Basic)</title>
+    <link>https://rzyn2020.github.io/posts/adaptation-in-action/</link>
+    <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/adaptation-in-action/</guid>
+    <description><![CDATA[<blockquote>
+<p>Gott ist tot&hellip; Wir müssen selbst zu Göttern werden.</p>
+</blockquote>]]></description>
+</item>
+<item>
     <title>Optimize the Performance of a LM</title>
     <link>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</link>
     <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</guid>
-    <description><![CDATA[<h2 id="intro">Intro</h2>
-<p>在 <a href="https://rzyn2020.github.io/posts/building-a-transformer-lm/" target="_blank" rel="noopener noreffer ">Building a Transformer LM</a> 中，我们使用 Pytorch 提供的基础 API 实现了一个语言模型。在这篇博客中，我们要穿透 Pytorch 提供的抽象层，看看语言模型究竟是如何运行在硬件上的，我们又能针对硬件做些什么优化。在最后，我们还会简单的介绍 scaling law，以及推理和部署服务问题。</p>]]></description>
+    <description><![CDATA[<blockquote>
+<p>Time is money.</p>
+</blockquote>]]></description>
 </item>
 <item>
     <title>数字直觉</title>
@@ -29,7 +40,9 @@
     <pubDate>Sun, 06 Apr 2025 09:58:31 &#43;0800</pubDate>
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
-    <description><![CDATA[<p>Once upon a time, there was a mountain.</p>]]></description>
+    <description><![CDATA[<blockquote>
+<p>Once upon a time, there was a mountain.</p>
+</blockquote>]]></description>
 </item>
 <item>
     <title>MySQL 知识点总结 </title>
@@ -82,16 +95,6 @@
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/posts/%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/</guid>
     <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Scheme 拾遗：S-Expression，Continuation 以及 Macro</title>
-    <link>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</link>
-    <pubDate>Thu, 30 Mar 2023 20:36:48 &#43;0000</pubDate>
-    <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/scheme%E6%8B%BE%E9%81%97/</guid>
-    <description><![CDATA[<blockquote>
-<p>Programming languages should be designed not by piling feature on top of feature, but by removing the weaknesses and restrictions that make additional features appear necessary</p>
-</blockquote>]]></description>
 </item>
 </channel>
 </rss>
