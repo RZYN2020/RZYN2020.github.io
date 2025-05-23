@@ -222,59 +222,415 @@ RLHF（基于人类反馈的强化学习）是一种通过人类反馈来优化�
 
 最初的 RLHF 实现采用 PPO 算法，但目前更多地使用 DPO 算法。接下来我们将简要介绍强化学习的基础知识，并在最后深入理解 DPO 算法的原理，然后进行实践操作。
 
-### RL Theory
+参考资料：
 
-https://hrl.boyuai.com/chapter/intro
+1. https://hrl.boyuai.com/chapter/intro
+2. https://spinningup.openai.com/en/latest/user/introduction.html
 
-https://spinningup.openai.com/en/latest/user/introduction.html
+### RL Basic
 
-如何理解 policy： https://zhuanlan.zhihu.com/p/268100059
+![image-20250522225750085](./assets/image-20250522225750085.png)
 
-https://awjuliani.github.io/web-rl-playground/
+广泛地讲，强化学习是机器通过与环境交互来实现目标的一种计算方法。机器（Agent）可以与环境进行多轮交互，每一轮交互机器都可以采取一个动作，而环境会给出反馈。机器的目标是最大化在多轮交互过程中的获得的累积奖励的期望。
 
-1. 什么是强化学习
-2. 多臂老虎机 exploration vs. exploitation
-3. 马尔可夫决策过程 key concepts
-   1. MRP 是有解析解的（但求解时间复杂度为三次方）
-   2. 同时给一个 MDP 和一个 Policy，就能转化为一个 MRP
-   3. 其他求解价值函数的方法
-      1. 蒙特卡罗
-      2. 动态规划
+强化学习的基础理论建立在**马尔可夫决策过程**（Markov decision process，MDP）之上。MDP的基础是**马尔可夫过程**（Markov process）和**马尔可夫奖励过程**（Markov reward process，MRP）。agent 通过**策略**（Policy）决定如何和环境互动，以达到最大累积期望。而**价值函数**（Value Function）常常用来辅助求解策略。
 
-   4. 在确定 MDP 时，占用度量和策略一一对应
-   5. 最优策略存在
-4. 动态规划算法
-   1. 策略迭代
-      1. 策略迭代中的策略评估使用贝尔曼期望方程来得到一个策略的状态价值函数，这是一个动态规划的过程
-      2. 首先策略评估，迭代贝尔曼期望方程直到不动点（可证明）
-      3. 策略提升：贪心应用策略提示定理
+#### 随机过程和马尔可夫过程
 
-   2. 价值迭代
-      1. 而价值迭代直接使用贝尔曼最优方程来进行动态规划，得到最终的最优状态价值。
-      1. 一种策略评估只进行了一轮更新的策略迭代算法。需要注意的是，价值迭代中不存在显式的策略
-      
-   3. 动态规划的这两种强化学习算法要求事先知道环境的状态转移函数和奖励函数。另外，策略迭代和价值迭代通常只适用于有限马尔可夫决策过程，即状态空间和动作空间是离散且有限的。
-5. 时许差分和蒙特卡罗算法
-   1. 模型的强化学习中的两大经典算法：Sarsa 和 Q-learning，它们都是基于**时序差分**（temporal difference，TD）的强化学习算法。
+**马尔可夫过程**（Markov process）指具有马尔可夫性质的随机过程，也被称为**马尔可夫链**（Markov chain）。**随机过程**（stochastic process）是概率论的“动力学”部分。
 
-6. Sarsa = 时序差分 + 策略迭代 -》在线算法
-7. Q-Learning = 时序差分 + 价值迭代 -》离线算法（和离线强化学习不同）
-8. Dyna-Q 算法：通过采样估计模型
-9. DQN
-10. 基于策略的算法：策略参数化
-    1. REINFORCE算法：蒙特卡罗估计
-    2. Actor-Critic 算法：也学习值函数，但目的是为了辅助策略更新
+给定一个概率空间 $(\Omega, F,P)$ （$\Omega$是样本的集合；$F$是$\Omega$幂集的满足某些条件的非空子集，表示事件集合；$P$ 是概率，是从$F$到$R$的函数，满足全概率为1且可数可加），一个随机变量 $X: \Omega \to R$ 是定义在样本空间上的实函数，满足 $\forall t \in R . \\{w \in \Omega:X(w) \le t\\} \in F $。（我们可以通过概率密度函数，分布函数，各阶矩对其进行研究）
 
-11. TPRO算法：保证策略学习的性能单调性
-12. PPO 基于 TRPO 的思想，但是其算法实现更加简单。
+如果 $T$ 是一个集合，有单射 $S: T \to P(\Omega \times R) $，$\forall t \in T$，$S(t)$或者$S_t$ 均为定义在 $\Omega$ 上的随机变量，则 $S$ 为 $(\Omega, F,P)$ 上的随机过程。（也就是，随机过程就是一串随机变量，$t$ 可以理解为时间）随机过程研究的是随机变量间的相互关联，因为关联的复杂性，我们只研究某些种类的关联，比如有马尔可夫性质的随机过程。
 
-PPO (Proximal Policy Optimization) 是 RLHF 中最常用的强化学习算法。它通过限制策略更新的幅度来保证训练的稳定性，并通过引入价值函数来减少梯度的方差。然而，PPO 的实现相对复杂，涉及到多个组件（Actor, Critic, Reward Model）的训练和协调，并且对超参数敏感。
+当且仅当某时刻的状态只取决于上一时刻的状态时，一个随机过程被称为具有**马尔可夫性质**（Markov property），也就是 $P(S_{t + 1} = j|S_t = i_t) = P(S_{t+1} = j |S_1 = i_1,...,S_t = i_t)$。（离散时间下，其中 $i_0..i_{t},j$为任意值/状态），这个随机过程也被称为**马尔可夫链**（Markov chain）。如果马尔可夫链的一步转移概率只和状态相关，就被称为为**时齐马尔可夫链**(homogeneous)，强化学习中一般只考虑时齐马尔可夫链。
 
-近年来，研究者们开始探索更简单、更直接的对齐方法。**DPO (Direct Preference Optimization)** 就是其中一种备受关注的方法。
+
+（时齐）马尔可夫链可用元组 $(S, P)$ 描述，其中：
+- $S$ 是**有限状态集合**
+- $P$ 是**状态转移矩阵**（state transition matrix）
+
+假设共有 $n$ 个状态，则状态集合定义为 $S = \\{ s_1, s_2, \cdots, s_n \\}$ 。状态转移矩阵 $P$ 中第 $i$ 行第 $j$ 列元素表示状态转移概率：$ P(s_j \mid s_i) = P(S_{t+1} = s_j \mid S_t = s_i) $  即**从状态 $s_i$ 转移到状态 $s_j$ 的概率**，简记为 $P(s' \mid s)$。从任意状态 $s_i$ 出发，转移到所有可能状态的概率和为 1。
+
+![image-20250523000536940](./assets/image-20250523000536940.png)
+
+给定一个马尔可夫过程，我们就可以从某个状态出发，根据它的状态转移矩阵生成一个状态**序列**（episode），这个步骤也被叫做**采样**（sampling）。
+
+#### 马尔可夫奖励过程和累积回报
+
+马尔可夫奖励过程（MRP）是马尔可夫链的扩展，它在状态转移的基础上引入了**奖励机制**和**折扣因子**，用于量化状态的价值。MRP可定义为元组 $(S, P, R, \gamma)$，其中：  
+- $S$ 是有限状态集合  
+- $P$ 是状态转移矩阵，满足 $P(s' \mid s) = \mathbb{P}(S_{t+1}=s' \mid S_t=s)$  
+- $R(s)$ 是**奖励函数**，表示从状态 $s$ 转移到下一状态的**即时奖励期望**，即 $R(s) = \mathbb{E}[r_{t+1} \mid S_t = s]$  ，大部分情况中只由状态 $s$ 决定，可以去掉期望
+- $\gamma \in [0, 1]$ 是**折扣因子**，用于权衡当前奖励与未来奖励的重要性。
+
+在强化学习中，智能体的目标是最大化从当前时刻开始的**累积回报**（Return），定义为未来所有奖励的加权和：  
+$$
+G_t = r_{t+1} + \gamma r_{t+2} + \gamma^2 r_{t+3} + \cdots = \sum_{k=0}^\infty \gamma^k r_{t+k+1}.
+$$
+折扣因子 $\gamma$ 的作用包括：  
+1. **数学便利性**：避免无限时间步下的回报发散；  
+2. **远期不确定性**：远期奖励的“现值”应低于即时奖励；  
+3. **实际意义**：模仿人类对即时收益的偏好。
+
+#### 价值函数
+价值函数用于衡量某状态的长期价值，定义为从该状态出发的（遍历所有可能序列）**期望累积回报**：  
+$$
+v(s) = \mathbb{E}[G_t \mid S_t = s].
+$$
+对MRP而言，价值函数满足**贝尔曼方程**（Bellman Equation）：  
+$$
+v(s) = R(s) + \gamma \sum_{s' \in S} P(s' \mid s) v(s'),
+$$
+其含义是：当前状态的价值 = 即时奖励 + 折扣后的未来状态价值期望。  
+该方程可写成矩阵形式 $\mathbf{v} = \mathbf{R} + \gamma \mathbf{P} \mathbf{v}$，其解析解为 $\mathbf{v} = (I - \gamma \mathbf{P})^{-1} \mathbf{R}$。（也就是MRP价值函数有解析解）
+
+#### 马尔可夫决策过程
+MDP在MRP的基础上引入**动作**（Action），用于建模智能体的决策行为。MDP定义为元组 $(S, A, P, R, \gamma)$，其中：  
+- $A$ 是有限动作集合；  
+- 状态转移概率扩展为 $P(s' \mid s, a) = \mathbb{P}(S_{t+1}=s' \mid S_t=s, A_t=a)$；  
+- 奖励函数扩展为 $R(s, a) = \mathbb{E}[r_{t+1} \mid S_t=s, A_t=a]$，大部分情况中只由状态 $s$ 和动作 $a$ 决定，可以去掉期望。
+- $\gamma$ 仍为折扣因子。
+
+在MDP中，智能体通过**策略**（Policy）选择动作。策略可以是确定性的，也可以是随机性的：
+- 确定性策略 $\pi: S \to A$ 将状态映射到具体动作
+- 随机性策略 $\pi(a \mid s)$ 表示在状态 $s$ 下选择动作 $a$ 的概率分布（值）
+
+大部分情况下我们使用随机性策略，因为它更加通用且具有更好的探索性质。可以证明，某些标准条件的情况下，马尔可夫决策过程（MDP）的**最优策略一定存在**。（也就是得到最大累积回报的策略）
+
+#### 状态价值函数与动作价值函数
+1. **状态价值函数** $v^\pi(s)$：  
+   表示在状态 $s$ 下遵循策略 $\pi$ 的期望累积回报：  
+   $$
+   v^\pi(s) = \mathbb{E}_\pi[G_t \mid S_t = s].
+   $$
+
+2. **动作价值函数** $q^\pi(s, a)$：  
+   表示在状态 $s$ 执行动作 $a$ 后继续遵循策略 $\pi$ 的期望累积回报：  
+   $$
+   q^\pi(s, a) = \mathbb{E}_\pi[G_t \mid S_t = s, A_t = a].
+   $$
+
+两者关系为：  
+$$
+v^\pi(s) = \sum_{a \in A} \pi(a \mid s) q^\pi(s, a).
+$$
+
+
+
+#### 贝尔曼期望方程
+在给定策略 $\pi$ 下，价值函数满足以下递归关系：  
+1. **状态价值函数的贝尔曼方程**：  
+$$
+v^\pi(s) = \sum_{a \in A} \pi(a \mid s) \left[ R(s, a) + \gamma \sum_{s' \in S} P(s' \mid s, a) v^\pi(s') \right].
+$$
+
+2. **动作价值函数的贝尔曼方程**：  
+$$
+q^\pi(s, a) = R(s, a) + \gamma \sum_{s' \in S} P(s' \mid s, a) \sum_{a' \in A} \pi(a' \mid s') q^\pi(s', a').
+$$
+
+#### 贝尔曼最优方程
+当策略 $\pi$ 达到最优时（记为 $\pi^\star$），其对应的价值函数 $v^\star(s)$ 和 $q^\star(s, a)$ 满足：  
+1. **最优状态价值函数方程**：  
+$$
+v^\star(s) = \max_{a \in A} \left[ R(s, a) + \gamma \sum_{s' \in S} P(s' \mid s, a) v^\star(s') \right].
+$$
+
+2. **最优动作价值函数方程**：  
+$$
+q^\star(s, a) = R(s, a) + \gamma \sum_{s' \in S} P(s' \mid s, a) \max_{a' \in A} q^\star(s', a').
+$$
+
+贝尔曼最优方程表明：最优策略下，每一步动作的选择都追求**全局最大化累积回报**，且最优价值函数是唯一的。通过动态规划或时序差分方法求解这些方程，即可得到强化学习的最优策略。
+
+---
+
+### 价值函数的求法
+
+在强化学习中，价值函数的求解是核心目标之一。根据问题场景的不同，可以采用以下方法：
+
+#### 1. 解析解法
+
+对马尔可夫奖励过程（MRP），价值函数可通过贝尔曼方程的矩阵形式直接求解：  
+$$
+\mathbf{v} = (I - \gamma \mathbf{P})^{-1} \mathbf{R},
+$$
+其中 $I$ 是单位矩阵。然而，此方法需要矩阵可逆且计算复杂度为 $O(n^3)$（$n$ 为状态数），仅适用于小规模问题。
+
+#### 2. 动态规划算法
+
+针对MDP，动态规划通过迭代更新价值函数逐步逼近最优解（都可证明迭代一定终止且达到最优）：
+
+- **策略评估（Policy Evaluation）**：固定策略 $\pi$，迭代计算其状态价值函数，迭代方程类似于贝尔曼方程：  
+$$
+v_{k+1}(s) = \sum_{a \in A} \pi(a \mid s) \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a) v_k(s') \right].
+$$
+- **值迭代（Value Iteration）**：直接迭代最优价值函数：  
+$$
+v_{k+1}(s) = \max_{a} \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a) v_k(s') \right].
+$$
+
+
+
+#### 3. 蒙特卡洛方法
+通过采样轨迹（episode）计算经验回报的均值，直接估计价值函数。例如，状态 $s$ 的价值可估计为：  
+$$
+v^\pi(s) \approx \frac{1}{N} \sum_{i=1}^N G_t^{(i)},
+$$
+其中 $G_t^{(i)}$ 是第 $i$ 条轨迹中从状态 $s$ 出发的累积回报。
+
+蒙特卡洛方法的优点是可以从经验中直接学习，不需要环境模型，且能处理非马尔可夫环境。其缺点是需要等到轨迹结束才能更新价值，导致学习效率较低，且方差较大。
+
+另外，蒙特卡洛方法也可以增量式更新价值估计：
+$$
+v(s) \leftarrow v(s) + \alpha(G_t - v(s)),
+$$
+其中 $\alpha$ 是学习率。$\alpha$ 被设置为 $1/ N(s)$ 时，得到和经典蒙特卡洛方法一样的结果。
+
+#### 4. 时序差分学习（TD Learning）
+结合动态规划与蒙特卡洛的思想，逐步更新价值估计（仿照增量式蒙特卡洛方法），它也是一种迭代算法，但是也可以利用经验：  
+$$
+v(s_t) \leftarrow v(s_t) + \alpha \left[ r_{t+1} + \gamma v(s_{t+1}) - v(s_t) \right],
+$$
+其中 $\alpha$ 是学习率，通过**自举（bootstrapping）**利用当前估计值修正误差。$r_{t+1} + \gamma v(s_{t+1}) $ 是对 $G_t$ 的估计。
+
+
+
+#### 三种方法的对比
+
+| 特性                     | 动态规划 (DP)                                                | 蒙特卡洛 (MC) 方法                                           | 时序差分 (TD) 学习                                           |
+| ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **环境模型**             | **必须知道环境的完整规则** (例如，知道在某个状态做一个动作后，会以多大概率转移到哪个新状态，并得到多少奖励) | **不需要知道环境的规则**；直接通过实际尝试和经验来学习       | **不需要知道环境的规则**；直接通过实际尝试和经验来学习       |
+| **学习方式**             | 基于已知的环境规则进行计算和规划                             | 从完整的、一次从头到尾的经验（称为“片段”）中学习             | 从不完整的经验片段、甚至是每走一步的经验中学习               |
+| **自举 (Bootstrapping)** | **是** (会用之前算出来的对其他状态好坏的估计，来更新当前状态好坏的估计) | **否** (对一个状态好坏的估计，完全基于这一次从头到尾实际拿到的所有奖励，不依赖对其他状态的估计) | **是** (会用之前算出来的对下一个状态好坏的估计，结合刚拿到的奖励，来更新当前状态好坏的估计) |
+| **更新时机**             | 通常是一轮一轮地，对所有可能的状态进行计算更新               | **必须等一次完整的尝试结束后**，才能用这次尝试的总结果来更新 | **每走一步之后**就可以进行一次更新（可以在线边玩边学）       |
+| **估计偏差**             | 如果环境规则准确，计算结果通常是**准确的**（相对于真实的好坏程度） | 对状态好坏的估计是**准确的**（因为是基于大量实际完整尝试的平均结果） | 对状态好坏的估计**可能不完全准确**（因为它依赖于对未来状态的不完美估计，尤其在学习初期） |
+| **估计稳定性 (方差)**    | **非常稳定，没有随机性** (因为环境规则已知，计算是确定的)    | **不太稳定，波动较大** (因为每次完整尝试的结果可能因随机因素差异很大) | **相对稳定，波动较小** (因为更新主要看眼前的一步和下一个状态的估计) |
+| **计算/数据效率**        | 如果状态非常多，计算量会极大                                 | 计算每次尝试的总奖励很简单；但可能需要非常多次尝试才能学好   | 通常比蒙特卡洛方法**学习得更快，更有效地利用经验**           |
+| **适用场景**             | 当环境规则完全清楚时，用来做精密的策略评估和改进             | 适用于那些有明确开始和结束的阶段性任务，并且不知道环境规则时 | 适用于阶段性任务和持续进行下去的任务，不知道环境规则时，尤其适合需要边行动边学习的在线场景 |
+| **核心思想**             | 利用已知的状态间转换规则和奖励，迭代计算出各个状态的好坏程度 | 通过大量实际完整的尝试，用最终获得的平均总奖励来评价状态的好坏 | 结合动态规划的“用旧估计更新新估计”和蒙特卡洛的“从实际经验学习”，用“刚获得的奖励 + 对下一步的估计”来更新当前 |
+| **典型算法举例**         | 策略评估、策略迭代、价值迭代                                 | 首次访问MC、每次访问MC、MC控制（带探索策略的）               | TD(0)预测、Q学习 (Q-Learning)、SARSA                         |
+| **在线/离线**            | 通常是**离线**的规划计算过程                                 | 可以是**离线学习**（先收集一堆经验再学习），也可用于在线评估 | **非常适合在线学习**                                         |
+
+---
+
+### RL 算法分类
+
+![../_images/rl_algorithms_9_15.svg](./assets/rl_algorithms_9_15.svg)
+
+强化学习算法可按不同维度分类：  
+
+#### 1. **基于模型 vs 无模型（Model-Based vs Model-Free）**  
+- **基于模型**：依赖环境的状态转移 $P(s' \mid s, a)$ 和奖励函数 $R(s, a)$ 的先验知识（如动态规划）；  
+- **无模型**：直接从交互中学习策略，无需环境模型（如Q-learning、REINFORCE）。  
+
+#### 2. **基于价值 vs 基于策略（Value-Based vs Policy-Based）**  
+- **基于价值**：学习价值函数（如Q-learning），通过最大化价值选择动作；  
+- **基于策略**：直接优化策略函数（如REINFORCE），适用于连续动作空间；  
+- **Actor-Critic**：结合两者，策略函数（Actor）生成动作，价值函数（Critic）评估动作优劣。  
+
+#### 3. **同策略 vs 异策略（On-Policy vs Off-Policy）**  
+- **同策略**：采样与优化的策略相同（如Sarsa）；  
+- **异策略**：采样策略（如随机探索）与优化策略（如贪心策略）分离（如Q-learning）。  
+
+---
+
+### 动态规划算法
+
+动态规划（DP）是求解MDP的经典方法，核心思想是**分治**与**值函数迭代**：  
+
+#### 1. **策略迭代（Policy Iteration）**  
+包含两步循环：  
+1. **策略评估**：计算当前策略 $\pi$ 的价值函数 $v^\pi$；  
+2. **策略改进**：根据 $v^\pi$ 更新策略为贪心策略：  
+$$
+\pi_{\text{new}}(s) = \arg\max_a \sum_{s'} P(s' \mid s, a) \left[ R(s, a) + \gamma v^\pi(s') \right].
+$$
+
+#### 2. **值迭代（Value Iteration）**  
+直接迭代最优价值函数，直至收敛：  
+$$
+v_{k+1}(s) = \max_a \left[ R(s, a) + \gamma \sum_{s'} P(s' \mid s, a) v_k(s') \right].
+$$
+收敛后提取最优策略：  
+$$
+\pi^\star(s) = \arg\max_a \sum_{s'} P(s' \mid s, a) \left[ R(s, a) + \gamma v^\star(s') \right].
+$$
+
+---
+
+### 基于价值的算法：Sarsa 和 Q-learning
+
+
+#### 1. **Sarsa（On-Policy TD Control）**  
+通过时序差分更新动作价值函数 $Q(s, a)$：  
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \right],
+$$
+其中 $a_{t+1}$ 由当前策略 $\pi$ 选择（如 $\epsilon$-贪心，有的概率$1-\epsilon$采用动作价值最大的那个动作，另外有的概率$\epsilon$从动作空间中随机采取一个动作）。 
+
+Sarsa 实际上就是使用 TD 的策略迭代。每次通过迭代得到 Q 函数，然后选取最优策略进行策略提升，直到收敛。
+
+#### 2. **Q-learning（Off-Policy TD Control）**  
+更新规则为：  
+$$
+Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) \right].
+$$
+Q-learning 直接优化最优动作价值函数，与探索策略无关。可以理解为使用 TD 的价值迭代。Q-learning 不断迭代到最优价值函数，然后生成策略。
+
+因为 $\gamma \max_{a'} Q(s_{t+1}, a')$ 实际上是一个贪婪策略（优化策略），但采样策略一般采用 $\epsilon$-贪心，所以它是 Off-Policy TD control。但显然，Q-Learning 中采样策略和贪婪策略也不是完全无关的，它们都共同依赖 Q 值。
+
+如果状态太多， Q 表格放不下，我们可以把 Q 函数用神经网络表示，上面的迭代步骤就变成了一次梯度上升，这就是 DQN 算法。
+
+---
+
+### 基于策略的算法：REINFORCE 和 Actor-Critic
+
+策略梯度是强化学习中**直接优化策略**的一类方法，其核心思想是通过梯度上升（Gradient Ascent）调整策略参数，以最大化期望累积回报。与基于价值的方法（如Q-learning）不同，策略梯度不依赖显式的价值函数，而是直接通过策略的**概率分布**选择动作，尤其适用于**连续动作空间**和**随机策略**场景。
+
+设策略由参数 $\theta$ 参数化为 $\pi_\theta(a \mid s)$，目标函数为期望累积回报。
+$$
+J(\theta) = E_{\tau \sim \pi_\theta} [G_0] = E_{\tau \sim \pi_\theta} \left[ \sum_{t=0}^\infty \gamma^t r_{t+1} \right]
+$$
+其中 $\tau = (s_0, a_0, r_1, s_1, a_1, \dots)$ 表示轨迹。策略梯度的目标是找到最优参数 $\theta^\star$，使得：
+$$
+\theta^\star = \arg\max_\theta J(\theta).
+$$
+
+策略梯度定理将目标函数的梯度转化为对动作概率的加权期望，其核心公式为：
+$$
+\nabla_\theta J(\theta) = E_{\tau \sim \pi_\theta} \left[ \sum_{t=0}^\infty \gamma^t \nabla_\theta \log \pi_\theta(a_t \mid s_t) \cdot Q^{\pi_\theta}(s_t, a_t) \right],
+$$
+其中 $Q^{\pi_\theta}(s_t, a_t)$ 是动作价值函数。  
+该定理表明：**梯度方向由动作的对数概率梯度与其价值乘积的期望决定**。
+
+#### REINFORCE 算法
+
+REINFORCE 是策略梯度的最基础实现，属于**蒙特卡洛方法**，通过完整轨迹的回报 $G_t$ 估计梯度：
+$$
+\nabla_\theta J(\theta) \approx \frac{1}{N} \sum_{i=1}^N \sum_{t=0}^\infty \gamma^t G_t^{(i)} \nabla_\theta \log \pi_\theta(a_t^{(i)} \mid s_t^{(i)}),
+$$
+参数更新公式为：
+$$
+\theta \leftarrow \theta + \alpha \gamma^t G_t \nabla_\theta \log \pi_\theta(a_t \mid s_t).
+$$
+
+**特点**：  
+- 无需环境模型，完全无模型；  
+- 高方差（因依赖完整轨迹的回报）；  
+- 可通过基线（Baseline）减少方差，例如减去状态价值函数 $V(s_t)$：  
+  $$
+  \nabla_\theta J(\theta) \propto \mathbb{E} \left[ \nabla_\theta \log \pi_\theta(a_t \mid s_t) \cdot (Q(s_t, a_t) - V(s_t)) \right].
+  $$
+
+---
+
+#### Actor-Critic 方法
+
+Actor-Critic 结合策略梯度与价值函数（Critic），用Critic评估动作价值以降低方差：  
+- **Actor**（策略函数 $\pi_\theta$）：生成动作；  
+- **Critic**（价值函数 $V_w$ 或 $Q_w$）：评估动作优劣，计算优势函数 $A(s_t, a_t) = Q(s_t, a_t) - V(s_t)$。
+
+**更新规则**：  
+- Actor 更新：  
+  $$
+  \theta \leftarrow \theta + \alpha \nabla_\theta \log \pi_\theta(a_t \mid s_t) \cdot A(s_t, a_t).
+  $$
+- Critic 更新（如TD误差）：  
+  $$
+  w \leftarrow w + \beta \left( r_{t+1} + \gamma V_w(s_{t+1}) - V_w(s_t) \right) \nabla_w V_w(s_t).
+  $$
+
+---
+
+### TRPO，PPO
+
+#### TRPO
+
+TRPO（Trust Region Policy Optimization）（2015年提出）旨在解决策略梯度方法中**策略更新不稳定**的问题。传统策略梯度（如REINFORCE）若更新步长不当，可能导致策略性能骤降。TRPO通过**信赖域约束**（Trust Region Constraint），限制新旧策略之间的差异，确保每次更新后策略性能单调提升。其优化目标为最大化**替代优势函数**，同时约束新旧策略的KL散度（Kullback-Leibler Divergence）：
+
+$$
+\max_\theta E_{s \sim \pi_{\text{old}}, a \sim \pi_{\text{old}}} \left[ \frac{\pi_\theta(a \mid s)}{\pi_{\text{old}}(a \mid s)} A_{\text{old}}(s, a) \right], \\
+\text{s.t. } E_s \left[ \text{KL}[\pi_{\text{old}}(\cdot \mid s) \| \pi_\theta(\cdot \mid s)] \right] \leq \delta.
+$$
+其中：
+- $\pi_{\text{old}}$ 是旧策略，$\pi_\theta$ 是新策略；
+- $A_{\text{old}}(s, a) = Q(s, a) - V(s)$ 是优势函数；
+- $\delta$ 是KL散度的容忍阈值（如0.01）。
+
+---
+
+#### PPO
+
+PPO（Proximal Policy Optimization）（2017年提出）是TRPO的简化版本，通过**目标函数剪裁**替代KL约束，在保持稳定性的同时大幅降低计算复杂度。PPO已成为工业界最主流的强化学习算法之一。
+
+PPO的目标函数通过剪裁策略比率（$\frac{\pi_\theta}{\pi_{\text{old}}}$），限制更新幅度：
+$$
+L^{\text{CLIP}}(\theta) = E_{s,a} \left[ \min\left( \frac{\pi_\theta(a \mid s)}{\pi_{\text{old}}(a \mid s)} A(s, a), \,\, \text{clip}\left( \frac{\pi_\theta}{\pi_{\text{old}}}, 1-\epsilon, 1+\epsilon \right) A(s, a) \right) \right],
+$$
+其中 $\epsilon$ 是剪裁阈值（如0.2）。当优势 $A(s,a)$ 为正时，限制策略比率不超过 $1+\epsilon$；当 $A(s,a)$ 为负时，限制不低于 $1-\epsilon$。
+
+---
+
+### RLHF and DPO
+RLHF 在一开始使用 PPO 算法，具体来说，会先基于人类偏好数据（两个回答中选一个更好的），训练一个奖励模型来评估生成内容的质量。再用奖励模型的分数作为奖励信号，通过 PPO 算法优化语言模型，同时加入 KL 惩罚项以保持与原始 SFT 模型的接近度。
+
+然而，这个过程存在几个问题：
+- 奖励模型训练和使用过程复杂，增加了计算成本
+- PPO 训练不稳定，需要仔细调参
+- KL 惩罚超参数难以选择
+
+DPO（Direct Preference Optimization）（2023年提出）提供了一个更简单的解决方案。它证明了在某些条件下，基于人类偏好的强化学习问题可以转化为监督学习问题。关键在于：
+
+1. 最优策略应满足一个隐式的奖励函数，使得被人类偏好的回答 $y_w$ 获得更高奖励。
+2. 这个奖励函数可以通过 Bradley-Terry 模型直接表示，其中策略与参考策略（SFT模型）的对数比值就对应于相对奖励。
+
+Bradley-Terry 模型中，$p(y_w \succ y_l \mid x)$ 表示在给定输入 $x$ 的情况下，人类偏好输出 $y_w$ 而不是 $y_l$ 的概率。当 $\pi_\theta$ 对优质输出 $y_w$ 的概率相对于 $\pi_{\text{ref}}$ 提升时，人类偏好它的概率也随之增加。
+
+
+$$
+p(y_w \succ y_l \mid x) = \frac{\exp(\beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)})}{\exp(\beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)}) + \exp(\beta \log \frac{\pi_\theta(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)})}，
+$$
+
+简单来说，在每个偏好数据 $(x, y_w, y_l)$ 中：
+- $x$ 是输入提示
+- $y_w$ 是人类更喜欢的回答
+- $y_l$ 是人类不太喜欢的回答
+- $\pi_{\theta}$ 是待优化的模型（新策略）
+- $\pi_{\text{ref}}$ 是 SFT 模型（参考策略）
+- $\beta$ 是超参数，控制参考模型偏离程度
+
+DPO 直接最大化被偏好回答相对于未被偏好回答的概率，同时通过超参数 $\beta$ 控制与参考模型的偏离程度。这样就绕过了显式的奖励建模，将 RLHF 简化为一个二分类问题。
+
+$$
+L_{\text{DPO}} = -E_{(x, y_w, y_l)} \left[ \log \sigma\left( \beta \log \frac{\pi_\theta(y_w \mid x)}{\pi_{\text{ref}}(y_w \mid x)} - \beta \log \frac{\pi_\theta(y_l \mid x)}{\pi_{\text{ref}}(y_l \mid x)} \right) \right],
+$$
+其中 $\sigma$ 是sigmoid函数，$\beta$ 控制策略与参考策略的偏离程度。
+
+相比传统 RLHF，DPO 具有以下优势：
+- 训练流程更简单，无需奖励模型
+- 训练更稳定，超参数更少
+- 计算效率更高，可以使用标准的交叉熵损失训练
+
+这种优化人类偏好的简单而有效的方法，使得大语言模型的对齐变得更加实用。
 
 ### DPO in Action
 
-代码实现以及
+在实践中，我们可直接使用 Hugging Face 的 `trl` 库提供的 `DPOTrainer`。
 
-## Result
+```python
+trainer = DPOTrainer(
+    model_name_or_path=model_name, # 策略模型
+    # ref_model_name_or_path=model_ref_name, # 参考模型路径，如果省略，则使用 model_name_or_path 的初始状态
+    args=dpo_config,
+    tokenizer=tokenizer,
+    train_dataset=train_dataset,
+    # peft_config=peft_config, # 如果使用 PEFT (如 LoRA)
+)
+
+trainer.train()
+```
+
+
 
