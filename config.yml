@@ -21,7 +21,7 @@ menu:
       url: https://rzyn2020.github.io/algorithm/
       weight: 4
     - name: CV
-      url: https://rzyn2020.github.io/resume/resume.html
+      url: https://rzyn2020.github.io/resume/
       weight: 5
     - name: Journal
       url: https://rzyn2020.github.io/journal/
