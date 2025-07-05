@@ -4,7 +4,23 @@
         <link>https://rzyn2020.github.io/tags/</link>
         <description>Tags - Tag - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 15 May 2025 21:17:13 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 12 Jun 2025 00:35:09 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Architecture</title>
+    <link>https://rzyn2020.github.io/tags/architecture/</link>
+    <pubDate>Thu, 12 Jun 2025 00:35:09 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/architecture/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Code</title>
+    <link>https://rzyn2020.github.io/tags/code/</link>
+    <pubDate>Thu, 12 Jun 2025 00:35:09 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/tags/code/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>LLM</title>
     <link>https://rzyn2020.github.io/tags/llm/</link>
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
@@ -18,14 +34,6 @@
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/tags/rl/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Code</title>
-    <link>https://rzyn2020.github.io/tags/code/</link>
-    <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
-    <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/code/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -74,14 +82,6 @@
     <pubDate>Mon, 13 Jan 2025 19:29:29 &#43;0800</pubDate>
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/tags/deeplearning/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Book</title>
-    <link>https://rzyn2020.github.io/tags/book/</link>
-    <pubDate>Sat, 23 Nov 2024 11:31:25 &#43;0800</pubDate>
-    <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/book/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>
