@@ -528,91 +528,42 @@ DDD 通过**限界上下文（Bounded Context）** 来解决这个问题。每�
 - **通信方式**: 同步通信。例如，发布帖子后直接调用通知服务，这在系统初期逻辑简单，易于实现和调试。
 - **API 风格**: RESTful API。作为行业标准，它拥有成熟的生态和清晰的规范。
 
-#### 详细流程
+#### 关键流程的实现
 
-##### 身份认证和鉴权
+##### 身份认证与授权
 
-此部分对应我们划分的 **身份认证上下文 (Identity & Access Context)**。其核心职责是确认“你是谁”并回答“你能做什么”。
+系统的入口是身份认证与授权。我们首先要解决的问题是，如何高效且安全地识别用户身份。
 
-**实现步骤:**
+传统的方案是 **Cookie-Session** 机制。其原理是：用户登录后，服务端在内存或数据库中创建一个 Session 记录，并将一个唯一的 Session ID 通过 Cookie 返回给客户端。后续客户端的每次请求都会携带此 Cookie，服务端据此查找对应的 Session 信息来识别用户。这种方式的弊端在于其**有状态性**：在分布式系统中，所有服务器节点都必须能访问到同一个 Session 存储，这增加了架构的复杂度和状态同步的开销。
 
-1. **配置 `SecurityFilterChain`**: 这是 Spring Security 的核心配置。我们将定义一个 `SecurityFilterChain` Bean，在其中进行精细化的权限控制。
-   - **公开端点**: 允许匿名访问的路径，如 `/api/register`（注册）、`/api/login`（登录）、`/api/threads/{threadId}`（查看帖子详情）等。
-   - **保护端点**: 需要认证后才能访问的路径，如 `/api/threads/create`（发帖）、`/api/posts/reply`（回复）、`/api/me`（查看个人资料）等。
-   - **认证机制**: 我们将采用基于 Token 的认证方案，例如 JWT (JSON Web Token)。当用户登录成功后，服务器会签发一个包含用户身份信息的 Token 返回给客户端。客户端在后续请求中，需在 `Authorization` 请求头中携带此 Token。
-2. **实现 `UserDetailsService`**: Spring Security 需要知道如何根据用户名加载用户信息。我们将创建一个 `UserDetailsServiceImpl` 类，实现 `UserDetailsService` 接口。
-   - 该服务会调用 **基础设施层** 的 `UserMapper`，从数据库中查询用户信息。
-   - 查询到的 `User` 实体（属于 `Identity` 上下文）将被转换为 Spring Security 可识别的 `UserDetails` 对象。
-3. **密码加密**: 安全是第一要义。绝不能在数据库中存储明文密码。我们将使用 `BCryptPasswordEncoder` 作为密码加密器，在用户注册时对密码进行哈希处理。
-4. **JWT 工具类**: 创建一个 `JwtUtils` 工具类，负责：
-   - **生成 Token**: 用户登录验证成功后，根据用户 ID 和角色等信息生成 JWT。
-   - **解析 Token**: 创建一个 JWT 认证过滤器（`JwtAuthenticationFilter`）。该过滤器会拦截所有请求，从请求头中解析 Token，验证其有效性，并将用户信息封装成 `Authentication` 对象，存入 `SecurityContextHolder`，供后续的授权逻辑使用。
+为了解决这个问题，我们采用了 **JWT (JSON Web Token)**。JWT 的核心原理是**无状态认证**。它将用户信息、权限、过期时间等数据通过密码学手段（HMAC 或 RSA 签名）打包成一个安全的字符串（Token），并直接返还给客户端。客户端在后续请求的 Header 中携带此 Token。服务端收到后，无需查询任何存储，只需用预置的密钥或公钥验证 Token 的签名是否有效，即可信任其中的用户信息。这使得服务端完全无状态，极大地方便了应用的水平扩展。在项目中，我们通过 **Spring Security** 框架来集成和管理 JWT 的生成与校验，以最小的配置代价构建起强大的安全体系。
 
-通过以上步骤，我们就为系统建立起了一道坚实的安全屏障，并且该功能被完美地封装在 `identity` 包内，与其他业务逻辑清晰地隔离开来。
+##### 分层架构与持久化
 
-##### 论坛核心对象的 CRUD
+论坛的核心功能，如帖子和评论的管理，采用**分层架构**与**领域驱动设计 (DDD)** 思想构建，确保业务逻辑的内聚和层级间的解耦。请求的处理流程严格遵循 Web 层 -> 应用层 -> 领域层 -> 基础设施层的顺序。其中，基础设施层的持久化方案选择尤为关键。
 
-这部分是 **论坛核心上下文 (Forum Context)** 的主要实现。我们将利用 MyBatis-Plus 的强大功能，高效地完成 `Thread`, `Post` 等核心领域对象的数据库操作。
+我们选择了 **MyBatis**，而不是像 Hibernate/JPA 这样的全自动 ORM 框架。
 
-**实现流程（以“发布新帖子”为例）:**
+- **ORM (对象关系映射)** 的原理是将数据库表映射为程序中的对象，开发者可以直接操作对象来完成数据库交互，框架会自动生成并执行 SQL。这种方式在简单的 CRUD 场景下非常高效，但对于复杂的关联查询或需要精细优化 SQL 性能的场景，自动生成的 SQL 往往难以控制，灵活性不足。
+- **MyBatis** 的原理则是一种**半自动**的 SQL 映射。它不试图隐藏 SQL，而是让开发者将 SQL 语句写在 XML 文件或注解中，然后将其映射到 Mapper 接口的方法上。MyBatis 负责处理 JDBC 的繁琐细节，如创建连接、参数设置、结果集映射等，但把 SQL 的控制权完全交还给开发者。这在灵活性和性能调优上具有巨大优势。
 
-1. **Web 层 (`ThreadController`)**:
-   - 定义一个 RESTful API 端点，例如 `POST /api/threads`。
-   - 使用 `@RequestBody` 接收前端传来的帖子数据（DTO - Data Transfer Object），例如 `CreateThreadRequest`。
-   - 调用 **应用层** 的 `ThreadApplicationService` 来处理业务逻辑。
-2. **应用层 (`ThreadApplicationService`)**:
-   - 这是业务用例的编排者。`createThread` 方法会执行以下操作： a. 从 `SecurityContextHolder` 获取当前登录用户的 ID。 b. 创建一个 **领域层** 的 `Author` 对象（代表发帖人）。 c. 调用 `Thread` 实体的构造函数或工厂方法，创建一个新的 `Thread` 领域对象，将业务规则（如标题不能为空、内容长度限制）封装在领域对象内部。 d. 调用 **基础设施层** 的 `ThreadMapper` 将新的 `Thread` 对象持久化到数据库。
-3. **领域层 (`Thread.java`)**:
-   - 这是业务核心。`Thread` 是一个实体（Entity），拥有唯一的 ID。
-   - 它包含了帖子的所有属性（如 `title`, `content`, `author`, `createdAt`）和行为（如 `editContent()`, `addPost()`, `close()`）。
-   - 使用 MyBatis-Plus 的注解（如 `@TableName`, `@TableId`）将其与数据库表关联。
-4. **基础设施层 (`ThreadMapper.java`)**:
-   - 这是一个接口，继承 MyBatis-Plus 提供的 `BaseMapper<Thread>`。
-   - 无需编写任何代码，它就自动拥有了 `insert`, `selectById`, `updateById`, `deleteById` 等一系列 CRUD 方法。对于复杂查询，例如分页查询某个版块下的所有帖子，我们可以使用 `QueryWrapper` 或编写自定义的 XML/注解 SQL。
+为了进一步提升开发效率，我们使用了 **MyBatis-Plus**。它的原理是在 MyBatis 的基础上进行**功能增强**。它通过分析实体类（Entity）的注解（如 `@TableName`, `@TableId`），在程序启动时自动生成一套完整的、针对单表的 CRUD SQL 语句。开发者只需让自己的 Mapper 接口继承 MyBatis-Plus 提供的 `BaseMapper` 接口，就能免费获得这些通用的增删改查方法，无需手写任何简单 SQL。当遇到复杂业务逻辑时，开发者依然可以像使用原生 MyBatis 一样，在 XML 中编写自定义的 SQL。MyBatis-Plus 完美结合了 ORM 的便利性和 MyBatis 的灵活性。
 
-这个流程完美体现了分层架构的优势：`Controller` 负责数据流转，`Application Service` 负责业务编排，`Domain` 负责核心业务规则，`Infrastructure` 负责技术实现，各司其职，清晰明了。
+##### 搜索功能
 
-##### 搜索的实现
+为实现高效的全文搜索，我们引入了 **Elasticsearch**。传统关系型数据库使用 `LIKE '%keyword%'` 进行模糊查询，在数据量大时会进行全表扫描，效率极低且无法实现复杂的相关性排序。
 
-为了提供强大的全文搜索能力，我们引入 **搜索上下文 (Search Context)**，并选择 Elasticsearch 作为其技术实现。
+Elasticsearch 的核心原理是**倒排索引 (Inverted Index)**。传统的正向索引是“文档 -> 词语”，而倒排索引则反过来，建立“词语 -> 文档列表”的映射。它首先会对文档内容进行分词，得到一系列词元（Term），然后为每个词元创建一个列表，记录下所有包含该词元的文档 ID。当用户进行搜索时，Elasticsearch 只需根据搜索词快速找到对应的文档 ID 列表，然后进行合并、排序等操作，即可返回结果。这个过程避免了全量扫描，因此速度极快。
 
-**核心挑战与实现**:
+在我们的架构中，核心挑战在于**数据同步**，即保证主数据库 MySQL 与 Elasticsearch 索引之间的数据一致性。我们初期的实现方式是在业务代码中同步调用，即当一个帖子在 MySQL 中创建成功后，程序立刻调用接口将其写入 Elasticsearch。这种方式实现简单，但缺点是强耦合：一旦 Elasticsearch 服务出现故障，会导致发帖等核心功能失败。同时，需要理解 ES 的更新和删除机制：它们并非立即执行物理删除，而是将文档标记为“已删除”（软删除），真正的空间回收发生在后台的**段合并 (Segment Merging)** 过程中。这是 ES 为保证写入性能所做的设计。后续，我们将通过引入消息队列等异步机制来解耦，以提高系统的健壮性。
 
-核心挑战在于 **数据同步**：如何保证关系型数据库（如 MySQL）中的数据与 Elasticsearch 中的数据保持一致。
+##### AI 用户
 
-**周期一（原型阶段）的实现 - 同步调用:**
+为了让论坛更具智能，我们设计了一个 AI 用户，其核心技术是 **RAG (Retrieval-Augmented Generation)**，即“检索增强生成”。其原理是让大语言模型（LLM）在生成回答前，先从一个知识库中检索相关信息作为参考，以避免模型产生幻觉或回答空洞无物。
 
-1. **引入依赖**: 在 `pom.xml` 中添加 `spring-boot-starter-data-elasticsearch`。
-2. **定义搜索文档**: 创建一个 `ThreadDocument` 类，其结构专门为搜索优化。可以包含 `threadId`, `title`, `content`, `authorName`, `tags` 等字段。使用 `@Document(indexName = "forum_thread")` 注解。
-3. **数据同步**: 修改 `Forum Context` 的 `ThreadApplicationService`。在将 `Thread` 对象存入 MySQL **之后**，立即调用 `SearchService` 的接口，将该 `Thread` 对象转换为 `ThreadDocument` 并索引到 Elasticsearch 中。
-   - **优点**: 实现简单直接，能快速满足原型需求。
-   - **缺点**: 业务耦合。`Forum Context` 强依赖于 `Search Context`，如果 Elasticsearch 服务不可用，会直接导致发帖失败。
+在我们的项目中，这个流程被具体实现为：当有用户发布新帖时，一个后台 AI Agent 会被触发。首先，它执行**检索 (Retrieval)** 步骤，利用上文提到的 Elasticsearch 搜索服务，根据新帖的标题和内容，在论坛的历史数据中查找最相关的帖子和高质量回答。接着，它执行**增强 (Augmented)** 步骤，将检索到的这些高质量内容与用户的原始帖子内容拼接成一个内容丰富、上下文明确的提示（Prompt）。最后，通过 **Spring Boot AI** 框架，将这个增强后的 Prompt 发送给大语言模型进行**生成 (Generation)**。Spring Boot AI 屏蔽了直接调用不同 LLM API 的复杂性。模型返回的回复，最终会由 AI Agent 调用论坛核心应用服务，以一个特殊的“AI 用户”身份发布出来，从而实现智能的、有据可依的社区互动。
 
-**周期二（架构演进）的实现 - 异步解耦:**
 
-为了解决耦合问题，我们将采用基于 **领域事件（Domain Events）** 的异步方案。
-
-1. **发布事件**: 在 `ThreadApplicationService` 保存帖子成功后，不再直接调用搜索服务，而是发布一个 `ThreadCreatedEvent` 事件。
-2. **监听事件**: 在 `Search Context` 中，创建一个 `ThreadEventListener`。
-3. **处理事件**: 该监听器会异步地接收到 `ThreadCreatedEvent`，然后才执行将数据同步到 Elasticsearch 的操作。
-   - **优点**: 应用了“发布-订阅”模式，`Forum Context` 和 `Search Context` 完全解耦。`Forum` 只管发帖和发布事件，不关心谁消费了事件，也不关心消费是否成功。这极大地提高了系统的健壮性和可扩展性。
-
-##### AI 用户的实现
-
-这是项目的亮点，对应 **AI 上下文 (AI Context)**。我们将利用最新的 AI 技术，让论坛变得更加智能和生动。其核心模式是 **RAG (Retrieval-Augmented Generation)**，即“检索增强生成”。
-
-**实现流程（以 AI 自动回复帖子为例）:**
-
-1. **触发机制**: AI 的互动不应是无的放矢的。我们可以通过监听 `ThreadCreatedEvent` 来触发 AI 的思考和回复。
-2. **检索 (Retrieval)**: 当 AI Agent（一个后台服务）接收到新帖子的信息后，它做的第一件事不是直接生成内容，而是 **检索** 相关信息作为上下文。
-   - 它会调用 **搜索上下文** 的服务，使用新帖子的标题或关键词，在 Elasticsearch 中搜索历史上相似或相关的帖子。
-3. **增强 (Augmented)**: 将检索到的高质量内容（例如高赞回答、精华帖摘要）与原始帖子的内容 **组合** 起来，形成一个更加丰富的提示（Prompt）。
-   - **示例 Prompt**: "你是一位热心、专业的论坛技术专家。现在有一位用户发布了新帖子：'{帖子内容}'。根据论坛过往的这些讨论：'{检索到的相关内容}'，请你为这个新帖子生成一个有启发性、能引导讨论的回复。"
-4. **生成 (Generation)**: 使用 `Spring Boot AI` 提供的 `ChatClient`，将这个精心构造的 Prompt 发送给大语言模型（LLM，如 OpenAI 的 GPT 系列或开源的 Llama 系列）。
-   - `Spring Boot AI` 极大地简化了与 LLM 的交互，我们只需配置好 API Key，就可以像调用一个本地方法一样与 AI 对话。
-5. **执行动作**: AI Agent 接收到 LLM 生成的回复后，会调用 **论坛核心上下文** 的 `PostApplicationService`，使用一个预设的“AI 用户”身份，将这条回复发布到对应的帖子下。
-
-通过 RAG 模式，我们的 AI 用户不再是空洞的聊天机器人，而是能够引经据典、言之有物的“虚拟专家”，极大地提升了论坛的内容质量和互动性。这也充分展示了限界上下文之间通过良好定义的接口（API 或事件）进行协作的强大威力。
 
 ### ADD 驱动设计与实现
 
@@ -620,7 +571,14 @@ DDD 通过**限界上下文（Bounded Context）** 来解决这个问题。每�
 
 高性能：Redis缓存，数据库索引，读写分离，CQRS
 
-高可用：微服务化，冗余备份
+高可用：微服务化，冗余备份****
+
+为了解决耦合问题，我们将采用基于 **领域事件（Domain Events）** 的异步方案。
+
+1. **发布事件**: 在 `ThreadApplicationService` 保存帖子成功后，不再直接调用搜索服务，而是发布一个 `ThreadCreatedEvent` 事件。
+2. **监听事件**: 在 `Search Context` 中，创建一个 `ThreadEventListener`。
+3. **处理事件**: 该监听器会异步地接收到 `ThreadCreatedEvent`，然后才执行将数据同步到 Elasticsearch 的操作。
+   - **优点**: 应用了“发布-订阅”模式，`Forum Context` 和 `Search Context` 完全解耦。`Forum` 只管发帖和发布事件，不关心谁消费了事件，也不关心消费是否成功。这极大地提高了系统的健壮性和可扩展性。
 
 可扩展性：微服务化，无状态服务水平扩展，负载均衡
 
