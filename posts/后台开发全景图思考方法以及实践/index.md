@@ -563,7 +563,9 @@ Elasticsearch 的核心原理是**倒排索引 (Inverted Index)**。传统的正
 
 在我们的项目中，这个流程被具体实现为：当有用户发布新帖时，一个后台 AI Agent 会被触发。首先，它执行**检索 (Retrieval)** 步骤，利用上文提到的 Elasticsearch 搜索服务，根据新帖的标题和内容，在论坛的历史数据中查找最相关的帖子和高质量回答。接着，它执行**增强 (Augmented)** 步骤，将检索到的这些高质量内容与用户的原始帖子内容拼接成一个内容丰富、上下文明确的提示（Prompt）。最后，通过 **Spring Boot AI** 框架，将这个增强后的 Prompt 发送给大语言模型进行**生成 (Generation)**。Spring Boot AI 屏蔽了直接调用不同 LLM API 的复杂性。模型返回的回复，最终会由 AI Agent 调用论坛核心应用服务，以一个特殊的“AI 用户”身份发布出来，从而实现智能的、有据可依的社区互动。
 
+#### 架构（容器）图
 
+![img](./assets/755D7731-70BF-4CAC-8FEF-62CE61DCFCF5.png)
 
 ### ADD 驱动设计与实现
 

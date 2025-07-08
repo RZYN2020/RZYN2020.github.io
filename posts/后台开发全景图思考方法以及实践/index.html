@@ -35,7 +35,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rzyn2020.github.io\/posts\/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5\/"
-        },"genre": "posts","keywords": "Code, Architecture","wordcount":  17311 ,
+        },"genre": "posts","keywords": "Code, Architecture","wordcount":  17318 ,
         "url": "https:\/\/rzyn2020.github.io\/posts\/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5\/","datePublished": "2025-07-06T17:23:46+08:00","dateModified": "2025-07-06T17:23:46+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -123,7 +123,7 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">后台开发全景图：思考、方法与实践</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/backend/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Backend</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-07-06">2025-07-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;17311 words&nbsp;
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-07-06">2025-07-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;17318 words&nbsp;
                 <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;35 minutes&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
@@ -178,6 +178,7 @@
                 <li><a href="#ai-用户">AI 用户</a></li>
               </ul>
             </li>
+            <li><a href="#架构容器图">架构（容器）图</a></li>
           </ul>
         </li>
         <li><a href="#add-驱动设计与实现">ADD 驱动设计与实现</a></li>
@@ -853,6 +854,15 @@
 <h5 id="ai-用户">AI 用户</h5>
 <p>为了让论坛更具智能，我们设计了一个 AI 用户，其核心技术是 <strong>RAG (Retrieval-Augmented Generation)</strong>，即“检索增强生成”。其原理是让大语言模型（LLM）在生成回答前，先从一个知识库中检索相关信息作为参考，以避免模型产生幻觉或回答空洞无物。</p>
 <p>在我们的项目中，这个流程被具体实现为：当有用户发布新帖时，一个后台 AI Agent 会被触发。首先，它执行<strong>检索 (Retrieval)</strong> 步骤，利用上文提到的 Elasticsearch 搜索服务，根据新帖的标题和内容，在论坛的历史数据中查找最相关的帖子和高质量回答。接着，它执行<strong>增强 (Augmented)</strong> 步骤，将检索到的这些高质量内容与用户的原始帖子内容拼接成一个内容丰富、上下文明确的提示（Prompt）。最后，通过 <strong>Spring Boot AI</strong> 框架，将这个增强后的 Prompt 发送给大语言模型进行<strong>生成 (Generation)</strong>。Spring Boot AI 屏蔽了直接调用不同 LLM API 的复杂性。模型返回的回复，最终会由 AI Agent 调用论坛核心应用服务，以一个特殊的“AI 用户”身份发布出来，从而实现智能的、有据可依的社区互动。</p>
+<h4 id="架构容器图">架构（容器）图</h4>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="./assets/755D7731-70BF-4CAC-8FEF-62CE61DCFCF5.png"
+        data-srcset="./assets/755D7731-70BF-4CAC-8FEF-62CE61DCFCF5.png, ./assets/755D7731-70BF-4CAC-8FEF-62CE61DCFCF5.png 1.5x, ./assets/755D7731-70BF-4CAC-8FEF-62CE61DCFCF5.png 2x"
+        data-sizes="auto"
+        alt="./assets/755D7731-70BF-4CAC-8FEF-62CE61DCFCF5.png"
+        title="img" /></p>
 <h3 id="add-驱动设计与实现">ADD 驱动设计与实现</h3>
 <p>高并发：引入RabbitMQ异步处理消息，事件驱动</p>
 <p>高性能：Redis缓存，数据库索引，读写分离，CQRS</p>
