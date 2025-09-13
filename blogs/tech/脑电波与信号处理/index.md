@@ -1,6 +1,6 @@
 ---
 date: '2025-09-12T17:15:11+08:00'
-draft: true
+draft: false
 title: '脑电波与信号处理'
 tags: 
 - Knowledge
