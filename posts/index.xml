@@ -5,6 +5,17 @@
         <description>All Posts | Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
             <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+    <title>脑电波与信号处理</title>
+    <link>https://rzyn2020.github.io/posts/%E8%84%91%E7%94%B5%E6%B3%A2%E4%B8%8E%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</link>
+    <pubDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</pubDate>
+    <author>Ekstasis</author>
+    <guid>https://rzyn2020.github.io/posts/%E8%84%91%E7%94%B5%E6%B3%A2%E4%B8%8E%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</guid>
+    <description><![CDATA[<blockquote>
+<p>Der Verstand schöpft seine Gesetze nicht aus der Natur, sondern schreibt sie dieser vor.</p>
+<p>知性不从自然界中汲取它的法则，而是给自然界规定这些法则。</p>
+</blockquote>]]></description>
+</item>
+<item>
     <title>后台开发全景图：思考、方法与实践</title>
     <link>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
@@ -88,16 +99,6 @@
     <author>Ekstasis</author>
     <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
     <description><![CDATA[<p>“I call architecture frozen music&hellip;” - Goethe</p>]]></description>
-</item>
-<item>
-    <title>编译器开发反思</title>
-    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
-    <pubDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</pubDate>
-    <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
-    <description><![CDATA[<blockquote>
-<p>纵横计不就，慷慨志犹存</p>
-</blockquote>]]></description>
 </item>
 </channel>
 </rss>
