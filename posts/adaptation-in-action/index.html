@@ -35,7 +35,7 @@
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/rzyn2020.github.io\/posts\/adaptation-in-action\/"
-        },"genre": "posts","keywords": "LLM, RL","wordcount":  10648 ,
+        },"genre": "posts","keywords": "LLM, RL","wordcount":  11648 ,
         "url": "https:\/\/rzyn2020.github.io\/posts\/adaptation-in-action\/","datePublished": "2025-05-15T21:17:13+08:00","dateModified": "2025-05-15T21:17:13+08:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -123,8 +123,8 @@
             <div class="toc-content" id="toc-content-auto"></div>
         </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Adaptation in Action (and RL Basic)</h1><div class="post-meta">
             <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>Ekstasis</a></span>&nbsp;<span class="post-category">included in <a href="/categories/ai/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>AI</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-05-15">2025-05-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;10648 words&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;22 minutes&nbsp;</div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-05-15">2025-05-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;11648 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;24 minutes&nbsp;</div>
         </div><div class="details toc" id="toc-static"  data-kept="">
                 <div class="details-summary toc-title">
                     <span>Contents</span>
@@ -148,7 +148,7 @@
             <li><a href="#贝尔曼最优方程">贝尔曼最优方程</a></li>
           </ul>
         </li>
-        <li><a href="#价值函数的求法">价值函数的求法</a>
+        <li><a href="#价值函数的求法预测评估">价值函数的求法（预测/评估）</a>
           <ul>
             <li><a href="#1-解析解法">1. 解析解法</a></li>
             <li><a href="#2-动态规划算法">2. 动态规划算法</a></li>
@@ -397,11 +397,13 @@ Answer:
         title="image-20250522225750085" /></p>
 <p>广泛地讲，强化学习是机器通过与环境交互来实现目标的一种计算方法。机器（Agent）可以与环境进行多轮交互，每一轮交互机器都可以采取一个动作，而环境会给出反馈。机器的目标是最大化在多轮交互过程中的获得的累积奖励的期望。</p>
 <p>强化学习的基础理论建立在<strong>马尔可夫决策过程</strong>（Markov decision process，MDP）之上。MDP的基础是<strong>马尔可夫过程</strong>（Markov process）和<strong>马尔可夫奖励过程</strong>（Markov reward process，MRP）。agent 通过<strong>策略</strong>（Policy）决定如何和环境互动，以达到最大累积期望。而<strong>价值函数</strong>（Value Function）常常用来辅助求解策略。</p>
+<p>强化学习中的数学公式看着唬人，但其中的 insight 很直观。如果能像编程一样，搞清楚每个符号的“类型”，数学公式也就很简单，和代码没有什么区别了。</p>
 <h4 id="随机过程和马尔可夫过程">随机过程和马尔可夫过程</h4>
 <p><strong>马尔可夫过程</strong>（Markov process）指具有马尔可夫性质的随机过程，也被称为<strong>马尔可夫链</strong>（Markov chain）。<strong>随机过程</strong>（stochastic process）是概率论的“动力学”部分。</p>
-<p>给定一个概率空间 $(\Omega, F,P)$ （$\Omega$是样本的集合；$F$是$\Omega$幂集的满足某些条件的非空子集，表示事件集合；$P$ 是概率，是从$F$到$R$的函数，满足全概率为1且可数可加），一个随机变量 $X: \Omega \to R$ 是定义在样本空间上的实函数，满足 $\forall t \in R . \{w \in \Omega:X(w) \le t\} \in F $。（我们可以通过概率密度函数，分布函数，各阶矩对其进行研究）</p>
-<p>如果 $T$ 是一个集合，有单射 $S: T \to P(\Omega \times R) $，$\forall t \in T$，$S(t)$或者$S_t$ 均为定义在 $\Omega$ 上的随机变量，则 $S$ 为 $(\Omega, F,P)$ 上的随机过程。（也就是，随机过程就是一串随机变量，$t$ 可以理解为时间）随机过程研究的是随机变量间的相互关联，因为关联的复杂性，我们只研究某些种类的关联，比如有马尔可夫性质的随机过程。</p>
-<p>当且仅当某时刻的状态只取决于上一时刻的状态时，一个随机过程被称为具有<strong>马尔可夫性质</strong>（Markov property），也就是 $P(S_{t + 1} = j|S_t = i_t) = P(S_{t+1} = j |S_1 = i_1,&hellip;,S_t = i_t)$。（离散时间下，其中 $i_0..i_{t},j$为任意值/状态），这个随机过程也被称为<strong>马尔可夫链</strong>（Markov chain）。如果马尔可夫链的一步转移概率只和状态相关，就被称为为<strong>时齐马尔可夫链</strong>(homogeneous)，强化学习中一般只考虑时齐马尔可夫链。</p>
+<p>给定一个概率空间 $(\Omega, F,P)$ （$\Omega$是样本的集合；$F$是$\Omega$幂集的满足某些条件的非空子集，表示事件集合；$P$ 是概率，是从$F$到$R$的函数，满足全概率为1且可数可加），一个随机变量 $X: \Omega \to R$ 是定义在样本空间上的实函数，满足 $\forall t \in R . \{w \in \Omega:X(w) \le t\} \in F $。（<strong>我们可以通过概率密度函数，概率分布函数，各阶矩对其进行研究</strong>）</p>
+<p>如果 $T$ 是一个集合，有单射 $S: T \to P(\Omega \times R) $，$\forall t \in T$，$S(t)$或者$S_t$ 均为定义在 $\Omega$ 上的随机变量，则 $S$ 为 $(\Omega, F,P)$ 上的随机过程。（也就是，随机过程就是一串随机变量，$t$ 可以理解为时间）随机过程研究的是随机变量间的相互关联，因为关联的复杂性，我们只研究某些种类的关联，比如有马尔可夫性质的随机过程。两个随机变量通过共享 $\Omega$ 来产生关联，我们可以使用联合概率分布来刻画二者的关系。<strong>我们可以把一个随机过程的 $\Omega$ 想像为一条条轨迹的集合</strong>，不同随机变量位于轨迹的不同时间点，因此给这条轨迹赋与不同的值。</p>
+<p>当且仅当某时刻的状态只取决于上一时刻的状态时，一个随机过程被称为具有<strong>马尔可夫性质</strong>（Markov property），也就是 $P(S_{t + 1} = j|S_t = i_t) = P(S_{t+1} = j |S_1 = i_1,&hellip;,S_t = i_t)$。（离散时间下，其中 $i_0..i_{t},j$为任意值/状态），这个随机过程也被称为<strong>马尔可夫链</strong>（Markov chain）。如果马尔可夫链的一步转移概率只和状态相关，就被称为为<strong>时齐马尔可夫链</strong>(homogeneous)，强化学习中一般只考虑时齐马尔可夫链。马尔科夫性质中出现了条件概率，数学定义为 $$P(A|B) = \frac{P(A \cap B)}{P(B)}$$。条件概率公式创建了一个新概率测度，也就创建了一个新的概率空间。</p>
+<p>我们研究随机过程/马尔可夫链时一般只在上面的性质上进行推导，不会假定其内部的样本空间，概率测度，事件集合，不同的样本空间，概率测度，事件集合完全可能产生相同的马尔可夫链。</p>
 <p>（时齐）马尔可夫链可用元组 $(S, P)$ 描述，其中：</p>
 <ul>
 <li>$S$ 是<strong>有限状态集合</strong></li>
@@ -422,7 +424,7 @@ Answer:
 <ul>
 <li>$S$ 是有限状态集合</li>
 <li>$P$ 是状态转移矩阵，满足 $P(s&rsquo; \mid s) = \mathbb{P}(S_{t+1}=s&rsquo; \mid S_t=s)$</li>
-<li>$R(s)$ 是<strong>奖励函数</strong>，表示从状态 $s$ 转移到下一状态的<strong>即时奖励期望</strong>，即 $R(s) = \mathbb{E}[r_{t+1} \mid S_t = s]$  ，大部分情况中只由状态 $s$ 决定，可以去掉期望</li>
+<li>$R(s)$ 是<strong>奖励函数</strong>，表示从状态 $s$ 转移到下一状态的<strong>即时奖励期望</strong>，即 $R(s) = \mathbb{E}[r_{t+1} \mid S_t = s]$  ，大部分情况中只由状态 $s$ 决定，可以去掉期望。期望是随机变量的一阶矩。值得注意的是，这里的期望是条件期望，$$E[X|Y=y] = \sum_{x} x \cdot P(X=x | Y=y)$$，也就是条件概率空间下的期望。</li>
 <li>$\gamma \in [0, 1]$ 是<strong>折扣因子</strong>，用于权衡当前奖励与未来奖励的重要性。</li>
 </ul>
 <p>在强化学习中，智能体的目标是最大化从当前时刻开始的<strong>累积回报</strong>（Return），定义为未来所有奖励的加权和：<br>
@@ -435,6 +437,7 @@ $$
 <li><strong>远期不确定性</strong>：远期奖励的“现值”应低于即时奖励；</li>
 <li><strong>实际意义</strong>：模仿人类对即时收益的偏好。</li>
 </ol>
+<p>$G_t$ 实际上是轨迹/样本空间上的函数，也就是一个随机变量。</p>
 <h4 id="价值函数">价值函数</h4>
 <p>价值函数用于衡量某状态的长期价值，定义为从该状态出发的（遍历所有可能序列）<strong>期望累积回报</strong>：<br>
 $$
@@ -454,12 +457,19 @@ $$
 <li>奖励函数扩展为 $R(s, a) = \mathbb{E}[r_{t+1} \mid S_t=s, A_t=a]$，大部分情况中只由状态 $s$ 和动作 $a$ 决定，可以去掉期望。</li>
 <li>$\gamma$ 仍为折扣因子。</li>
 </ul>
+<p>MDP中，两个随机变量也就是两个状态间的关系（联合概率分布等特征）是由环境和策略$\pi$ 共同决定的。我们改变策略时，也改变了MDP背后的状态关系。<strong>相当于MDP把MRP中的状态转移矩阵拆成了两部分</strong>，一部分可以调整的叫做策略，另一部分固定的叫做环境。</p>
 <p>在MDP中，智能体通过<strong>策略</strong>（Policy）选择动作。策略可以是确定性的，也可以是随机性的：</p>
 <ul>
 <li>确定性策略 $\pi: S \to A$ 将状态映射到具体动作</li>
 <li>随机性策略 $\pi(a \mid s)$ 表示在状态 $s$ 下选择动作 $a$ 的概率分布（值）</li>
 </ul>
 <p>大部分情况下我们使用随机性策略，因为它更加通用且具有更好的探索性质。可以证明，某些标准条件的情况下，马尔可夫决策过程（MDP）的<strong>最优策略一定存在</strong>。（也就是得到最大累积回报的策略）</p>
+<p>我们可以构造性地证明最优函数一定存在且唯一：</p>
+<p>MDP 具有<strong>马尔可夫性（无后效性）</strong>：你在 $s_1$ 做什么决定，只影响你会去哪里，而不会改变 $s_2$ 的物理规律（转移概率和奖励）。</p>
+<p><strong>“策略改进定理” (Policy Improvement Theorem)</strong> 告诉我们：</p>
+<p>如果在某个状态 $s$，你发现换个动作（比如照着策略 B 做）能比现在的策略 A 获得更高的 $q$ 值，那么你就把这一步改成那个动作。这样形成的新策略，<strong>其整体价值函数 $v(s)$ 在所有状态下都会比原来更好（至少不差）。</strong></p>
+<p><strong>推论：</strong></p>
+<p>既然我们可以针对<strong>每一个状态</strong>单独挑选最佳动作，那我们就把所有状态的“最佳动作”全部挑出来，组成一个策略。这个策略在每一个状态上都是最强的，自然就是全局最优策略。</p>
 <h4 id="状态价值函数与动作价值函数">状态价值函数与动作价值函数</h4>
 <ol>
 <li>
@@ -498,7 +508,7 @@ $$</p>
 </li>
 </ol>
 <h4 id="贝尔曼最优方程">贝尔曼最优方程</h4>
-<p>当策略 $\pi$ 达到最优时（记为 $\pi^\star$），其对应的价值函数 $v^\star(s)$ 和 $q^\star(s, a)$ 满足：</p>
+<p>当策略 $\pi$ 达到最优时（记为 $\pi^\star$）（如果不论从哪个状态 $s$ 出发，策略 $\pi$ 带来的期望回报都大于等于策略 $\pi&rsquo;$，我们才说 $\pi$ 优于 $\pi&rsquo;$），其对应的价值函数 $v^\star(s)$ 和 $q^\star(s, a)$ 满足：</p>
 <ol>
 <li>
 <p><strong>最优状态价值函数方程</strong>：<br>
@@ -515,7 +525,7 @@ $$</p>
 </ol>
 <p>贝尔曼最优方程表明：最优策略下，每一步动作的选择都追求<strong>全局最大化累积回报</strong>，且最优价值函数是唯一的。通过动态规划或时序差分方法求解这些方程，即可得到强化学习的最优策略。</p>
 <hr>
-<h3 id="价值函数的求法">价值函数的求法</h3>
+<h3 id="价值函数的求法预测评估">价值函数的求法（预测/评估）</h3>
 <p>在强化学习中，价值函数的求解是核心目标之一。根据问题场景的不同，可以采用以下方法：</p>
 <h4 id="1-解析解法">1. 解析解法</h4>
 <p>对马尔可夫奖励过程（MRP），价值函数可通过贝尔曼方程的矩阵形式直接求解：<br>
@@ -529,10 +539,6 @@ $$
 <li><strong>策略评估（Policy Evaluation）</strong>：固定策略 $\pi$，迭代计算其状态价值函数，迭代方程类似于贝尔曼方程：<br>
 $$
 v_{k+1}(s) = \sum_{a \in A} \pi(a \mid s) \left[ R(s, a) + \gamma \sum_{s&rsquo;} P(s&rsquo; \mid s, a) v_k(s&rsquo;) \right].
-$$</li>
-<li><strong>值迭代（Value Iteration）</strong>：直接迭代最优价值函数：<br>
-$$
-v_{k+1}(s) = \max_{a} \left[ R(s, a) + \gamma \sum_{s&rsquo;} P(s&rsquo; \mid s, a) v_k(s&rsquo;) \right].
 $$</li>
 </ul>
 <h4 id="3-蒙特卡洛方法">3. 蒙特卡洛方法</h4>
@@ -694,9 +700,14 @@ $$
 $$
 Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_{a&rsquo;} Q(s_{t+1}, a&rsquo;) - Q(s_t, a_t) \right].
 $$
-Q-learning 直接优化最优动作价值函数，与探索策略无关。可以理解为使用 TD 的价值迭代。Q-learning 不断迭代到最优价值函数，然后生成策略。</p>
+Q-learning 直接优化最优动作价值函数，与探索策略无关。可以理解为使用 TD 的价值迭代。Q-learning 不断迭代到最优价值函数，然后生成策略。可以证明。Q-Learning 的收敛条件为：</p>
+<p>收敛条件（Robbins-Monro 条件）</p>
+<ol>
+<li><strong>学习率 $\alpha$ 的衰减</strong>：$\sum \alpha_t = \infty$（保证步长够长，能抹平初始误差）且 $\sum \alpha_t^2 &lt; \infty$（保证最后能稳住，不会一直震荡）。</li>
+<li><strong>充分探索</strong>：所有状态-动作对 $(s, a)$ 必须被无限次访问（通常通过 $\epsilon$-greedy 保证）。</li>
+</ol>
 <p>因为 $\gamma \max_{a&rsquo;} Q(s_{t+1}, a&rsquo;)$ 实际上是一个贪婪策略（优化策略），但采样策略一般采用 $\epsilon$-贪心，所以它是 Off-Policy TD control。但显然，Q-Learning 中采样策略和贪婪策略也不是完全无关的，它们都共同依赖 Q 值。</p>
-<p>如果状态太多， Q 表格放不下，我们可以把 Q 函数用神经网络表示，上面的迭代步骤就变成了一次梯度上升，这就是 DQN 算法。</p>
+<p>如果状态太多， Q 表格放不下，我们可以把 Q 函数用神经网络表示，上面的迭代步骤就变成了一次梯度上升，这就是 <strong>DQN</strong> 算法。</p>
 <hr>
 <h3 id="基于策略的算法reinforce-和-actor-critic">基于策略的算法：REINFORCE 和 Actor-Critic</h3>
 <p>策略梯度是强化学习中<strong>直接优化策略</strong>的一类方法，其核心思想是通过梯度上升（Gradient Ascent）调整策略参数，以最大化期望累积回报。与基于价值的方法（如Q-learning）不同，策略梯度不依赖显式的价值函数，而是直接通过策略的<strong>概率分布</strong>选择动作，尤其适用于<strong>连续动作空间</strong>和<strong>随机策略</strong>场景。</p>
@@ -734,7 +745,7 @@ $$</li>
 </ul>
 <hr>
 <h4 id="actor-critic-方法">Actor-Critic 方法</h4>
-<p>Actor-Critic 结合策略梯度与价值函数（Critic），用Critic评估动作价值以降低方差：</p>
+<p>REINFORCE 需要跑完一条轨迹才能更新，因此就有了 Actor-Critic 结合策略梯度与价值函数（Critic），用Critic评估动作价值以降低方差。这样就能边跑边梯度上升：</p>
 <ul>
 <li><strong>Actor</strong>（策略函数 $\pi_\theta$）：生成动作；</li>
 <li><strong>Critic</strong>（价值函数 $V_w$ 或 $Q_w$）：评估动作优劣，计算优势函数 $A(s_t, a_t) = Q(s_t, a_t) - V(s_t)$。</li>
@@ -851,7 +862,7 @@ $$
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2021 - 2026</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">Ekstasis</a></span></div>
         </div>
     </footer></div>
 
