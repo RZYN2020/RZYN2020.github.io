@@ -1,4 +1,4 @@
-baseURL: https://rzyn2020.github.io/
+baseURL: https://blog.yongzhen.space/
 title: Ekstasis's Blog
 theme: [LoveIt]
 ignoreLogs: ['warning-goldmark-raw-html']

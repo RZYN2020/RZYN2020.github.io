@@ -5,8 +5,13 @@ title: 'Agent社会模拟'
 tags: 
 - Share
 - Agent
-categories: Sociology
+categories: 
+- Sociology
 toc: true
 ---
+
+<!--more-->
+
+## 
 
 https://joonspk-research.github.io/cs222-fall24/
