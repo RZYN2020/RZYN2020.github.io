@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>All Posts - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/posts/</link>
+        <link>https://blog.yongzhen.space/posts/</link>
         <description>All Posts | Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Tue, 09 Dec 2025 11:24:13 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 07 Feb 2026 20:43:41 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/posts/" rel="self" type="application/rss+xml" /><item>
     <title>脑电波与信号处理</title>
-    <link>https://rzyn2020.github.io/posts/%E8%84%91%E7%94%B5%E6%B3%A2%E4%B8%8E%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</link>
+    <link>https://blog.yongzhen.space/posts/%E8%84%91%E7%94%B5%E6%B3%A2%E4%B8%8E%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</link>
     <pubDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E8%84%91%E7%94%B5%E6%B3%A2%E4%B8%8E%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E8%84%91%E7%94%B5%E6%B3%A2%E4%B8%8E%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</guid>
     <description><![CDATA[<blockquote>
 <p>Der Verstand schöpft seine Gesetze nicht aus der Natur, sondern schreibt sie dieser vor.</p>
 <p>知性不从自然界中汲取它的法则，而是给自然界规定这些法则。</p>
@@ -17,10 +17,10 @@
 </item>
 <item>
     <title>后台开发全景图：思考、方法与实践</title>
-    <link>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
+    <link>https://blog.yongzhen.space/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</guid>
     <description><![CDATA[<blockquote>
 <p>Ein Schritt wirklicher Bewegung ist wichtiger als ein Dutzend Programme.
 (One step of real movement is more important than a dozen programs.)</p>
@@ -28,76 +28,76 @@
 </item>
 <item>
     <title>Adaptation in Action (and RL Basic)</title>
-    <link>https://rzyn2020.github.io/posts/adaptation-in-action/</link>
+    <link>https://blog.yongzhen.space/posts/adaptation-in-action/</link>
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/adaptation-in-action/</guid>
+    <guid>https://blog.yongzhen.space/posts/adaptation-in-action/</guid>
     <description><![CDATA[<blockquote>
 <p>Gott ist tot&hellip; Wir müssen selbst zu Göttern werden.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>Optimize the Performance of a LM</title>
-    <link>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</link>
+    <link>https://blog.yongzhen.space/posts/optimize-the-performance-of-a-lm/</link>
     <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</guid>
+    <guid>https://blog.yongzhen.space/posts/optimize-the-performance-of-a-lm/</guid>
     <description><![CDATA[<blockquote>
 <p>Time is money.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>数字直觉</title>
-    <link>https://rzyn2020.github.io/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/</link>
+    <link>https://blog.yongzhen.space/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/</link>
     <pubDate>Sat, 19 Apr 2025 17:02:20 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E6%95%B0%E5%AD%97%E7%9B%B4%E8%A7%89/</guid>
     <description><![CDATA[<blockquote>
 <p>本文由 Gemini 辅助生成</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>Building a Transformer LM</title>
-    <link>https://rzyn2020.github.io/posts/building-a-transformer-lm/</link>
+    <link>https://blog.yongzhen.space/posts/building-a-transformer-lm/</link>
     <pubDate>Sun, 06 Apr 2025 09:58:31 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
+    <guid>https://blog.yongzhen.space/posts/building-a-transformer-lm/</guid>
     <description><![CDATA[<blockquote>
 <p>Once upon a time, there was a mountain.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>MySQL 知识点总结 </title>
-    <link>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</link>
+    <link>https://blog.yongzhen.space/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</link>
     <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</guid>
+    <guid>https://blog.yongzhen.space/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</guid>
     <description><![CDATA[<p>在后端实习面试中，有 数据库，Java，网络，OS 四大考点，其中又以数据库考察最为频繁。数据库问题中，除了少部分范式相关理论，基本为 <a href="https://db-engines.com/en/ranking" target="_blank" rel="noopener noreffer ">MySQL</a> 问题。因此，在这里摘录相关知识点，做一个总结，既是为秋招做准备，也是总结找实习过程中的所学知识。</p>]]></description>
 </item>
 <item>
     <title>深度学习基础知识总结</title>
-    <link>https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+    <link>https://blog.yongzhen.space/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
     <pubDate>Mon, 13 Jan 2025 19:29:29 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>吉登斯「社会学」笔记</title>
-    <link>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</link>
+    <link>https://blog.yongzhen.space/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</link>
     <pubDate>Sat, 23 Nov 2024 11:31:25 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E5%90%89%E7%99%BB%E6%96%AF%E7%A4%BE%E4%BC%9A%E5%AD%A6%E7%AC%94%E8%AE%B0/</guid>
     <description><![CDATA[<blockquote>
 <p>人们自己创造自己的历史，但是他们并不是随心所欲地创造，并不是在他们自己选定的条件下创造，而是在直接碰到的、既定的、从过去继承下来的条件下创造。</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>BitTorrent协议及其扩展</title>
-    <link>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
+    <link>https://blog.yongzhen.space/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</link>
     <pubDate>Sat, 16 Nov 2024 21:58:53 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
+    <guid>https://blog.yongzhen.space/posts/bittorrent%E5%8D%8F%E8%AE%AE%E5%8F%8A%E5%85%B6%E6%89%A9%E5%B1%95/</guid>
     <description><![CDATA[<p>“I call architecture frozen music&hellip;” - Goethe</p>]]></description>
 </item>
 </channel>

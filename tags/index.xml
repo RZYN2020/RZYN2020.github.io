@@ -1,87 +1,87 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Tags - Tag - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/tags/</link>
+        <link>https://blog.yongzhen.space/tags/</link>
         <description>Tags - Tag - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Knowledge</title>
-    <link>https://rzyn2020.github.io/tags/knowledge/</link>
+    <link>https://blog.yongzhen.space/tags/knowledge/</link>
     <pubDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/knowledge/</guid>
+    <guid>https://blog.yongzhen.space/tags/knowledge/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Architecture</title>
-    <link>https://rzyn2020.github.io/tags/architecture/</link>
+    <link>https://blog.yongzhen.space/tags/architecture/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/architecture/</guid>
+    <guid>https://blog.yongzhen.space/tags/architecture/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Code</title>
-    <link>https://rzyn2020.github.io/tags/code/</link>
+    <link>https://blog.yongzhen.space/tags/code/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/code/</guid>
+    <guid>https://blog.yongzhen.space/tags/code/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>LLM</title>
-    <link>https://rzyn2020.github.io/tags/llm/</link>
+    <link>https://blog.yongzhen.space/tags/llm/</link>
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/llm/</guid>
+    <guid>https://blog.yongzhen.space/tags/llm/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>RL</title>
-    <link>https://rzyn2020.github.io/tags/rl/</link>
+    <link>https://blog.yongzhen.space/tags/rl/</link>
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/rl/</guid>
+    <guid>https://blog.yongzhen.space/tags/rl/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Performance</title>
-    <link>https://rzyn2020.github.io/tags/performance/</link>
+    <link>https://blog.yongzhen.space/tags/performance/</link>
     <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/performance/</guid>
+    <guid>https://blog.yongzhen.space/tags/performance/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>CheatSheet</title>
-    <link>https://rzyn2020.github.io/tags/cheatsheet/</link>
+    <link>https://blog.yongzhen.space/tags/cheatsheet/</link>
     <pubDate>Sat, 19 Apr 2025 17:02:20 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/cheatsheet/</guid>
+    <guid>https://blog.yongzhen.space/tags/cheatsheet/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Database</title>
-    <link>https://rzyn2020.github.io/tags/database/</link>
+    <link>https://blog.yongzhen.space/tags/database/</link>
     <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/database/</guid>
+    <guid>https://blog.yongzhen.space/tags/database/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Interview</title>
-    <link>https://rzyn2020.github.io/tags/interview/</link>
+    <link>https://blog.yongzhen.space/tags/interview/</link>
     <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/interview/</guid>
+    <guid>https://blog.yongzhen.space/tags/interview/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Summary</title>
-    <link>https://rzyn2020.github.io/tags/summary/</link>
+    <link>https://blog.yongzhen.space/tags/summary/</link>
     <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/tags/summary/</guid>
+    <guid>https://blog.yongzhen.space/tags/summary/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

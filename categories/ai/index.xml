@@ -1,45 +1,45 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>AI - Category - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/categories/ai/</link>
+        <link>https://blog.yongzhen.space/categories/ai/</link>
         <description>AI - Category - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 15 May 2025 21:17:13 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/categories/ai/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Thu, 15 May 2025 21:17:13 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/categories/ai/" rel="self" type="application/rss+xml" /><item>
     <title>Adaptation in Action (and RL Basic)</title>
-    <link>https://rzyn2020.github.io/posts/adaptation-in-action/</link>
+    <link>https://blog.yongzhen.space/posts/adaptation-in-action/</link>
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/adaptation-in-action/</guid>
+    <guid>https://blog.yongzhen.space/posts/adaptation-in-action/</guid>
     <description><![CDATA[<blockquote>
 <p>Gott ist tot&hellip; Wir müssen selbst zu Göttern werden.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>Optimize the Performance of a LM</title>
-    <link>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</link>
+    <link>https://blog.yongzhen.space/posts/optimize-the-performance-of-a-lm/</link>
     <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</guid>
+    <guid>https://blog.yongzhen.space/posts/optimize-the-performance-of-a-lm/</guid>
     <description><![CDATA[<blockquote>
 <p>Time is money.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>Building a Transformer LM</title>
-    <link>https://rzyn2020.github.io/posts/building-a-transformer-lm/</link>
+    <link>https://blog.yongzhen.space/posts/building-a-transformer-lm/</link>
     <pubDate>Sun, 06 Apr 2025 09:58:31 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
+    <guid>https://blog.yongzhen.space/posts/building-a-transformer-lm/</guid>
     <description><![CDATA[<blockquote>
 <p>Once upon a time, there was a mountain.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>深度学习基础知识总结</title>
-    <link>https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
+    <link>https://blog.yongzhen.space/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</link>
     <pubDate>Mon, 13 Jan 2025 19:29:29 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

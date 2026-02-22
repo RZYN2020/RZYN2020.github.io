@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>C - Tag - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/tags/c/</link>
+        <link>https://blog.yongzhen.space/tags/c/</link>
         <description>C - Tag - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sun, 14 Nov 2021 09:23:52 &#43;0000</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/c/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sun, 14 Nov 2021 09:23:52 &#43;0000</lastBuildDate><atom:link href="https://blog.yongzhen.space/tags/c/" rel="self" type="application/rss+xml" /><item>
     <title>浅析jmp_buf的定义</title>
-    <link>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</link>
+    <link>https://blog.yongzhen.space/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</link>
     <pubDate>Sun, 14 Nov 2021 09:23:52 &#43;0000</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E6%B5%85%E6%9E%90jump-buf%E7%9A%84%E5%AE%9A%E4%B9%89/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

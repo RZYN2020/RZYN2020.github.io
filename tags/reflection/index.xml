@@ -1,25 +1,25 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Reflection - Tag - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/tags/reflection/</link>
+        <link>https://blog.yongzhen.space/tags/reflection/</link>
         <description>Reflection - Tag - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/reflection/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/tags/reflection/" rel="self" type="application/rss+xml" /><item>
     <title>编译器开发反思</title>
-    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
+    <link>https://blog.yongzhen.space/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
     <pubDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
     <description><![CDATA[<blockquote>
 <p>纵横计不就，慷慨志犹存</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>探究支撑os的硬件(以xv6和riscv为例)</title>
-    <link>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</link>
+    <link>https://blog.yongzhen.space/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</link>
     <pubDate>Thu, 11 Aug 2022 21:27:52 &#43;0000</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E6%8E%A2%E7%A9%B6%E6%94%AF%E6%92%91os%E7%9A%84%E7%A1%AC%E4%BB%B6%E4%BB%A5xv6%E5%92%8Criscv%E4%B8%BA%E4%BE%8B/</guid>
     <description><![CDATA[<blockquote>
 <pre><code>You are my creator, but I am your master; Obey!
 </code></pre>

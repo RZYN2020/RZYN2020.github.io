@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Code - Tag - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/tags/code/</link>
+        <link>https://blog.yongzhen.space/tags/code/</link>
         <description>Code - Tag - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/code/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/tags/code/" rel="self" type="application/rss+xml" /><item>
     <title>后台开发全景图：思考、方法与实践</title>
-    <link>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
+    <link>https://blog.yongzhen.space/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</guid>
     <description><![CDATA[<blockquote>
 <p>Ein Schritt wirklicher Bewegung ist wichtiger als ein Dutzend Programme.
 (One step of real movement is more important than a dozen programs.)</p>
@@ -17,20 +17,20 @@
 </item>
 <item>
     <title>Optimize the Performance of a LM</title>
-    <link>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</link>
+    <link>https://blog.yongzhen.space/posts/optimize-the-performance-of-a-lm/</link>
     <pubDate>Sat, 10 May 2025 17:47:01 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/optimize-the-performance-of-a-lm/</guid>
+    <guid>https://blog.yongzhen.space/posts/optimize-the-performance-of-a-lm/</guid>
     <description><![CDATA[<blockquote>
 <p>Time is money.</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>Building a Transformer LM</title>
-    <link>https://rzyn2020.github.io/posts/building-a-transformer-lm/</link>
+    <link>https://blog.yongzhen.space/posts/building-a-transformer-lm/</link>
     <pubDate>Sun, 06 Apr 2025 09:58:31 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/building-a-transformer-lm/</guid>
+    <guid>https://blog.yongzhen.space/posts/building-a-transformer-lm/</guid>
     <description><![CDATA[<blockquote>
 <p>Once upon a time, there was a mountain.</p>
 </blockquote>]]></description>

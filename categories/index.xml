@@ -1,63 +1,63 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Categories - Category - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/categories/</link>
+        <link>https://blog.yongzhen.space/categories/</link>
         <description>Categories - Category - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/categories/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/categories/" rel="self" type="application/rss+xml" /><item>
     <title>Application</title>
-    <link>https://rzyn2020.github.io/categories/application/</link>
+    <link>https://blog.yongzhen.space/categories/application/</link>
     <pubDate>Fri, 12 Sep 2025 17:15:11 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/application/</guid>
+    <guid>https://blog.yongzhen.space/categories/application/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Backend</title>
-    <link>https://rzyn2020.github.io/categories/backend/</link>
+    <link>https://blog.yongzhen.space/categories/backend/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/backend/</guid>
+    <guid>https://blog.yongzhen.space/categories/backend/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>AI</title>
-    <link>https://rzyn2020.github.io/categories/ai/</link>
+    <link>https://blog.yongzhen.space/categories/ai/</link>
     <pubDate>Thu, 15 May 2025 21:17:13 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/ai/</guid>
+    <guid>https://blog.yongzhen.space/categories/ai/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Instinct</title>
-    <link>https://rzyn2020.github.io/categories/instinct/</link>
+    <link>https://blog.yongzhen.space/categories/instinct/</link>
     <pubDate>Sat, 19 Apr 2025 17:02:20 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/instinct/</guid>
+    <guid>https://blog.yongzhen.space/categories/instinct/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>System</title>
-    <link>https://rzyn2020.github.io/categories/system/</link>
+    <link>https://blog.yongzhen.space/categories/system/</link>
     <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/system/</guid>
+    <guid>https://blog.yongzhen.space/categories/system/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Sociology</title>
-    <link>https://rzyn2020.github.io/categories/sociology/</link>
+    <link>https://blog.yongzhen.space/categories/sociology/</link>
     <pubDate>Sat, 23 Nov 2024 11:31:25 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/sociology/</guid>
+    <guid>https://blog.yongzhen.space/categories/sociology/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
     <title>Algorithm</title>
-    <link>https://rzyn2020.github.io/categories/algorithm/</link>
+    <link>https://blog.yongzhen.space/categories/algorithm/</link>
     <pubDate>Sun, 20 Mar 2022 20:41:38 &#43;0000</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/categories/algorithm/</guid>
+    <guid>https://blog.yongzhen.space/categories/algorithm/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

@@ -1,25 +1,25 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Compiler - Tag - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/tags/compiler/</link>
+        <link>https://blog.yongzhen.space/tags/compiler/</link>
         <description>Compiler - Tag - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/tags/compiler/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/tags/compiler/" rel="self" type="application/rss+xml" /><item>
     <title>编译器开发反思</title>
-    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
+    <link>https://blog.yongzhen.space/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</link>
     <pubDate>Sat, 09 Nov 2024 15:51:53 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E5%BC%80%E5%8F%91%E5%8F%8D%E6%80%9D/</guid>
     <description><![CDATA[<blockquote>
 <p>纵横计不就，慷慨志犹存</p>
 </blockquote>]]></description>
 </item>
 <item>
     <title>编译器的结构与任务</title>
-    <link>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
+    <link>https://blog.yongzhen.space/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</link>
     <pubDate>Mon, 06 Mar 2023 11:52:38 &#43;0000</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E7%BC%96%E8%AF%91%E5%99%A8%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E4%BB%BB%E5%8A%A1/</guid>
     <description><![CDATA[<blockquote>
 <p>Surely all this is not without meaning.</p>
 </blockquote>

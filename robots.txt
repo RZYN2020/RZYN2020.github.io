@@ -61,4 +61,4 @@ Disallow: /
 User-agent: ZoominfoBot
 Disallow: /
 
-Sitemap: https://rzyn2020.github.io/sitemap.xml
+Sitemap: https://blog.yongzhen.space/sitemap.xml

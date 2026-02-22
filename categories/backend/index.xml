@@ -1,15 +1,15 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title>Backend - Category - Ekstasis&#39;s Blog</title>
-        <link>https://rzyn2020.github.io/categories/backend/</link>
+        <link>https://blog.yongzhen.space/categories/backend/</link>
         <description>Backend - Category - Ekstasis&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator><language>en</language><managingEditor>zhaoyzzz@outlook.com (Ekstasis)</managingEditor>
-            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</lastBuildDate><atom:link href="https://rzyn2020.github.io/categories/backend/" rel="self" type="application/rss+xml" /><item>
+            <webMaster>zhaoyzzz@outlook.com (Ekstasis)</webMaster><lastBuildDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</lastBuildDate><atom:link href="https://blog.yongzhen.space/categories/backend/" rel="self" type="application/rss+xml" /><item>
     <title>后台开发全景图：思考、方法与实践</title>
-    <link>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
+    <link>https://blog.yongzhen.space/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</link>
     <pubDate>Sun, 06 Jul 2025 17:23:46 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E5%90%8E%E5%8F%B0%E5%BC%80%E5%8F%91%E5%85%A8%E6%99%AF%E5%9B%BE%E6%80%9D%E8%80%83%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%AE%9E%E8%B7%B5/</guid>
     <description><![CDATA[<blockquote>
 <p>Ein Schritt wirklicher Bewegung ist wichtiger als ein Dutzend Programme.
 (One step of real movement is more important than a dozen programs.)</p>
@@ -17,18 +17,18 @@
 </item>
 <item>
     <title>MySQL 知识点总结 </title>
-    <link>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</link>
+    <link>https://blog.yongzhen.space/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</link>
     <pubDate>Wed, 12 Mar 2025 11:12:50 &#43;0800</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</guid>
+    <guid>https://blog.yongzhen.space/posts/mysql%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</guid>
     <description><![CDATA[<p>在后端实习面试中，有 数据库，Java，网络，OS 四大考点，其中又以数据库考察最为频繁。数据库问题中，除了少部分范式相关理论，基本为 <a href="https://db-engines.com/en/ranking" target="_blank" rel="noopener noreffer ">MySQL</a> 问题。因此，在这里摘录相关知识点，做一个总结，既是为秋招做准备，也是总结找实习过程中的所学知识。</p>]]></description>
 </item>
 <item>
     <title>Autoboxing and IntegerCache in Java</title>
-    <link>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</link>
+    <link>https://blog.yongzhen.space/posts/autoboxing-and-integercache-in-java/</link>
     <pubDate>Tue, 07 Mar 2023 14:49:32 &#43;0000</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/autoboxing-and-integercache-in-java/</guid>
+    <guid>https://blog.yongzhen.space/posts/autoboxing-and-integercache-in-java/</guid>
     <description><![CDATA[<blockquote>
 <p>When you are on the dancefloor, there is nothing to do but dance.</p>
 </blockquote>
@@ -36,10 +36,10 @@
 </item>
 <item>
     <title>浅谈java8中的流</title>
-    <link>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
+    <link>https://blog.yongzhen.space/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</link>
     <pubDate>Wed, 18 Aug 2021 20:31:48 &#43;0000</pubDate>
     <author>Ekstasis</author>
-    <guid>https://rzyn2020.github.io/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
+    <guid>https://blog.yongzhen.space/posts/%E6%B5%85%E8%B0%88java8%E4%B8%AD%E7%9A%84%E6%B5%81/</guid>
     <description><![CDATA[<blockquote>
 <p>万物皆流，无物常驻</p>
 </blockquote>]]></description>
